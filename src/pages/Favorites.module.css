@@ -1,0 +1,149 @@
+
+.emptyFav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 3rem;
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.6) 0%, rgba(22, 33, 62, 0.4) 100%);
+  border-radius: 20px;
+  border: 2px solid rgba(0, 255, 136, 0.3);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.1);
+  margin: 2rem auto;
+  max-width: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.emptyFav::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+  animation: rotate 8s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.emptyFav h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #e0e6ed;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #e0e6ed, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.emptyFav p {
+  font-size: 1.2rem;
+  color: #a0a6ad;
+  margin-bottom: 2rem;
+  max-width: 400px;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.favoriteIcon {
+  font-size: 4rem;
+  margin-bottom: 2rem;
+  opacity: 0.7;
+  animation: pulse 2s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 0.7; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.1);
+  }
+}
+
+.favoritesGrid {
+  width: 100%;
+  max-width: 1400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  padding: 2rem;
+  margin: 0 auto;
+}
+
+.favoritesHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+}
+
+.favoritesHeader h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, #00ff88, #66ffaa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.favoritesHeader p {
+  font-size: 1.1rem;
+  color: #a0a6ad;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .emptyFav {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+  
+  .emptyFav h2 {
+    font-size: 2rem;
+  }
+  
+  .emptyFav p {
+    font-size: 1rem;
+  }
+  
+  .favoriteIcon {
+    font-size: 3rem;
+  }
+  
+  .favoritesGrid {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+  
+  .favoritesHeader h1 {
+    font-size: 2.2rem;
+  }
+  
+  .favoritesHeader p {
+    font-size: 1rem;
+  }
+}

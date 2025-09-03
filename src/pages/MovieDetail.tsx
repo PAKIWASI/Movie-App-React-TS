@@ -11,7 +11,8 @@ const MovieDetail = () => {
 
     const { id } = useParams<{ id: string }>(); // gets dynamic id from url (the one we made /:id)
     const navigate = useNavigate();
-    const { addFav, removeFav, isFav } = useMovieContext();
+    const { addFav, removeFav, isFav, 
+            addSave, removeSave, isSave } = useMovieContext();
     const [movie, setMovie] = useState<MovieDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -52,6 +53,16 @@ const MovieDetail = () => {
         }
     };
 
+    const handleWatchlistClick = () => {
+        if (!movie) return;
+        
+        if (saved) {
+            removeSave(movie.id);
+        } else {
+            addSave(movie);
+        }
+    };
+
     const formatRuntime = (minutes?: number) => {
         if (!minutes) return 'N/A';
         const hours = Math.floor(minutes / 60);
@@ -89,6 +100,7 @@ const MovieDetail = () => {
     }
 
     const favorite = isFav(movie.id);
+    const saved = isSave(movie.id);
 
     return (
         <div className={styles.movieDetails}>
@@ -151,14 +163,22 @@ const MovieDetail = () => {
                             )}
                             
                             <p className={styles.overview}>{movie.overview}</p>
-                            
-                            <button 
-                                onClick={handleFavoriteClick}
-                                className={`${styles.favButton} ${favorite ? styles.favorited : ''}`}
-                                aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-                            >
-                                {favorite ? "❤️ Remove from Favorites" : "🤍 Add to Favorites"}
-                            </button>
+                           <div className={styles.buttonContainer}>
+                                <button 
+                                    onClick={handleFavoriteClick}
+                                    className={`${styles.favButton} ${favorite ? styles.favorited : ''}`}
+                                    aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+                                >
+                                    {favorite ? "❤️ Remove from Favorites" : "🤍 Add to Favorites"}
+                                </button>
+                                <button 
+                                    onClick={handleWatchlistClick}
+                                    className={`${styles.favButton} ${saved ? styles.saved : ''}`}
+                                    aria-label={saved ? "Remove from watchlist" : "Add to watchlist"}
+                                >
+                                    {saved ? "📖 Remove from Watchlist" : "🔖 Add to Watchlist"}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

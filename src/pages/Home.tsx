@@ -3,10 +3,11 @@ import MovieCard from "../Components/MovieCard";
 import styles from "./Home.module.css"
 import type { TMDBmovie } from "../types.ts"
 import { getPopularMovies, searchMovies } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 
 
-function Home() // entire UI for the homepage 
+function Home({isSearching}: {isSearching: boolean}) // entire UI for the homepage 
 { 
     const [searchQuery, setSearchQuery] = useState("");
     const [movies, setMovies] = useState<TMDBmovie[]>([]);
@@ -17,6 +18,8 @@ function Home() // entire UI for the homepage
     const [totalPages, setTotalPages] = useState(0);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [lastSearchQuery, setLastSearchQuery] = useState("");
+
+    const navigation = useNavigate();
 
     useEffect(() => {
         const loadPopularMovies = async () => {
@@ -36,14 +39,23 @@ function Home() // entire UI for the homepage
             }
         };
 
+         // If we're not searching (i.e., we're on the home page), load popular movies
+        if (!isSearching && lastSearchQuery) {
+            loadPopularMovies();
+        } else if (!isSearching && movies.length === 0) {
+            // Initial load or when coming back to home
+            loadPopularMovies();
+        }
+
         loadPopularMovies();
-    }, []); // on mount
+    }, [isSearching]); // on mount
 
     const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
         if (loading) return;
         
+        navigation("/search");
         setLoading(true);
         try {
             const searchResult = await searchMovies(searchQuery, 1); 
@@ -60,7 +72,6 @@ function Home() // entire UI for the homepage
         finally {
             setLoading(false);
         }
-        setSearchQuery("");
     };
 
     const loadMoreMovies = async () => {

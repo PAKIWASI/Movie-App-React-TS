@@ -16,9 +16,10 @@ function App() {
             <Navbar/>
             <main className="mainContent">
                 <Routes>
-                    <Route path="/" element={<Home/>} />
+                    <Route path="/" element={<Home isSearching= {false}/>} />
                     <Route path="/favorites" element={<Favorites/>} />
                     <Route path="/watchlist" element={<Watchlist/>} />
+                    <Route path="/search" element={<Home isSearching={true}/>} />
                     <Route path="/movie/:id" element={<MovieDetail/>} />
                </Routes>
             </main>

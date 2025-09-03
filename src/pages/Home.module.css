@@ -76,6 +76,37 @@
   padding: 1rem;
 }
 
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0;
+}
+
+.loadMoreBtn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #00ff88 0%, #66ffaa 100%);
+  border: none;
+  border-radius: 10px;
+  color: #1a1a1a;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+}
+
+.loadMoreBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+  background: linear-gradient(135deg, #66ffaa 0%, #00ff88 100%);
+}
+
+.loadMoreBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 @media (max-width: 768px) {
   .home {
     padding: 1rem;

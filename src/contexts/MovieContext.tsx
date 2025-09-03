@@ -37,6 +37,26 @@ export const MovieProvider = ({children}: {children: React.ReactNode}) =>
         }
     }, [fav]);
 
+    const [save, setSave] = useState<TMDBmovie[]>(() => {
+        try {
+            const storedSaves = localStorage.getItem("saved");
+            return storedSaves ? JSON.parse(storedSaves) : [];
+        }
+        catch (error) {
+            console.error("Failed to load saved movies from localStorage", error);
+            return []; 
+        }
+    });
+
+    useEffect(() => {
+        try {
+            localStorage.setItem('saved', JSON.stringify(save));
+        }
+        catch (error) {
+            console.error("failed to save watchlist to local storage", error);
+        }
+    }, [save]);
+
     const addFav = (movie:TMDBmovie) => {
         setFav(f => [...f, movie]);
     }
@@ -49,11 +69,28 @@ export const MovieProvider = ({children}: {children: React.ReactNode}) =>
         return fav.some(movie => movie.id === movieid);
     }
 
+    const addSave = (movie:TMDBmovie) => {
+        setSave(s => [...s, movie]);
+    }
+
+    const removeSave = (movieid: number) => {
+        setSave(s => s.filter(movie => movie.id  !== movieid));
+    }
+
+    const isSave = (movieid: number) => {
+        return save.some(movie => movie.id === movieid);
+    }
+
+
     const value: MovieContextType = {
         fav,
         addFav,
         removeFav,
         isFav,
+        save,
+        addSave,
+        removeSave,
+        isSave
     };
 
     return (

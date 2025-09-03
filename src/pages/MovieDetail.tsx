@@ -2,21 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMovieContext } from "../contexts/MovieContext";
 import { API_KEY, BASE_URL } from "../services/api.ts";
-import type { TMDBmovie } from "../types";
+import type { MovieDetails } from "../types";
 import styles from "./MovieDetail.module.css";
 
-// Extended interface for detailed movie info
-interface MovieDetails extends TMDBmovie {
-    budget?: number;
-    homepage?: string;
-    runtime?: number;
-    revenue?: number;
-    tagline?: string;
-    genres?: { id: number; name: string }[];
-    production_companies?: { id: number; name: string; logo_path: string }[];
-    spoken_languages?: { english_name: string; name: string }[];
-    status?: string;
-}
+
 
 const MovieDetail = () => {
 
@@ -222,5 +211,5 @@ const MovieDetail = () => {
         </div>
     );
 };
-
 export default MovieDetail;
+

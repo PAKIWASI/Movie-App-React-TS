@@ -5,6 +5,7 @@ import type { TMDBmovie } from "../types.ts"
 import { getPopularMovies, searchMovies } from "../services/api";
 
 
+
 function Home() // entire UI for the homepage 
 { 
     const [searchQuery, setSearchQeury] = useState("");
@@ -28,7 +29,7 @@ function Home() // entire UI for the homepage
         };
 
         loadPopularMovies();
-    }, []);
+    }, []); // on mount
 
     const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

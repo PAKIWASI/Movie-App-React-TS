@@ -3,11 +3,28 @@ import { useNavigate } from "react-router-dom";
 import type { TMDBmovie } from "../types";
 import styles from "./MovieCard.module.css";
 
+
+const BookmarkIcon = ({ filled }: { filled: boolean }) => (
+    <svg 
+        width="20" 
+        height="20" 
+        viewBox="0 0 24 24" 
+        fill={filled ? "#00ff88" : "none"} 
+        stroke="#00ff88" 
+        strokeWidth="2"
+    >
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+    </svg>
+);
+
+
 function MovieCard({movie}: {movie: TMDBmovie}) 
 {
-    const { addFav, removeFav, isFav } = useMovieContext();
+    const { addFav, removeFav, isFav, 
+            addSave, removeSave, isSave } = useMovieContext();
     const navigate = useNavigate();
     const favorite = isFav(movie.id);
+    const saved = isSave(movie.id);
 
     const onFavClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -16,6 +33,16 @@ function MovieCard({movie}: {movie: TMDBmovie})
             removeFav(movie.id);
         } else {
             addFav(movie);
+        }
+    }
+
+    const onSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (saved) {
+            removeSave(movie.id);
+        } else {
+            addSave(movie);
         }
     }
 
@@ -36,6 +63,13 @@ function MovieCard({movie}: {movie: TMDBmovie})
                         aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
                     >
                         {favorite ? "❤️" : "🤍"}
+                    </button>
+                    <button
+                        className={styles.favBtn}
+                        onClick={onSaveClick}
+                        aria-label={saved ? "Remove from watchlist" : "Add to watchlist"}
+                    >
+                        <BookmarkIcon filled={saved} />                    
                     </button>
                 </div>
             </div>

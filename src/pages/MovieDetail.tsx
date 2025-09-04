@@ -56,7 +56,7 @@ const MovieDetail = () => {
     const handleWatchlistClick = () => {
         if (!movie) return;
         
-        if (saved) {
+        if (isSave(movie.id)) {
             removeSave(movie.id);
         } else {
             addSave(movie);

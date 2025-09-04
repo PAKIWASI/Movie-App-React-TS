@@ -2,6 +2,8 @@
 
 A modern, responsive movie discovery application built with React and TypeScript. Browse popular movies, search for your favorites, and manage your personal collection with favorites and watchlist features.
 
+https://github.com/user-attachments/assets/77d26520-cbbf-45f6-ad3c-b56966f1749f
+
 ## Features
 
 - **Movie Discovery**: Browse popular movies with beautiful, interactive cards

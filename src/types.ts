@@ -36,7 +36,6 @@ export interface MovieContextType  {
 };
 
 
-// Extended interface for detailed movie info
 export interface MovieDetails extends TMDBmovie {
     budget?: number;
     homepage?: string;
@@ -48,3 +47,19 @@ export interface MovieDetails extends TMDBmovie {
     spoken_languages?: { english_name: string; name: string }[];
     status?: string;
 };
+
+export interface CastMember {
+    id: number;
+    name: string;
+    character: string;
+    profile_path: string | null;
+    order: number;
+}
+
+export interface CrewMember {
+    id: number;
+    name: string;
+    job: string;
+    department: string;
+    profile_path: string | null;
+}

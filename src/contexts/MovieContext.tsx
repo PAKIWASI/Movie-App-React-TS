@@ -99,3 +99,4 @@ export const MovieProvider = ({children}: {children: React.ReactNode}) =>
         </MovieContext.Provider>
     );
 }; // children have access to everything in value
+

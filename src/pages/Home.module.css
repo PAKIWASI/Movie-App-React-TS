@@ -66,6 +66,9 @@
   transform: translateY(0);
 }
 
+.SuggestionBox {
+}
+
 .moviesGrid {
   width: 100%;
   max-width: 1400px;

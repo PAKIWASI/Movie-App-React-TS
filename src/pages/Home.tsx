@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import MovieCard from "../Components/MovieCard";
 import styles from "./Home.module.css"
 import type { TMDBmovie } from "../types.ts"
 import { getPopularMovies, searchMovies } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import SearchSuggestion from "../Components/SearchSuggestion.tsx";
 
 
 
@@ -18,6 +19,10 @@ function Home({isSearching}: {isSearching: boolean}) // entire UI for the homepa
     const [totalPages, setTotalPages] = useState(0);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [lastSearchQuery, setLastSearchQuery] = useState("");
+
+    const [suggestions, setSuggestions] = useState<TMDBmovie[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const searchFormRef = useRef<HTMLDivElement>(null);
 
     const navigation = useNavigate();
 
@@ -50,10 +55,47 @@ function Home({isSearching}: {isSearching: boolean}) // entire UI for the homepa
         loadPopularMovies();
     }, [isSearching]); // on mount
 
+    // Close suggestions when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (searchFormRef.current && !searchFormRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    // Update the suggestions effect
+    useEffect(() => {
+        if (searchQuery.trim().length === 0) {
+            setShowSuggestions(false);
+            return;
+        }
+
+        const loadSuggestions = async() => {
+            setShowSuggestions(true);
+            const searchResult = await searchMovies(searchQuery, 1);
+            setSuggestions(searchResult.results.slice(0, 5)); // Limit to 5 suggestions
+        }
+
+        loadSuggestions();
+    }, [searchQuery])
+
+    const handleSuggestionClick = (movie: TMDBmovie) => {
+        setSearchQuery(movie.title);
+        setShowSuggestions(false);
+        navigation(`/movie/${movie.id}`);
+    };    
+
+
     const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!searchQuery.trim()) return;
         if (loading) return;
+
+        setShowSuggestions(false);
         
         navigation("/search");
         setLoading(true);
@@ -73,6 +115,7 @@ function Home({isSearching}: {isSearching: boolean}) // entire UI for the homepa
             setLoading(false);
         }
     };
+
 
     const loadMoreMovies = async () => {
         if (isLoadingMore || currentPage >= totalPages) return;
@@ -94,20 +137,28 @@ function Home({isSearching}: {isSearching: boolean}) // entire UI for the homepa
         }
     };
         
-    // for dynamic rendering, a unique key is needed
     return (
         <div className={styles.home}>
-            <form onSubmit={handleSearch} className={styles.searchForm}>
-                <input 
-                    className={styles.searchInput} 
-                    type="text" 
-                    placeholder="Seach for movies"
-                    value={searchQuery}
-                    onChange={e=>setSearchQuery(e.target.value)}
-                />
-                <button className={styles.searchBtn} type="submit">Search</button>
-            </form>
-
+            <div ref={searchFormRef} style={{position: 'relative'}}>
+                <form onSubmit={handleSearch} className={styles.searchForm}>
+                    <input 
+                        className={styles.searchInput} 
+                        type="text" 
+                        placeholder="Search for movies"
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        onFocus={() => searchQuery.trim().length > 0 && setShowSuggestions(true)}
+                    />
+                    <button className={styles.searchBtn} type="submit">Search</button>
+                </form>
+                
+                {showSuggestions && suggestions.length > 0 && (
+                    <SearchSuggestion 
+                        movies={suggestions} 
+                        onSuggestionClick={handleSuggestionClick}
+                    />
+                )}
+            </div>
             {error && <div className="errmsg">{error}</div>}
 
             {loading ? <div className="loading">Loading...</div> : 

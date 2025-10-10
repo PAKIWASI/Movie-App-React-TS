@@ -1,0 +1,46 @@
+.SuggestionBox {
+  position: absolute;
+  top: 7rem;
+  left: 0;
+  right: 0;
+  background: rgba(18, 18, 35, 0.98);
+  border-radius: 12px;
+  border: 2px solid rgba(0, 255, 136, 0.5);
+  backdrop-filter: blur(25px);
+  box-shadow: 0 15px 50px rgba(0, 255, 136, 0.25);
+  z-index: 1000;
+  max-height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  margin-top: 0.25rem;
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.SuggestionBox::-webkit-scrollbar {
+  display: none;
+}
+
+/* Remove all scrollbar styling */
+.SuggestionBox {
+  scrollbar-width: none;
+}
+
+/* Enhanced hover effects for the entire box */
+.SuggestionBox:hover {
+  border-color: rgba(0, 255, 136, 0.7);
+  box-shadow: 0 20px 60px rgba(0, 255, 136, 0.35);
+}
+
+@media (max-width: 768px) {
+  .SuggestionBox {
+    padding: 1.25rem;
+    max-height: 450px;
+    margin-top: 0.25rem;
+    border-width: 2px;
+  }
+}

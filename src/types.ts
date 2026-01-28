@@ -63,3 +63,14 @@ export interface CrewMember {
     department: string;
     profile_path: string | null;
 }
+
+export interface MovieCredits {
+    cast: CastMember[];
+    crew: CrewMember[];
+}
+
+export interface CompleteMovieDetail {
+    movieDetail: MovieDetails | null;
+    movieCredits: MovieCredits | null;
+}
+

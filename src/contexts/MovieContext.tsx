@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { TMDBmovie, MovieContextType } from "../types";
 
-// state manager for fav movies
 
+// state manager for fav movies
 
 const MovieContext = createContext<MovieContextType | undefined>(undefined);
 
@@ -14,10 +14,11 @@ export const useMovieContext = () => {
     }
     return context; // This returns MovieContextType, not MovieContextType | undefined
 };
+
 // all children will have access to the state that is provided in this function
 export const MovieProvider = ({children}: {children: React.ReactNode}) => 
 {
-// Initialize with a function to avoid localStorage being called on every render
+    // Initialize with a function to avoid localStorage being called on every render
     const [fav, setFav] = useState<TMDBmovie[]>(() => {
         try {
             const storedFavs = localStorage.getItem("fav");
@@ -36,6 +37,8 @@ export const MovieProvider = ({children}: {children: React.ReactNode}) =>
             console.error("Failed to save favorites to localStorage:", error);
         }
     }, [fav]);
+
+
 
     const [save, setSave] = useState<TMDBmovie[]>(() => {
         try {
@@ -56,6 +59,8 @@ export const MovieProvider = ({children}: {children: React.ReactNode}) =>
             console.error("failed to save watchlist to local storage", error);
         }
     }, [save]);
+
+
 
     const addFav = (movie:TMDBmovie) => {
         setFav(f => [...f, movie]);

@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMovieContext } from "../contexts/MovieContext";
-import { API_KEY, BASE_URL } from "../services/api.ts";
-import type { MovieDetails, CastMember, CrewMember } from "../types";
+import type { MovieCredits, MovieDetails } from "../types";
 import styles from "./MovieDetail.module.css";
+import { getMovieDetail } from "../services/api";
 
-interface MovieCredits {
-    cast: CastMember[];
-    crew: CrewMember[];
-}
 
 const MovieDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -21,33 +17,19 @@ const MovieDetail = () => {
 
     useEffect(() => {
         const fetchMovieData = async () => {
-            if (!id || !API_KEY) return;
-            
+            if (!id) return;
+
             try {
                 setLoading(true);
-                
-                // Fetch movie details
-                const movieResponse = await fetch(
-                    `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US`
-                );
-                
-                if (!movieResponse.ok) {
-                    throw new Error('Movie not found');
+
+                const compMovieDetail = await getMovieDetail(id);
+                if (compMovieDetail.movieDetail != null) {
+                    setMovie(compMovieDetail.movieDetail);
                 }
-                
-                const movieData = await movieResponse.json();
-                setMovie(movieData);
-                
-                // Fetch credits
-                const creditsResponse = await fetch(
-                    `${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`
-                );
-                
-                if (creditsResponse.ok) {
-                    const creditsData = await creditsResponse.json();
-                    setCredits(creditsData);
+                if (compMovieDetail.movieCredits) {
+                    setCredits(compMovieDetail.movieCredits)
                 }
-                
+
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to fetch movie details');
             } finally {
@@ -60,7 +42,7 @@ const MovieDetail = () => {
 
     const handleFavoriteClick = () => {
         if (!movie) return;
-        
+
         if (isFav(movie.id)) {
             removeFav(movie.id);
         } else {
@@ -70,7 +52,7 @@ const MovieDetail = () => {
 
     const handleWatchlistClick = () => {
         if (!movie) return;
-        
+
         if (isSave(movie.id)) {
             removeSave(movie.id);
         } else {
@@ -133,27 +115,27 @@ const MovieDetail = () => {
     return (
         <div className={styles.movieDetails}>
             {/* Hero Section - unchanged */}
-            <div 
+            <div
                 className={styles.hero}
                 style={{
-                    backgroundImage: movie.backdrop_path 
+                    backgroundImage: movie.backdrop_path
                         ? `url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`
                         : 'none'
                 }}
             >
                 <div className={styles.heroOverlay}>
-                    <button 
-                        onClick={() => navigate(-1)} 
+                    <button
+                        onClick={() => navigate(-1)}
                         className={styles.backButton}
                         aria-label="Go back"
                     >
                         ← Back
                     </button>
-                    
+
                     <div className={styles.heroContent}>
                         <div className={styles.posterContainer}>
-                            <img 
-                                src={movie.poster_path 
+                            <img
+                                src={movie.poster_path
                                     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
                                     : '/placeholder-movie.png'
                                 }
@@ -161,13 +143,13 @@ const MovieDetail = () => {
                                 className={styles.poster}
                             />
                         </div>
-                        
+
                         <div className={styles.movieInfo}>
                             <h1 className={styles.title}>{movie.title}</h1>
                             {movie.tagline && (
                                 <p className={styles.tagline}>"{movie.tagline}"</p>
                             )}
-                            
+
                             <div className={styles.metadata}>
                                 <span className={styles.year}>
                                     {movie.release_date?.split('-')[0]}
@@ -179,7 +161,7 @@ const MovieDetail = () => {
                                     ⭐ {movie.vote_average?.toFixed(1)}/10
                                 </span>
                             </div>
-                            
+
                             {movie.genres && movie.genres.length > 0 && (
                                 <div className={styles.genres}>
                                     {movie.genres.map(genre => (
@@ -189,18 +171,18 @@ const MovieDetail = () => {
                                     ))}
                                 </div>
                             )}
-                            
+
                             <p className={styles.overview}>{movie.overview}</p>
-                           
+
                             <div className={styles.buttonContainer}>
-                                <button 
+                                <button
                                     onClick={handleFavoriteClick}
                                     className={`${styles.favButton} ${favorite ? styles.favorited : ''}`}
                                     aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
                                 >
                                     {favorite ? "❤️ Remove from Favorites" : "🤍 Add to Favorites"}
                                 </button>
-                                <button 
+                                <button
                                     onClick={handleWatchlistClick}
                                     className={`${styles.favButton} ${saved ? styles.saved : ''}`}
                                     aria-label={saved ? "Remove from watchlist" : "Add to watchlist"}
@@ -212,7 +194,7 @@ const MovieDetail = () => {
                     </div>
                 </div>
             </div>
-            
+
             {/* Updated Details Section with Cast & Crew */}
             <div className={styles.detailsSection}>
                 <div className={styles.detailsGrid}>
@@ -239,7 +221,7 @@ const MovieDetail = () => {
                             <span>{formatMoney(movie.revenue)}</span>
                         </div>
                     </div>
-                    
+
                     {/* Cast Section */}
                     {topCast.length > 0 && (
                         <div className={styles.detailCard}>
@@ -247,8 +229,8 @@ const MovieDetail = () => {
                             <div className={styles.castGrid}>
                                 {topCast.map(actor => (
                                     <div key={actor.id} className={styles.castMember}>
-                                        <img 
-                                            src={actor.profile_path 
+                                        <img
+                                            src={actor.profile_path
                                                 ? `https://image.tmdb.org/t/p/w200${actor.profile_path}`
                                                 : '/placeholder-actor.png'
                                             }
@@ -269,5 +251,4 @@ const MovieDetail = () => {
         </div>
     );
 };
-
 export default MovieDetail;

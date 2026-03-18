@@ -3,7 +3,7 @@ import type { CompleteMovieDetail, MovieCredits, MovieDetails, TMDBresponse } fr
 
 
 
-export const API_KEY = import.meta.env.VITE_TMDB_API_KEY;;
+export const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 export const BASE_URL = "https://api.themoviedb.org/3"; //base endpoint of api (where we send request)
 
 

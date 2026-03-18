@@ -1,0 +1,1665 @@
+[
+  {
+    "adult": false,
+    "backdrop_path": "/6yeVcxFR0j08vlv2OlL6zbewm4D.jpg",
+    "belongs_to_collection": null,
+    "budget": 0,
+    "genres": [
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 878,
+        "name": "Science Fiction"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      }
+    ],
+    "homepage": "https://www.netflix.com/title/81768525",
+    "id": 1265609,
+    "imdb_id": "tt15940132",
+    "origin_country": [
+      "AU"
+    ],
+    "original_language": "en",
+    "original_title": "War Machine",
+    "overview": "On one last grueling mission during Army Ranger training, a combat engineer must lead his unit in a fight against a giant otherworldly killing machine.",
+    "popularity": 420.4551,
+    "poster_path": "/tlPgDzwIE7VYYIIAGCTUOnN4wI1.jpg",
+    "production_companies": [
+      {
+        "id": 1632,
+        "logo_path": "/cisLn1YAUuptXVBa0xjq7ST9cH0.png",
+        "name": "Lionsgate",
+        "origin_country": "US"
+      },
+      {
+        "id": 198785,
+        "logo_path": "/oBnMrmwnlAKcACe5h7Vwmk8m1CC.png",
+        "name": "Hidden Pictures",
+        "origin_country": "US"
+      },
+      {
+        "id": 224643,
+        "logo_path": null,
+        "name": "Huge Film",
+        "origin_country": "AU"
+      },
+      {
+        "id": 167684,
+        "logo_path": "/kzQwU2H6woBFti9cqjr9BrVXrst.png",
+        "name": "Range Media Partners",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "AU",
+        "name": "Australia"
+      },
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-02-12",
+    "revenue": 0,
+    "runtime": 110,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "All grit. No quit.",
+    "title": "War Machine",
+    "video": false,
+    "vote_average": 7.2,
+    "vote_count": 910
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/u6YE4rlEWOiYoqhPJuNvt5GHxgu.jpg",
+    "belongs_to_collection": null,
+    "budget": 50000000,
+    "genres": [
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 80,
+        "name": "Crime"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      }
+    ],
+    "homepage": "https://blackbearpictures.com/film-and-tv/shelter",
+    "id": 1290821,
+    "imdb_id": "tt32357218",
+    "origin_country": [
+      "GB",
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Shelter",
+    "overview": "A man living in self-imposed exile on a remote island rescues a young girl from a violent storm, setting off a chain of events that forces him out of seclusion to protect her from enemies tied to his past.",
+    "popularity": 293.8073,
+    "poster_path": "/buPFnHZ3xQy6vZEHxbHgL1Pc6CR.jpg",
+    "production_companies": [
+      {
+        "id": 22146,
+        "logo_path": "/v37N1mFeXNQfvPankg3feBhVvM7.png",
+        "name": "Black Bear Pictures",
+        "origin_country": "US"
+      },
+      {
+        "id": 218150,
+        "logo_path": null,
+        "name": "Punch Palace Productions",
+        "origin_country": "GB"
+      },
+      {
+        "id": 253186,
+        "logo_path": null,
+        "name": "CineMachine",
+        "origin_country": "US"
+      },
+      {
+        "id": 118472,
+        "logo_path": "/vafYjvjZwK4JaV5Hcm9vSzw6f9G.png",
+        "name": "Stampede Ventures",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      },
+      {
+        "iso_3166_1": "GB",
+        "name": "United Kingdom"
+      }
+    ],
+    "release_date": "2026-01-28",
+    "revenue": 42079609,
+    "runtime": 108,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Her safety. His mission.",
+    "title": "Shelter",
+    "video": false,
+    "vote_average": 6.602,
+    "vote_count": 314
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/zpEWFNqoN8Qg1SzMMHmaGyOBTdW.jpg",
+    "belongs_to_collection": null,
+    "budget": 175000000,
+    "genres": [
+      {
+        "id": 53,
+        "name": "Thriller"
+      },
+      {
+        "id": 80,
+        "name": "Crime"
+      },
+      {
+        "id": 35,
+        "name": "Comedy"
+      }
+    ],
+    "homepage": "https://www.onebattleafteranothermovie.com",
+    "id": 1054867,
+    "imdb_id": "tt30144839",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "One Battle After Another",
+    "overview": "Washed-up revolutionary Bob exists in a state of stoned paranoia, surviving off-grid with his spirited, self-reliant daughter, Willa. When his evil nemesis resurfaces after 16 years and she goes missing, the former radical scrambles to find her, father and daughter both battling the consequences of his past.",
+    "popularity": 161.5299,
+    "poster_path": "/lbBWwxBht4JFP5PsuJ5onpMqugW.jpg",
+    "production_companies": [
+      {
+        "id": 174,
+        "logo_path": "/zhD3hhtKB5qyv7ZeL4uLpNxgMVU.png",
+        "name": "Warner Bros. Pictures",
+        "origin_country": "US"
+      },
+      {
+        "id": 178,
+        "logo_path": null,
+        "name": "Ghoulardi Film Company",
+        "origin_country": "US"
+      },
+      {
+        "id": 216687,
+        "logo_path": "/kKVYqekveOvLK1IgqdJojLjQvtu.png",
+        "name": "Domain Entertainment",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2025-09-23",
+    "revenue": 209377100,
+    "runtime": 162,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      },
+      {
+        "english_name": "French",
+        "iso_639_1": "fr",
+        "name": "Français"
+      },
+      {
+        "english_name": "Spanish",
+        "iso_639_1": "es",
+        "name": "Español"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Some search for battle, others are born into it...",
+    "title": "One Battle After Another",
+    "video": false,
+    "vote_average": 7.399,
+    "vote_count": 3143
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/hYgUkH7TusddHRtelj53I6gFOWR.jpg",
+    "belongs_to_collection": null,
+    "budget": 0,
+    "genres": [
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      }
+    ],
+    "homepage": "https://www.amazon.com/gp/video/detail/B0G569YVZW",
+    "id": 799882,
+    "imdb_id": "tt14181714",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "The Bluff",
+    "overview": "When her tranquil life on a remote island is shattered by the return of her vengeful former captain, a skilled ex-pirate must confront her bloody past and unleash her deadly talents to save her family from a ruthless siege.",
+    "popularity": 179.6941,
+    "poster_path": "/w0jwjFmRu2or7LQqh1tSMFjq0At.jpg",
+    "production_companies": [
+      {
+        "id": 106544,
+        "logo_path": "/psd84iF7PTGrKf4yFOStKj8JbAh.png",
+        "name": "AGBO",
+        "origin_country": "US"
+      },
+      {
+        "id": 168062,
+        "logo_path": null,
+        "name": "Cinestar Pictures",
+        "origin_country": "US"
+      },
+      {
+        "id": 6831,
+        "logo_path": "/fWSI4EjIDEEzCNJC8OTPX9Pdbxv.png",
+        "name": "Big Indie Pictures",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-02-17",
+    "revenue": 0,
+    "runtime": 102,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Betrayal cuts deep.",
+    "title": "The Bluff",
+    "video": false,
+    "vote_average": 6.311,
+    "vote_count": 275
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/1x9e0qWonw634NhIsRdvnneeqvN.jpg",
+    "belongs_to_collection": null,
+    "budget": 0,
+    "genres": [
+      {
+        "id": 10749,
+        "name": "Romance"
+      },
+      {
+        "id": 18,
+        "name": "Drama"
+      }
+    ],
+    "homepage": "",
+    "id": 1523145,
+    "imdb_id": "tt38190257",
+    "origin_country": [
+      "RU"
+    ],
+    "original_language": "ru",
+    "original_title": "Твое сердце будет разбито",
+    "overview": "High school student Polina is saved from bullying at her new school and makes a deal with the main bully Bars: he must pretend to be her boyfriend and protect her, and she must do everything he says. During this game, the couple develops real feelings, but her family and classmates have reasons to separate the lovers.",
+    "popularity": 192.9655,
+    "poster_path": "/iGpMm603GUKH2SiXB2S5m4sZ17t.jpg",
+    "production_companies": [
+      {
+        "id": 71928,
+        "logo_path": "/7M6z2jX570P3HzNQULCTjlZcXkB.png",
+        "name": "All Media A Start Company",
+        "origin_country": "RU"
+      },
+      {
+        "id": 114676,
+        "logo_path": "/aVsos0RDN9Ib7H8nW5Vv5kHKykz.png",
+        "name": "START Studio",
+        "origin_country": "RU"
+      },
+      {
+        "id": 13850,
+        "logo_path": "/6KsdcnTIpQ47NHad4EtxOCkB94K.png",
+        "name": "Sverdlovsk Film Studio",
+        "origin_country": "RU"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "RU",
+        "name": "Russia"
+      }
+    ],
+    "release_date": "2026-03-26",
+    "revenue": 0,
+    "runtime": 0,
+    "spoken_languages": [
+      {
+        "english_name": "Russian",
+        "iso_639_1": "ru",
+        "name": "Pусский"
+      }
+    ],
+    "status": "Post Production",
+    "tagline": "",
+    "title": "Your Heart Will Be Broken",
+    "video": false,
+    "vote_average": 0.0,
+    "vote_count": 0
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/lgotja3xMoJZbynwHfcQcJAEMWH.jpg",
+    "belongs_to_collection": {
+      "id": 1084247,
+      "name": "Zootopia Collection",
+      "poster_path": "/9Cm0kU0TAcJ6MoWYKWOl2LzN70I.jpg",
+      "backdrop_path": "/1WDssJDYInLA4Avg45lgy3WM6Ly.jpg"
+    },
+    "budget": 150000000,
+    "genres": [
+      {
+        "id": 16,
+        "name": "Animation"
+      },
+      {
+        "id": 35,
+        "name": "Comedy"
+      },
+      {
+        "id": 12,
+        "name": "Adventure"
+      },
+      {
+        "id": 10751,
+        "name": "Family"
+      },
+      {
+        "id": 9648,
+        "name": "Mystery"
+      }
+    ],
+    "homepage": "https://movies.disney.com/zootopia-2",
+    "id": 1084242,
+    "imdb_id": "tt26443597",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Zootopia 2",
+    "overview": "After cracking the biggest case in Zootopia's history, rookie cops Judy Hopps and Nick Wilde find themselves on the twisting trail of a great mystery when Gary De'Snake arrives and turns the animal metropolis upside down. To crack the case, Judy and Nick must go undercover to unexpected new parts of town, where their growing partnership is tested like never before.",
+    "popularity": 167.8774,
+    "poster_path": "/oJ7g2CifqpStmoYQyaLQgEU32qO.jpg",
+    "production_companies": [
+      {
+        "id": 6125,
+        "logo_path": "/8bH86UPmMP8hlITzXV3XgV9eaAc.png",
+        "name": "Walt Disney Animation Studios",
+        "origin_country": "US"
+      },
+      {
+        "id": 158526,
+        "logo_path": "/tzsMJBJZINu7GHzrpYzpReWhh66.png",
+        "name": "Walt Disney Animation Studios",
+        "origin_country": "CA"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      },
+      {
+        "iso_3166_1": "CA",
+        "name": "Canada"
+      }
+    ],
+    "release_date": "2025-11-26",
+    "revenue": 1861044662,
+    "runtime": 108,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "They're back with a twissst.",
+    "title": "Zootopia 2",
+    "video": false,
+    "vote_average": 7.603,
+    "vote_count": 2203
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg",
+    "belongs_to_collection": null,
+    "budget": 200000000,
+    "genres": [
+      {
+        "id": 878,
+        "name": "Science Fiction"
+      },
+      {
+        "id": 12,
+        "name": "Adventure"
+      },
+      {
+        "id": 9648,
+        "name": "Mystery"
+      }
+    ],
+    "homepage": "https://www.amazon.com/salp/projecthailmary?hhf",
+    "id": 687163,
+    "imdb_id": "tt12042730",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Project Hail Mary",
+    "overview": "Science teacher Ryland Grace wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction… but an unexpected friendship means he may not have to do it alone.",
+    "popularity": 152.0097,
+    "poster_path": "/cCx1m530ph5FmtabVVUpUchEmhe.jpg",
+    "production_companies": [
+      {
+        "id": 77973,
+        "logo_path": "/eUZ0kfE4uyO0JYIrjgUSOqWPqjK.png",
+        "name": "Lord Miller",
+        "origin_country": "US"
+      },
+      {
+        "id": 210099,
+        "logo_path": "/g5oRCNCi8kNVb8gEoSoIcqkhjmR.png",
+        "name": "Amazon MGM Studios",
+        "origin_country": "US"
+      },
+      {
+        "id": 84041,
+        "logo_path": "/nw4kyc29QRpNtFbdsBHkRSFavvt.png",
+        "name": "Pascal Pictures",
+        "origin_country": "US"
+      },
+      {
+        "id": 232193,
+        "logo_path": null,
+        "name": "Open Invite Entertainment",
+        "origin_country": "US"
+      },
+      {
+        "id": 22842,
+        "logo_path": "/buyfiDYTfPVTHxvYZ4yHu69zFPs.png",
+        "name": "Waypoint Entertainment",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-03-15",
+    "revenue": 0,
+    "runtime": 157,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      },
+      {
+        "english_name": "Mandarin",
+        "iso_639_1": "zh",
+        "name": "普通话"
+      },
+      {
+        "english_name": "Russian",
+        "iso_639_1": "ru",
+        "name": "Pусский"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Believe in the Hail Mary.",
+    "title": "Project Hail Mary",
+    "video": false,
+    "vote_average": 8.4,
+    "vote_count": 57
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/2RrLuIfIzGWWIH8IAEo6o0IYHmx.jpg",
+    "belongs_to_collection": null,
+    "budget": 150000000,
+    "genres": [
+      {
+        "id": 16,
+        "name": "Animation"
+      },
+      {
+        "id": 10751,
+        "name": "Family"
+      },
+      {
+        "id": 878,
+        "name": "Science Fiction"
+      },
+      {
+        "id": 35,
+        "name": "Comedy"
+      }
+    ],
+    "homepage": "https://www.pixar.com/hoppers",
+    "id": 1327819,
+    "imdb_id": "tt26443616",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Hoppers",
+    "overview": "Scientists have discovered how to 'hop' human consciousness into lifelike robotic animals, allowing people to communicate with animals as animals. Animal lover Mabel seizes an opportunity to use the technology, uncovering mysteries within the animal world beyond anything she could have imagined.",
+    "popularity": 139.6683,
+    "poster_path": "/xjtWQ2CL1mpmMNwuU5HeS4Iuwuu.jpg",
+    "production_companies": [
+      {
+        "id": 3,
+        "logo_path": "/1TjvGVDMYsj6JBxOAkUHpPEwLf7.png",
+        "name": "Pixar",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-03-04",
+    "revenue": 164700900,
+    "runtime": 105,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      },
+      {
+        "english_name": "Spanish",
+        "iso_639_1": "es",
+        "name": "Español"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Act natural.",
+    "title": "Hoppers",
+    "video": false,
+    "vote_average": 7.721,
+    "vote_count": 204
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/u9jE0R1nvkmdWu3bt7Op8joPywa.jpg",
+    "belongs_to_collection": {
+      "id": 840465,
+      "name": "Greenland Collection",
+      "poster_path": "/3Hj9iNJOMBUz4foX9D82wzY39sa.jpg",
+      "backdrop_path": "/mW6OyjfXMwXmZj139h4szPcmDyc.jpg"
+    },
+    "budget": 90000000,
+    "genres": [
+      {
+        "id": 12,
+        "name": "Adventure"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      },
+      {
+        "id": 878,
+        "name": "Science Fiction"
+      }
+    ],
+    "homepage": "https://www.greenland2.movie",
+    "id": 840464,
+    "imdb_id": "tt14850054",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Greenland 2: Migration",
+    "overview": "Having found the safety of the Greenland bunker after the comet Clarke decimated the Earth, the Garrity family must now risk everything to embark on a perilous journey across the wasteland of Europe to find a new home.",
+    "popularity": 133.9738,
+    "poster_path": "/z2tqCJLsw6uEJ8nJV8BsQXGa3dr.jpg",
+    "production_companies": [
+      {
+        "id": 1632,
+        "logo_path": "/cisLn1YAUuptXVBa0xjq7ST9cH0.png",
+        "name": "Lionsgate",
+        "origin_country": "US"
+      },
+      {
+        "id": 47729,
+        "logo_path": "/bAxh897TGgdR0Py6wdd0UuE147Z.png",
+        "name": "STXfilms",
+        "origin_country": "US"
+      },
+      {
+        "id": 138743,
+        "logo_path": "/abFJGmtPFs6Bq5cBavmrnXDcpf8.png",
+        "name": "Anton",
+        "origin_country": "GB"
+      },
+      {
+        "id": 3528,
+        "logo_path": "/cCzCClIzIh81Fa79hpW5nXoUsHK.png",
+        "name": "Thunder Road",
+        "origin_country": "US"
+      },
+      {
+        "id": 103331,
+        "logo_path": "/nxkmGpo1Ym74DkBzNtoMz5cl6DJ.png",
+        "name": "G-BASE",
+        "origin_country": "US"
+      },
+      {
+        "id": 253186,
+        "logo_path": null,
+        "name": "CineMachine",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "GB",
+        "name": "United Kingdom"
+      },
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-01-07",
+    "revenue": 115057195,
+    "runtime": 98,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      },
+      {
+        "english_name": "French",
+        "iso_639_1": "fr",
+        "name": "Français"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Hope is uncharted territory.",
+    "title": "Greenland 2: Migration",
+    "video": false,
+    "vote_average": 6.414,
+    "vote_count": 619
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/nAxGnGHOsfzufThz20zgmRwKur3.jpg",
+    "belongs_to_collection": null,
+    "budget": 90000000,
+    "genres": [
+      {
+        "id": 27,
+        "name": "Horror"
+      },
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      }
+    ],
+    "homepage": "https://www.sinnersmovie.com",
+    "id": 1233413,
+    "imdb_id": "tt31193180",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Sinners",
+    "overview": "Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.",
+    "popularity": 118.9237,
+    "poster_path": "/705nQHqe4JGdEisrQmVYmXyjs1U.jpg",
+    "production_companies": [
+      {
+        "id": 174,
+        "logo_path": "/zhD3hhtKB5qyv7ZeL4uLpNxgMVU.png",
+        "name": "Warner Bros. Pictures",
+        "origin_country": "US"
+      },
+      {
+        "id": 148495,
+        "logo_path": "/2fQRDickgp9vuDIxJTlDLEs7j0y.png",
+        "name": "Proximity Media",
+        "origin_country": "US"
+      },
+      {
+        "id": 216687,
+        "logo_path": "/kKVYqekveOvLK1IgqdJojLjQvtu.png",
+        "name": "Domain Entertainment",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2025-04-16",
+    "revenue": 369425281,
+    "runtime": 138,
+    "spoken_languages": [
+      {
+        "english_name": "Mandarin",
+        "iso_639_1": "zh",
+        "name": "普通话"
+      },
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      },
+      {
+        "english_name": "Yoruba",
+        "iso_639_1": "yo",
+        "name": "Èdè Yorùbá"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Dance with the devil.",
+    "title": "Sinners",
+    "video": false,
+    "vote_average": 7.474,
+    "vote_count": 4035
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/7HKpc11uQfxnw0Y8tRUYn1fsKqE.jpg",
+    "belongs_to_collection": null,
+    "budget": 60000000,
+    "genres": [
+      {
+        "id": 878,
+        "name": "Science Fiction"
+      },
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      }
+    ],
+    "homepage": "https://www.amazon.com/salp/mercy?hhf=",
+    "id": 1236153,
+    "imdb_id": "tt31050594",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Mercy",
+    "overview": "In the near future, a detective stands on trial accused of murdering his wife. He has ninety minutes to prove his innocence to the advanced AI Judge he once championed, before it determines his fate.",
+    "popularity": 124.256,
+    "poster_path": "/pyok1kZJCfyuFapYXzHcy7BLlQa.jpg",
+    "production_companies": [
+      {
+        "id": 507,
+        "logo_path": "/aRmHe6GWxYMRCQljF75rn2B9Gv8.png",
+        "name": "Atlas Entertainment",
+        "origin_country": "US"
+      },
+      {
+        "id": 210099,
+        "logo_path": "/g5oRCNCi8kNVb8gEoSoIcqkhjmR.png",
+        "name": "Amazon MGM Studios",
+        "origin_country": "US"
+      },
+      {
+        "id": 109501,
+        "logo_path": "/4dtmZKPLHzIALpGbdeSNX6Rw1p3.png",
+        "name": "Bazelevs",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-01-20",
+    "revenue": 54310041,
+    "runtime": 99,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      },
+      {
+        "english_name": "Hindi",
+        "iso_639_1": "hi",
+        "name": "हिन्दी"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Prove your innocence to an AI judge or face execution.",
+    "title": "Mercy",
+    "video": false,
+    "vote_average": 7.085,
+    "vote_count": 743
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/1gLFGrxHqQebqLWpISmoFR6XWtJ.jpg",
+    "belongs_to_collection": null,
+    "budget": 0,
+    "genres": [
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      }
+    ],
+    "homepage": "",
+    "id": 1088434,
+    "imdb_id": "tt14507394",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Hellfire",
+    "overview": "A drifter with a mysterious past arrives in a small town and finds the residents in the grip of a ruthless crime boss and realizes he has to help them.",
+    "popularity": 111.5689,
+    "poster_path": "/tQti9QTf13MfzNpXguijgNh7ojE.jpg",
+    "production_companies": [
+      {
+        "id": 212611,
+        "logo_path": null,
+        "name": "Price Productions II",
+        "origin_country": ""
+      },
+      {
+        "id": 26945,
+        "logo_path": "/yayIJ0cGukGpEEioNFh82ZAX2Zq.png",
+        "name": "Skipstone Pictures",
+        "origin_country": "US"
+      },
+      {
+        "id": 35613,
+        "logo_path": null,
+        "name": "Millman Productions",
+        "origin_country": "US"
+      },
+      {
+        "id": 114757,
+        "logo_path": null,
+        "name": "Ron Lee Productions",
+        "origin_country": ""
+      },
+      {
+        "id": 76992,
+        "logo_path": "/mw3j3P8SUQJKLSJQrLKuSDO9Xr6.png",
+        "name": "Saban Films",
+        "origin_country": "US"
+      },
+      {
+        "id": 204545,
+        "logo_path": "/8gEpSR6Bzkjp9PBYGIjYpT1FiqK.png",
+        "name": "Umbrelic Entertainment",
+        "origin_country": "US"
+      },
+      {
+        "id": 240783,
+        "logo_path": null,
+        "name": "Edge Code Films",
+        "origin_country": ""
+      },
+      {
+        "id": 55669,
+        "logo_path": null,
+        "name": "Focus-Fox Studio",
+        "origin_country": "HU"
+      },
+      {
+        "id": 91573,
+        "logo_path": null,
+        "name": "Satyricon Pictures",
+        "origin_country": ""
+      },
+      {
+        "id": 240784,
+        "logo_path": null,
+        "name": "Vibrant Pictures",
+        "origin_country": ""
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-02-05",
+    "revenue": 0,
+    "runtime": 94,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "To free the town he'll start a war.",
+    "title": "Hellfire",
+    "video": false,
+    "vote_average": 6.904,
+    "vote_count": 57
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/cz4vLJrmaV1zJlRYbxqtvLzeLWB.jpg",
+    "belongs_to_collection": null,
+    "budget": 78500000,
+    "genres": [
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 35,
+        "name": "Comedy"
+      },
+      {
+        "id": 80,
+        "name": "Crime"
+      },
+      {
+        "id": 9648,
+        "name": "Mystery"
+      }
+    ],
+    "homepage": "https://www.amazon.com/gp/video/detail/B0DPWXRTZ4",
+    "id": 1168190,
+    "imdb_id": "tt33046197",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "The Wrecking Crew",
+    "overview": "Estranged half-brothers Jonny and James reunite after their father's mysterious death. As they search for the truth, buried secrets reveal a conspiracy threatening to tear their family apart.",
+    "popularity": 105.9643,
+    "poster_path": "/gbVwHl4YPSq6BcC92TQpe7qUTh6.jpg",
+    "production_companies": [
+      {
+        "id": 210099,
+        "logo_path": "/g5oRCNCi8kNVb8gEoSoIcqkhjmR.png",
+        "name": "Amazon MGM Studios",
+        "origin_country": "US"
+      },
+      {
+        "id": 159602,
+        "logo_path": "/e3KodIPxOSC6xpzgIBISB4COQcu.png",
+        "name": "On the Roam",
+        "origin_country": "US"
+      },
+      {
+        "id": 183234,
+        "logo_path": null,
+        "name": "Dogbone Entertainment",
+        "origin_country": "US"
+      },
+      {
+        "id": 287578,
+        "logo_path": null,
+        "name": "Henness Ridge Entertainment",
+        "origin_country": "US"
+      },
+      {
+        "id": 101405,
+        "logo_path": "/iusVPF9AJD1DiHEWbZEXgn1hpOf.png",
+        "name": "6th & Idaho Motion Picture Company",
+        "origin_country": "US"
+      },
+      {
+        "id": 129569,
+        "logo_path": "/zlo84hFlm7dYC9Fn9jHOP8HTNhx.png",
+        "name": "Reunion Pacific Entertainment",
+        "origin_country": "CA"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      },
+      {
+        "iso_3166_1": "CA",
+        "name": "Canada"
+      }
+    ],
+    "release_date": "2026-01-28",
+    "revenue": 89000000,
+    "runtime": 125,
+    "spoken_languages": [
+      {
+        "english_name": "Mandarin",
+        "iso_639_1": "zh",
+        "name": "普通话"
+      },
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      },
+      {
+        "english_name": "French",
+        "iso_639_1": "fr",
+        "name": "Français"
+      },
+      {
+        "english_name": "Japanese",
+        "iso_639_1": "ja",
+        "name": "日本語"
+      },
+      {
+        "english_name": "Portuguese",
+        "iso_639_1": "pt",
+        "name": "Português"
+      },
+      {
+        "english_name": "Spanish",
+        "iso_639_1": "es",
+        "name": "Español"
+      }
+    ],
+    "status": "Released",
+    "tagline": "They fight like brothers. They wreck like legends.",
+    "title": "The Wrecking Crew",
+    "video": false,
+    "vote_average": 6.878,
+    "vote_count": 788
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/yJi6g0CnsqANLNuVaRX28tZxeHX.jpg",
+    "belongs_to_collection": null,
+    "budget": 2000000,
+    "genres": [
+      {
+        "id": 27,
+        "name": "Horror"
+      },
+      {
+        "id": 9648,
+        "name": "Mystery"
+      }
+    ],
+    "homepage": "https://www.whistle.movie/",
+    "id": 1193501,
+    "imdb_id": "tt29550683",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Whistle",
+    "overview": "A misfit group of unwitting high school students stumble upon a cursed object, an ancient Aztec Death Whistle. They discover that blowing the whistle and the terrifying sound it emits will summon their future deaths to hunt them down.",
+    "popularity": 99.534,
+    "poster_path": "/ieOiiCBbf0SNwR39iiA2xnGOnab.jpg",
+    "production_companies": [
+      {
+        "id": 35846,
+        "logo_path": "/tOJlsgZNRdMurnJgSiuRFIUz0te.png",
+        "name": "No Trace Camping",
+        "origin_country": "US"
+      },
+      {
+        "id": 129815,
+        "logo_path": "/qbCmnVTQEuFqrVkbxn3i9P7Jrcw.png",
+        "name": "Wild Atlantic Pictures",
+        "origin_country": "IE"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "IE",
+        "name": "Ireland"
+      },
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-01-20",
+    "revenue": 2568027,
+    "runtime": 100,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Don't blow it.",
+    "title": "Whistle",
+    "video": false,
+    "vote_average": 6.111,
+    "vote_count": 153
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/sdZSjtGUTSN8B3al5o0f2WoQfQQ.jpg",
+    "belongs_to_collection": {
+      "id": 87096,
+      "name": "Avatar Collection",
+      "poster_path": "/3C5brXxnBxfkeKWwA1Fh4xvy4wr.jpg",
+      "backdrop_path": "/6qkJLRCZp9Y3ovXti5tSuhH0DpO.jpg"
+    },
+    "budget": 350000000,
+    "genres": [
+      {
+        "id": 878,
+        "name": "Science Fiction"
+      },
+      {
+        "id": 12,
+        "name": "Adventure"
+      },
+      {
+        "id": 14,
+        "name": "Fantasy"
+      }
+    ],
+    "homepage": "https://www.avatar.com/movies/avatar-fire-and-ash",
+    "id": 83533,
+    "imdb_id": "tt1757678",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Avatar: Fire and Ash",
+    "overview": "In the wake of the devastating war against the RDA and the loss of their eldest son, Jake Sully and Neytiri face a new threat on Pandora: the Ash People, a violent and power-hungry Na'vi tribe led by the ruthless Varang. Jake's family must fight for their survival and the future of Pandora in a conflict that pushes them to their emotional and physical limits.",
+    "popularity": 93.7636,
+    "poster_path": "/bRBeSHfGHwkEpImlhxPmOcUsaeg.jpg",
+    "production_companies": [
+      {
+        "id": 127928,
+        "logo_path": "/h0rjX5vjW5r8yEnUBStFarjcLT4.png",
+        "name": "20th Century Studios",
+        "origin_country": "US"
+      },
+      {
+        "id": 574,
+        "logo_path": "/8wdmrfGcDx3TJxYiiDksLzAW4pB.png",
+        "name": "Lightstorm Entertainment",
+        "origin_country": "US"
+      },
+      {
+        "id": 22213,
+        "logo_path": "/qx9K6bFWJupwde0xQDwOvXkOaL8.png",
+        "name": "TSG Entertainment",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2025-12-17",
+    "revenue": 1482195377,
+    "runtime": 198,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "The world of Pandora will change forever.",
+    "title": "Avatar: Fire and Ash",
+    "video": false,
+    "vote_average": 7.263,
+    "vote_count": 1895
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/vSQSYd2zZTqc0zmHImwWEGGluMI.jpg",
+    "belongs_to_collection": null,
+    "budget": 80000000,
+    "genres": [
+      {
+        "id": 10749,
+        "name": "Romance"
+      },
+      {
+        "id": 18,
+        "name": "Drama"
+      }
+    ],
+    "homepage": "https://www.wutheringheightsfilm.com",
+    "id": 1316092,
+    "imdb_id": "tt32897959",
+    "origin_country": [
+      "GB",
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "\"Wuthering Heights\"",
+    "overview": "Tragedy strikes when Heathcliff falls in love with Catherine Earnshaw, a woman from a wealthy family in 18th-century England.",
+    "popularity": 108.9217,
+    "poster_path": "/3YBce6dTh1D5oCMITXk2S5QhPt.jpg",
+    "production_companies": [
+      {
+        "id": 2531,
+        "logo_path": "/9MfCJ2G6Nrf9yyRj4tAgPmMiDcn.png",
+        "name": "MRC",
+        "origin_country": "US"
+      },
+      {
+        "id": 82968,
+        "logo_path": "/gRROMOG5bpF6TIDMbfaa5gnFFzl.png",
+        "name": "LuckyChap Entertainment",
+        "origin_country": "US"
+      },
+      {
+        "id": 207685,
+        "logo_path": null,
+        "name": "Lie Still",
+        "origin_country": "GB"
+      },
+      {
+        "id": 174,
+        "logo_path": "/zhD3hhtKB5qyv7ZeL4uLpNxgMVU.png",
+        "name": "Warner Bros. Pictures",
+        "origin_country": "US"
+      },
+      {
+        "id": 216687,
+        "logo_path": "/kKVYqekveOvLK1IgqdJojLjQvtu.png",
+        "name": "Domain Entertainment",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      },
+      {
+        "iso_3166_1": "GB",
+        "name": "United Kingdom"
+      }
+    ],
+    "release_date": "2026-02-11",
+    "revenue": 226400000,
+    "runtime": 136,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Come undone.",
+    "title": "\"Wuthering Heights\"",
+    "video": false,
+    "vote_average": 6.349,
+    "vote_count": 519
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/52AkwEfQiJl2HuTPMZ2yC5Bdr9I.jpg",
+    "belongs_to_collection": null,
+    "budget": 90000000,
+    "genres": [
+      {
+        "id": 80,
+        "name": "Crime"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      }
+    ],
+    "homepage": "https://www.amazon.com/salp/crime101?hhf",
+    "id": 1171145,
+    "imdb_id": "tt32430579",
+    "origin_country": [
+      "GB"
+    ],
+    "original_language": "en",
+    "original_title": "Crime 101",
+    "overview": "When an elusive thief whose high-stakes heists unfold along the iconic 101 freeway in Los Angeles eyes the score of a lifetime, with hopes of this being his final job, his path collides with a disillusioned insurance broker who is facing her own crossroads. Determined to crack the case, a relentless detective closes in on the operation, raising the stakes even higher.",
+    "popularity": 140.535,
+    "poster_path": "/heMdO64ys1hR896YE2jvTv8JlBX.jpg",
+    "production_companies": [
+      {
+        "id": 10163,
+        "logo_path": "/16KWBMmfPX0aJzDExDrPxSLj0Pg.png",
+        "name": "Working Title Films",
+        "origin_country": "GB"
+      },
+      {
+        "id": 122772,
+        "logo_path": null,
+        "name": "The Story Factory",
+        "origin_country": "US"
+      },
+      {
+        "id": 23949,
+        "logo_path": "/3QFwomSxcZZgMQGBkdUPuJEnSFB.png",
+        "name": "RAW",
+        "origin_country": "GB"
+      },
+      {
+        "id": 210099,
+        "logo_path": "/g5oRCNCi8kNVb8gEoSoIcqkhjmR.png",
+        "name": "Amazon MGM Studios",
+        "origin_country": "US"
+      },
+      {
+        "id": 183787,
+        "logo_path": "/8G6CbTenzORJdoep1AaghtSEQrY.png",
+        "name": "Wild State",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "GB",
+        "name": "United Kingdom"
+      },
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2026-02-11",
+    "revenue": 66137170,
+    "runtime": 141,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Always have an exit.",
+    "title": "Crime 101",
+    "video": false,
+    "vote_average": 7.039,
+    "vote_count": 181
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/drRxbu2OHG0DEENptZ8wI5f0uEU.jpg",
+    "belongs_to_collection": null,
+    "budget": 20000000,
+    "genres": [
+      {
+        "id": 878,
+        "name": "Science Fiction"
+      },
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 35,
+        "name": "Comedy"
+      }
+    ],
+    "homepage": "https://www.goodluckhavefundontdiemovie.com",
+    "id": 1119449,
+    "imdb_id": "tt1341338",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Good Luck, Have Fun, Don't Die",
+    "overview": "A 'Man from the Future' arrives at an LA diner where he must recruit the precise combination of disgruntled patrons to join him on a one-night quest to save the world from the terminal threat of a rogue artificial intelligence.",
+    "popularity": 89.3431,
+    "poster_path": "/rWcfOdY7TU6lTdazWj0ebDZnAfO.jpg",
+    "production_companies": [
+      {
+        "id": 47,
+        "logo_path": "/i7Z9ot2o3N5Sa3HrF09kniFs2y8.png",
+        "name": "Constantin Film",
+        "origin_country": "DE"
+      },
+      {
+        "id": 10262,
+        "logo_path": "/zpPSqldofcdVAsdJrYQbggxFM1F.png",
+        "name": "Blind Wink",
+        "origin_country": "US"
+      },
+      {
+        "id": 787,
+        "logo_path": "/cCefBs1t7jxtiz3eCxBp9yxrxGx.png",
+        "name": "3 Arts Entertainment",
+        "origin_country": "US"
+      },
+      {
+        "id": 214700,
+        "logo_path": null,
+        "name": "Robert Kulzer Productions",
+        "origin_country": "US"
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      },
+      {
+        "iso_3166_1": "DE",
+        "name": "Germany"
+      }
+    ],
+    "release_date": "2026-02-13",
+    "revenue": 8705352,
+    "runtime": 134,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "Time is running out. Are you ready to join the revolution?",
+    "title": "Good Luck, Have Fun, Don't Die",
+    "video": false,
+    "vote_average": 7.003,
+    "vote_count": 170
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/lmns2jlRmATs8OGWKcCkgrbHLM4.jpg",
+    "belongs_to_collection": null,
+    "budget": 0,
+    "genres": [
+      {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 18,
+        "name": "Drama"
+      }
+    ],
+    "homepage": "",
+    "id": 1634301,
+    "imdb_id": "",
+    "origin_country": [
+      "IN"
+    ],
+    "original_language": "te",
+    "original_title": "Vanaveera",
+    "overview": "A descendant of the Vanara clan is pushed into conflict when a modern-day Ravana seizes his only bike for an election rally. What starts as a petty injustice soon erupts into a fierce fight for self-respect and dignity.",
+    "popularity": 93.9414,
+    "poster_path": "/oBYExKI8E3bTzQjPkofhpV2EJon.jpg",
+    "production_companies": [],
+    "production_countries": [],
+    "release_date": "2026-02-13",
+    "revenue": 0,
+    "runtime": 0,
+    "spoken_languages": [
+      {
+        "english_name": "Telugu",
+        "iso_639_1": "te",
+        "name": "తెలుగు"
+      }
+    ],
+    "status": "Released",
+    "tagline": "",
+    "title": "Vanaveera",
+    "video": false,
+    "vote_average": 7.0,
+    "vote_count": 3
+  },
+  {
+    "adult": false,
+    "backdrop_path": "/ibK0sooxQwIeqS9tz4Tj0chyca9.jpg",
+    "belongs_to_collection": null,
+    "budget": 0,
+    "genres": [
+      {
+        "id": 27,
+        "name": "Horror"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      }
+    ],
+    "homepage": "",
+    "id": 1058710,
+    "imdb_id": "tt13899250",
+    "origin_country": [
+      "US"
+    ],
+    "original_language": "en",
+    "original_title": "Bloodline Killer",
+    "overview": "Moira Cole endeavors to rebuild her shattered life after her family's murder at the hands of her deranged and obsessed cousin.",
+    "popularity": 100.1222,
+    "poster_path": "/wHmzCQwBzT6m8wtZdXHOIITn82B.jpg",
+    "production_companies": [
+      {
+        "id": 143302,
+        "logo_path": null,
+        "name": "Novakovic Bros",
+        "origin_country": "US"
+      },
+      {
+        "id": 64580,
+        "logo_path": null,
+        "name": "Future Proof Films",
+        "origin_country": ""
+      },
+      {
+        "id": 111951,
+        "logo_path": null,
+        "name": "JARS Productions",
+        "origin_country": "US"
+      },
+      {
+        "id": 228157,
+        "logo_path": null,
+        "name": "Gaudioso Twins Films",
+        "origin_country": ""
+      },
+      {
+        "id": 212925,
+        "logo_path": null,
+        "name": "Twelve 83 entertainment",
+        "origin_country": ""
+      }
+    ],
+    "production_countries": [
+      {
+        "iso_3166_1": "US",
+        "name": "United States of America"
+      }
+    ],
+    "release_date": "2024-04-26",
+    "revenue": 0,
+    "runtime": 90,
+    "spoken_languages": [
+      {
+        "english_name": "English",
+        "iso_639_1": "en",
+        "name": "English"
+      }
+    ],
+    "status": "Released",
+    "tagline": "",
+    "title": "Bloodline Killer",
+    "video": false,
+    "vote_average": 5.714,
+    "vote_count": 42
+  }
+]

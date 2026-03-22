@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-source ../.env
+source ./frontend/.env
 
 API_KEY=$VITE_TMDB_API_KEY
 BASE_URL="https://api.themoviedb.org/3"

@@ -2,8 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db";
-import userRoutes from "./routes/userRoutes";
-import { errorHandler } from "./middleware/errorHandler";
+import movieRoutes from "./routes/movieRoutes";
+import { notFound, errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 connectDB();
@@ -11,16 +11,24 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+//  Middleware 
+app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
 app.use(express.json());
 
-// Routes
-app.use("/api/users", userRoutes);
+//  Routes 
+app.use("/api/movies", movieRoutes);
 
-// Error handling
+app.get("/", (_req, res) => {
+  res.json({ message: "Movie API is running" });
+});
+
+//  Error Handling 
+app.use(notFound);
 app.use(errorHandler);
 
+//  Start 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
+
+export default app;

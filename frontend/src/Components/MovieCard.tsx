@@ -5,23 +5,23 @@ import styles from "./MovieCard.module.css";
 
 
 const BookmarkIcon = ({ filled }: { filled: boolean }) => (
-    <svg 
-        width="20" 
-        height="20" 
-        viewBox="0 0 24 24" 
-        fill={filled ? "#00ff88" : "none"} 
-        stroke="#00ff88" 
+    <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill={filled ? "#00ff88" : "none"}
+        stroke="#00ff88"
         strokeWidth="2"
     >
-        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
     </svg>
 );
 
 
-function MovieCard({movie}: {movie: TMDBmovie}) 
+function MovieCard({ movie }: { movie: TMDBmovie }) 
 {
-    const { addFav, removeFav, isFav, 
-            addSave, removeSave, isSave } = useMovieContext();
+    const { addFav, removeFav, isFav,
+        addSave, removeSave, isSave } = useMovieContext();
     const navigate = useNavigate();
     const favorite = isFav(movie.id);
     const saved = isSave(movie.id);
@@ -51,14 +51,14 @@ function MovieCard({movie}: {movie: TMDBmovie})
     }
 
     return (
-        <div className={styles.movieCard} onClick={onCardClick} style={{cursor: 'pointer'}}>
+        <div className={styles.movieCard} onClick={onCardClick} style={{ cursor: 'pointer' }}>
             <div className={styles.moviePoster}>
-                <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}                     
-                     alt={movie.title} 
+                <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt={movie.title}
                 />
                 <div className={styles.movieOverlay}>
-                    <button 
-                        className={styles.favBtn} 
+                    <button
+                        className={styles.favBtn}
                         onClick={onFavClick}
                         aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
                     >
@@ -69,7 +69,7 @@ function MovieCard({movie}: {movie: TMDBmovie})
                         onClick={onSaveClick}
                         aria-label={saved ? "Remove from watchlist" : "Add to watchlist"}
                     >
-                        <BookmarkIcon filled={saved} />                    
+                        <BookmarkIcon filled={saved} />
                     </button>
                 </div>
             </div>

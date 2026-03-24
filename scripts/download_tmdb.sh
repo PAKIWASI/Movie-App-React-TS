@@ -1,13 +1,13 @@
 #!/bin/sh
 
 
-source ./frontend/.env
+source ../frontend/.env
 
 API_KEY=$VITE_TMDB_API_KEY
 BASE_URL="https://api.themoviedb.org/3"
 
 OUTPUT_FILE="data.json"
-TOTAL_PAGES=1
+TOTAL_PAGES=10
 
 # Start JSON array
 echo "[" > $OUTPUT_FILE

@@ -6,7 +6,6 @@ import type { TMDBmovie } from "../types";
 
 function SearchSuggestion({movies, onSuggestionClick}: {movies: TMDBmovie[], onSuggestionClick: (movie: TMDBmovie) => void}) 
 {
-
     return (
         <div className={styles.SuggestionBox}>
             {movies.map(movie => (

@@ -5,7 +5,6 @@ import styles from "./SuggestionEntry.module.css"
 
 function SuggestionEntry({movie}: {movie: TMDBmovie}) 
 {
-
     return (
         <div className={styles.SuggestionEntry}>
             <img className={styles.EntryPoster} 

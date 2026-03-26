@@ -10,6 +10,8 @@ import {
 
 const router = Router();
 
+// Routes are just a table of *verb + path → handler function*. Nothing else. The logic lives in the controller.
+
 // GET  /api/movies              — all saved movies (supports ?search= ?genre= ?page= ?limit=)
 router.get("/", getMovies);
 

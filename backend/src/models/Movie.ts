@@ -1,7 +1,12 @@
 import { Schema, model, Document } from "mongoose";
 
-// Sub-schemas
+// defines what a document in MongoDB looks like and enforces types
+
+
+// Sub-schemas (reusable shapes for nested objects)
 const GenreSchema = new Schema({ id: Number, name: String }, { _id: false });
+// _id: false means MongoDB won't add an _id field to each genre object
+
 
 const ProductionCompanySchema = new Schema(
     { id: Number, name: String, logo_path: String },
@@ -36,6 +41,8 @@ const CrewMemberSchema = new Schema(
 );
 
 // Main document interface
+//he IMovie interface is TypeScript describing the shape of a document after it comes back from MongoDB —
+//it includes MongoDB's own _id, save(), etc. via extends Document
 export interface IMovie extends Document {
     // Base TMDBmovie fields
     tmdbId: number;
@@ -81,6 +88,8 @@ export interface IMovie extends Document {
     savedAt: Date;
 }
 
+// The Main Schema
+
 const MovieSchema = new Schema<IMovie>(
     {
         tmdbId: { type: Number, required: true, unique: true },
@@ -103,7 +112,7 @@ const MovieSchema = new Schema<IMovie>(
         runtime: Number,
         revenue: Number,
         tagline: String,
-        genres: [GenreSchema],
+        genres: [GenreSchema], // array of sub-documents
         production_companies: [ProductionCompanySchema],
         spoken_languages: [SpokenLanguageSchema],
         status: String,
@@ -113,12 +122,13 @@ const MovieSchema = new Schema<IMovie>(
         // Track when it was saved
         savedAt: { type: Date, default: Date.now },
     },
-    { timestamps: true }
+    { timestamps: true } // auto-adds createdAt + updatedAt
 );
 
-// Index for fast search by title
+// Text index for full-text search (used by getMovies ?search=)by title
 MovieSchema.index({ title: "text", original_title: "text" });
 
 export default model<IMovie>("Movie", MovieSchema);
+// "Movie" → MongoDB collection will be named "movies" (lowercased + pluralised)
 
 

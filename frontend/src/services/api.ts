@@ -8,6 +8,7 @@ export const BASE_URL = "https://api.themoviedb.org/3"; //base endpoint of api (
 
 
 export const getPopularMovies = async (page: number = 1): Promise<TMDBresponse> => {
+
     const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`);     
 
     if (!response.ok) {
@@ -19,6 +20,7 @@ export const getPopularMovies = async (page: number = 1): Promise<TMDBresponse> 
 };
 
 export const searchMovies = async (query: string, page: number = 1): Promise<TMDBresponse> => {
+
     const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`);
 
     if (!response.ok) {

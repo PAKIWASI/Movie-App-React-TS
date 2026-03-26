@@ -105,3 +105,5 @@ export const MovieProvider = ({children}: {children: React.ReactNode}) =>
     );
 }; // children have access to everything in value
 
+
+

@@ -20,7 +20,7 @@ app.use("/api/movies", movieRoutes);
 
 // Health check endpoint
 app.get("/", (_req, res) => {
-  res.json({ message: "Movie API is running" });
+    res.json({ message: "Movie API is running" });
 });
 
 // Error middleware — must come LAST
@@ -28,7 +28,7 @@ app.use(notFound);      // catches requests to unknown routes
 app.use(errorHandler);  // catches thrown errors from any route
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
 
 export default app;

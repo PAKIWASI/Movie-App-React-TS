@@ -4,7 +4,10 @@ import { Schema, model, Document } from "mongoose";
 
 
 // Sub-schemas (reusable shapes for nested objects)
-const GenreSchema = new Schema({ id: Number, name: String }, { _id: false });
+const GenreSchema = new Schema(
+    { id: Number, name: String }, 
+    { _id: false }
+);
 // _id: false means MongoDB won't add an _id field to each genre object
 
 

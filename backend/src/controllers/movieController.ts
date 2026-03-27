@@ -5,7 +5,7 @@ import { MovieDetails, MovieCredits, CompleteMovieDetail } from "../types/movie.
 const TMDB_BASE = "https://api.themoviedb.org/3";
 const getApiKey = () => process.env.TMDB_API_KEY;
 
-// ─── TMDB Proxy Helpers ────────────────────────────────────────────────────────
+//  TMDB Proxy Helpers 
 
 const fetchFromTMDB = async <T>(path: string): Promise<T> => {
     const res = await fetch(`${TMDB_BASE}${path}?api_key=${getApiKey()}&language=en-US`);
@@ -13,7 +13,7 @@ const fetchFromTMDB = async <T>(path: string): Promise<T> => {
     return res.json() as Promise<T>;
 };
 
-// ─── Save / Sync a movie from TMDB into MongoDB ────────────────────────────────
+//  Save / Sync a movie from TMDB into MongoDB 
 
 /**
  * POST /api/movies/sync/:tmdbId
@@ -78,7 +78,7 @@ export const syncMovie = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// ─── Save movie directly from frontend payload ─────────────────────────────────
+//  Save movie directly from frontend payload 
 
 /**
  * POST /api/movies
@@ -134,7 +134,7 @@ export const saveMovie = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// ─── GET all saved movies ──────────────────────────────────────────────────────
+//  GET all saved movies 
 
 /**
  * GET /api/movies
@@ -176,7 +176,7 @@ export const getMovies = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// ─── GET single saved movie ────────────────────────────────────────────────────
+//  GET single saved movie 
 
 /**
  * GET /api/movies/:tmdbId
@@ -231,7 +231,7 @@ export const getMovieById = async (req: Request, res: Response): Promise<void> =
     }
 };
 
-// ─── DELETE a saved movie ──────────────────────────────────────────────────────
+//  DELETE a saved movie 
 
 /**
  * DELETE /api/movies/:tmdbId
@@ -252,7 +252,7 @@ export const deleteMovie = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-// ─── CHECK if movie is saved ───────────────────────────────────────────────────
+//  CHECK if movie is saved 
 
 /**
  * GET /api/movies/:tmdbId/exists

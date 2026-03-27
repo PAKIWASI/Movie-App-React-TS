@@ -128,10 +128,10 @@ const MovieSchema = new Schema<IMovie>(
     { timestamps: true } // auto-adds createdAt + updatedAt
 );
 
+
 // Text index for full-text search (used by getMovies ?search=)by title
 MovieSchema.index({ title: "text", original_title: "text" });
 
+
 export default model<IMovie>("Movie", MovieSchema);
 // "Movie" → MongoDB collection will be named "movies" (lowercased + pluralised)
-
-

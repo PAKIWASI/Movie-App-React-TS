@@ -10,8 +10,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     try {
         const { name, age, email, password }: User = req.body; // safe, Zod already confirmed this
         
-        // TODO: do i need to use z.parse() here for user?
-
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);

@@ -6,11 +6,10 @@ import { UserSchema, LoginSchema } from "../types/user.type";
 
 const router = Router();
 
-// router.post("/register", registerUser);
-//
-// router.post("/login", loginUser);
 
+// we validate the input with schema at middleware level
 router.post("/register", validate(UserSchema), registerUser);
+
 router.post("/login",    validate(LoginSchema), loginUser);
 
 

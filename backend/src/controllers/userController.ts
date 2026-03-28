@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import userModel from "../models/User";
-import { User } from "../types/user.type";
 
 const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
@@ -16,15 +15,13 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
         const [users, total] = await Promise.all([
-            userModel.find(filter).skip(skip).limit(limit),
+            userModel.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .select("-password"),
             userModel.countDocuments(filter),
         ]);
 
-        for (let user of users as User[]) {
-        }
-
-        // TODO: dont return the password !!!
-        // maybe only return the id?
         res.status(200).json({
             success: true,
             data: users,
@@ -38,12 +35,12 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const getUserByID = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await userModel.findById(req.params.id);
+        const user = await userModel.findById(req.params.id).select("-password");
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
         }
-        // TODO: same shit, dont return the password
+
         res.status(200).json({ success: true, data: user });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to get user" });
@@ -55,7 +52,7 @@ export const getUserByName = async (req: Request, res: Response): Promise<void> 
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
         const [users, total] = await Promise.all([
-            userModel.find(filter),
+            userModel.find(filter).select("-password"),
             userModel.countDocuments(filter),
         ]);
 
@@ -65,8 +62,8 @@ export const getUserByName = async (req: Request, res: Response): Promise<void> 
             res.status(404).json({ success: false, message: "No users found" });
             return;
         }
-        res.status(200).json({ success: true, data: users });
 
+        res.status(200).json({ success: true, data: users });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to get user by name" });
     }
@@ -75,15 +72,19 @@ export const getUserByName = async (req: Request, res: Response): Promise<void> 
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
+        // zod validator middleware already checked req.body
+        
         const user = await userModel.findByIdAndUpdate(
             req.params.id,
             req.body,
-            { returnDocument: 'after', runValidators: true }  // new: return updated doc, runValidators: enforce schema rules
-        );
+            { returnDocument: 'after', runValidators: true }  // return updated doc, runValidators: enforce schema rules
+        ).select("-password");  // exclude password field
+
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
         }
+
         res.status(200).json({ success: true, data: user });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to update user" });
@@ -98,6 +99,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
             res.status(404).json({ success: false, message: "User not found" });
             return;
         }
+
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to delete user" });

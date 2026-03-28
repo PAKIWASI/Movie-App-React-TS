@@ -74,33 +74,30 @@ export const MovieDetailsSchema = z.object({
 });
 
 
-export const CastMemberSchema = z.object({
-    id:                   z.number(),
-    name:                 z.string(),
-    character:            z.string(),
-    profile_path:         z.string().nullable(),
-    order:                z.number(),
-    gender:               z.number().optional(),
-    known_for_department: z.string().optional(),
-    popularity:           z.number().optional(),
-    credit_id:            z.string().optional(),
-});
-
-export const CrewMemberSchema = z.object({
-    id:                   z.number(),
-    name:                 z.string(),
-    job:                  z.string(),
-    department:           z.string(),
-    profile_path:         z.string().nullable(),
-    gender:               z.number().optional(),
-    known_for_department: z.string().optional(),
-    popularity:           z.number().optional(),
-    credit_id:            z.string().optional(),
-});
-
+// /api/movies/credits/:id
 export const MovieCreditsSchema = z.object({
-    cast: z.array(CastMemberSchema),
-    crew: z.array(CrewMemberSchema),
+    cast: z.array(z.object({
+        id:                   z.number(),
+        name:                 z.string(),
+        character:            z.string(),
+        profile_path:         z.string().nullable(),
+        order:                z.number(),
+        gender:               z.number().optional(),
+        known_for_department: z.string().optional(),
+        popularity:           z.number().optional(),
+        credit_id:            z.string().optional(),
+    })),
+    crew: z.array(z.object({
+        id:                   z.number(),
+        name:                 z.string(),
+        job:                  z.string(),
+        department:           z.string(),
+        profile_path:         z.string().nullable(),
+        gender:               z.number().optional(),
+        known_for_department: z.string().optional(),
+        popularity:           z.number().optional(),
+        credit_id:            z.string().optional(),
+    })),
 });
 
 
@@ -113,6 +110,9 @@ export const TMDBresponseSchema = z.object({
 });
 
 
+// TODO: like the tmdb api, maybe we shouldn't return credits with this
+// and let the user handle credits with the seperate endpoint
+
 // response from /api/movie/id
 export const CompleteMovieDetailSchema = z.object({
     movieDetail:  MovieDetailsSchema.nullable(),
@@ -122,8 +122,6 @@ export const CompleteMovieDetailSchema = z.object({
 
 export type TMDBmovie           = z.infer<typeof TMDBmovieSchema>;
 export type MovieDetails        = z.infer<typeof MovieDetailsSchema>;
-export type CastMember          = z.infer<typeof CastMemberSchema>;
-export type CrewMember          = z.infer<typeof CrewMemberSchema>;
 export type MovieCredits        = z.infer<typeof MovieCreditsSchema>;
 export type TMDBresponse        = z.infer<typeof TMDBresponseSchema>;
 export type CompleteMovieDetail = z.infer<typeof CompleteMovieDetailSchema>;

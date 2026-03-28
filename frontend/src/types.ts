@@ -105,7 +105,7 @@ export interface TMDBresponse {
     total_results: number;
 }
 
-// Context type remains the same
+// for global movie context
 export interface MovieContextType {
     fav: TMDBmovie[];
     addFav: (movie: TMDBmovie) => void;

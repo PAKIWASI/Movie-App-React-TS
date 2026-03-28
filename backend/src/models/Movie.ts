@@ -58,4 +58,4 @@ movieSchema.index({ popularity: -1 });                         // sort by popula
 movieSchema.index({ vote_average: -1 });                       // sort by rating
 
 export default mongoose.model<IMovie>("Movie", movieSchema);
-
+// collection will be called movies

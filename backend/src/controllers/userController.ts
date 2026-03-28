@@ -33,6 +33,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+// GET /api/users/:id
 export const getUserByID = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await userModel.findById(req.params.id).select("-password");
@@ -47,7 +48,7 @@ export const getUserByID = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-
+// PUT /api/users/:id
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
         // zod validator middleware already checked req.body
@@ -70,6 +71,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 
+// DELETE /api/users/:id
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await userModel.findByIdAndDelete(req.params.id);

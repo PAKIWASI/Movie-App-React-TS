@@ -1,11 +1,11 @@
 import type { CompleteMovieDetail, MovieCredits, MovieDetails, TMDBresponse } from "../types";
 
 
-
-
 export const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 export const BASE_URL = "https://api.themoviedb.org/3"; //base endpoint of api (where we send request)
 
+
+// TODO: no try/catch ?
 
 export const getPopularMovies = async (page: number = 1): Promise<TMDBresponse> => {
 
@@ -31,9 +31,8 @@ export const searchMovies = async (query: string, page: number = 1): Promise<TMD
     return data;
 };
 
-export const getMovieDetail = async (
-    id: string
-): Promise<CompleteMovieDetail> => {
+export const getMovieDetail = async (id: string): Promise<CompleteMovieDetail> => {
+
     const [movieResponse, creditsResponse] = await Promise.all([
         fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US`),
         fetch(`${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`)

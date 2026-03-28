@@ -4,7 +4,7 @@ import { z } from "zod";
 export const TMDBmovieSchema = z.object({
     adult:             z.boolean(),
     backdrop_path:     z.string(),
-    genre_ids:         z.array(z.number()),
+    genre_ids:         z.array(z.number()), // only the id part of genre {id, name}
     id:                z.number(),
     original_language: z.string(),
     original_title:    z.string(),
@@ -17,6 +17,14 @@ export const TMDBmovieSchema = z.object({
     vote_average:      z.number(),
     vote_count:        z.number(),
 });
+
+export const TMDB_MOVIE_PROJECTION = Object.fromEntries(
+    Object.keys(TMDBmovieSchema.shape)
+        .map(key => [key, 1])
+) as Record<keyof TMDBmovie, 1>;
+
+// manually exclude _id
+(TMDB_MOVIE_PROJECTION as any)._id = 0;
 
 
 export const MovieDetailsSchema = z.object({

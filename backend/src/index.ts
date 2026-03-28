@@ -8,6 +8,7 @@ import dashboardRoutes from './routes/protected'
 import { notFound, errorHandler } from './middleware/errorHandler';
 import cookieParser from 'cookie-parser';
 
+
 // BACKEND ENTRY POINT
 // evaluated top to bottom
 

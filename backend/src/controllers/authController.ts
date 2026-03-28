@@ -1,3 +1,4 @@
+import { LoginInput, PublicUser, PublicUserSchema, User } from "../types/user.type";
 import { Request, Response } from "express"
 import userModel from "../models/User";
 import bcrypt from "bcryptjs";
@@ -7,16 +8,23 @@ import jwt from 'jsonwebtoken';
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, age, email, password } = req.body; // safe, Zod already confirmed this
+        const { name, age, email, password }: User = req.body; // safe, Zod already confirmed this
+        
+        // TODO: do i need to use z.parse() here for user?
 
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // create() and save() always run validators
-        const user = await userModel.create({ name, age, email, password: hashedPassword });  // this throws if already exist 
+        const user = await userModel.create({ 
+            name, 
+            age, 
+            email, 
+            password: hashedPassword 
+        });  // this throws if already exist 
 
-        const { password: _, ...safeUser } = user.toObject();   // exclude the password field
+        const safeUser: PublicUser = PublicUserSchema.parse(user.toObject());
         res.status(201).json({ success: true, data: safeUser });
 
     } catch (error: any) {
@@ -33,7 +41,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { email, password } = req.body;
+        const { email, password }: LoginInput = req.body;
 
         // Check if user exists
         let user = await userModel.findOne({ email });

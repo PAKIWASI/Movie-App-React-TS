@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import userModel from "../models/User";
+import { User } from "../types/user.type";
 
 const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
@@ -18,6 +19,9 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
             userModel.find(filter).skip(skip).limit(limit),
             userModel.countDocuments(filter),
         ]);
+
+        for (let user of users as User[]) {
+        }
 
         // TODO: dont return the password !!!
         // maybe only return the id?

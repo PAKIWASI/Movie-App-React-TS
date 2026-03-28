@@ -19,10 +19,10 @@ const userSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-
 // Text index for full-text search
 userSchema.index({ name: "text" });
 
 // make a document model from the schema
 export default mongoose.model<IUser>("User", userSchema);
 // mongodb will search for a "users" collection
+

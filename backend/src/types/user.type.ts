@@ -1,10 +1,12 @@
 import { z } from "zod";
 
+
+// zod schema (used for input/output validation)
 export const UserSchema = z.object({
-    name: z.string().min(2),
-    age: z.number().int().min(0).max(150),
-    email: z.email(),
-    password: z.string().min(8),
+    name:       z.string().min(2),
+    age:        z.number().int().min(0).max(150),
+    email:      z.email(),
+    password:   z.string().min(8),
 });
 
 export const PublicUserSchema = UserSchema.omit({
@@ -19,6 +21,7 @@ export const LoginSchema = UserSchema.pick({
 export const UpdateUserSchema = UserSchema
     .omit({ password: true })
     .partial();
+
 
 export type User = z.infer<typeof UserSchema>;
 export type PublicUser = z.infer<typeof PublicUserSchema>;

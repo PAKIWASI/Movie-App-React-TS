@@ -47,28 +47,6 @@ export const getUserByID = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-export const getUserByName = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
-
-        const [users, total] = await Promise.all([
-            userModel.find(filter).select("-password"),
-            userModel.countDocuments(filter),
-        ]);
-
-        // uses the text index defined on the schema
-        // const users = await userModel.find({ $text: { $search: req.params.name } });
-        if (!total) {
-            res.status(404).json({ success: false, message: "No users found" });
-            return;
-        }
-
-        res.status(200).json({ success: true, data: users });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to get user by name" });
-    }
-};
-
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {

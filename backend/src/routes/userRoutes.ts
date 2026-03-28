@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
     getUsers,
-    getUserByName,
     getUserByID,
     updateUser,
     deleteUser
@@ -18,13 +17,9 @@ const router = Router();
 // if two routes are /:something, Express cannot tell them apart. It'll always match the first one and never reach the second.
 
 
-// at root with no extra params
+// at root with no extra params, has query parameters
 // GET  /api/users
 router.get("/", getUsers);
-
-// the specific shape of params one should be first
-// GET /api/users/name/:name
-router.get("/name/:name", getUserByName);
 
 // the catch-all params one should be last, if we are at root but some param was passed
 // GET /api/users/:id

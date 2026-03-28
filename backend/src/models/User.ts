@@ -4,11 +4,11 @@ import { User } from "../types/user.type";
 
 
 // Main document interface for Users
-export interface IUser extends User, Document {
+interface IUser extends User, Document {
     // User interface in types already defines all the fields
 }
 
-// define the schema
+// define the Mongoose schema (for database validation)
 const userSchema: Schema = new Schema(
     {
         name: { type: String, required: true },

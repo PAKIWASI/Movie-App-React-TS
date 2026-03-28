@@ -4,8 +4,8 @@ import cors from 'cors'
 import connectUserDB from './config/db';
 import userRoutes from './routes/userRoutes'
 import authRoutes from './routes/authRoutes';
-import dashboardRoutes from './routes/dashboardRoutes'
 import cookieParser from 'cookie-parser';
+import movieRoutes from './routes/movieRoutes'
 import { notFound, errorHandler } from './middleware/errorHandler';
 
 
@@ -42,8 +42,7 @@ app.use("/api/users", userRoutes);
 // Any thing hitting /api/auth will go to authRoutes
 app.use("/api/auth", authRoutes);
 
-// protected route only for jwt tokens
-app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/movies/", movieRoutes);
 
 
 // Health check endpoint

@@ -8,6 +8,7 @@ import {
 } from "../controllers/userController";
 import { validate } from "../middleware/validate";
 import { UpdateUserSchema } from "../types/user.type";
+import authMiddleware from "../middleware/authMiddleware";
 
 
 const router = Router();
@@ -34,12 +35,21 @@ router.get("/:id", getUserByID);   // the implicit mongoose id
 // If it passes, req.body is already the correct typed shape.
 
 // PUT /api/users/:id
-router.put("/:id", validate(UpdateUserSchema), updateUser);
+// router.put("/:id", validate(UpdateUserSchema), updateUser);
+
+router.put("/:id", 
+           authMiddleware,
+           validate(UpdateUserSchema), 
+           updateUser
+);
 
 // TODO: these should be protected under auth
 
 // DELETE /api/users/:id
-router.delete("/:id", deleteUser);
+router.delete("/:id", 
+              authMiddleware,
+              deleteUser
+);
 
 
 export default router;

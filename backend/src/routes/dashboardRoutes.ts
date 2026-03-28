@@ -11,4 +11,5 @@ const router = express.Router();
 router.get('/', authMiddleware, getDashboard);
 
 
+
 export default router;

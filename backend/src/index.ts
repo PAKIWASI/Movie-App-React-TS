@@ -4,7 +4,7 @@ import cors from 'cors'
 import connectUserDB from './config/db';
 import userRoutes from './routes/userRoutes'
 import authRoutes from './routes/authRoutes';
-import dashboardRoutes from './routes/protected'
+import dashboardRoutes from './routes/dashboardRoutes'
 import { notFound, errorHandler } from './middleware/errorHandler';
 import cookieParser from 'cookie-parser';
 

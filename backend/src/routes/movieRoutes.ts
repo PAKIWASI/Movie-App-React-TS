@@ -12,6 +12,9 @@ router.get("/", getMovies);
 
 router.get("/:movieid", getMovieDetails);
 
+// TODO: is the order right ?
+router.get("/:movieid/credits", getMovieCredits);
+
 // router.post("/", postMovie);
 //
 // router.put("/:movieid", updateMovie);

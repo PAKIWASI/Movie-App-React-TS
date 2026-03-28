@@ -16,6 +16,10 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
+        // TODO: how to only show short movie info?
+        // can use select but dont want to manually type all fields
+        // also the genre_ids thing needs to be handeled
+
         const [movies, total] = await Promise.all([
             movieModel.find(filter)
                 .skip(skip)

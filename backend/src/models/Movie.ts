@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { MovieDetails } from "../types/movie.type";
+import { MovieDetail } from "../types/movie.type";
 
 
 
-export interface IMovie extends MovieDetails, Document {}
+export interface IMovie extends MovieDetail, Document {}
 
 const movieSchema: Schema = new Schema(
     {
@@ -45,7 +45,7 @@ const movieSchema: Schema = new Schema(
         vote_count:        { type: Number,  required: true },
     },
     {
-        timestamps: true,
+        timestamps: false,
         _id: false,         // disable mongodb _id, use TMDB id instead
         id: false,          // disable mongoose's virtual .id getter (would conflict with our id field)
     }

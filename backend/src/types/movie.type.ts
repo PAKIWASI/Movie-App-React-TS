@@ -116,13 +116,13 @@ export const TMDBresponseSchema = z.object({
 // response from /api/movie/id
 export const CompleteMovieDetailSchema = z.object({
     movieDetail:  MovieDetailsSchema.nullable(),
-    movieCredits: MovieCreditsSchema.nullable(),
+    // movieCredits: MovieCreditsSchema.nullable(),
 });
 
 
 export type TMDBmovie           = z.infer<typeof TMDBmovieSchema>;
-export type MovieDetails        = z.infer<typeof MovieDetailsSchema>;
-export type MovieCredits        = z.infer<typeof MovieCreditsSchema>;
+export type MovieDetail         = z.infer<typeof MovieDetailsSchema>;
+export type MovieCredit         = z.infer<typeof MovieCreditsSchema>;
 export type TMDBresponse        = z.infer<typeof TMDBresponseSchema>;
 export type CompleteMovieDetail = z.infer<typeof CompleteMovieDetailSchema>;
 

@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { 
-    getUsers, 
-    getUserByName, 
-    getUserByID, 
-    updateUser, 
+import {
+    getUsers,
+    getUserByName,
+    getUserByID,
+    updateUser,
     deleteUser
 } from "../controllers/userController";
 import { validate } from "../middleware/validate";
@@ -34,21 +34,16 @@ router.get("/:id", getUserByID);   // the implicit mongoose id
 // The middleware runs first. If validation fails, the controller never runs. 
 // If it passes, req.body is already the correct typed shape.
 
-// PUT /api/users/:id
-// router.put("/:id", validate(UpdateUserSchema), updateUser);
 
-router.put("/:id", 
-           authMiddleware,
-           validate(UpdateUserSchema), 
-           updateUser
+router.put("/:id",
+    authMiddleware,
+    validate(UpdateUserSchema),
+    updateUser
 );
 
-// TODO: these should be protected under auth
-
-// DELETE /api/users/:id
-router.delete("/:id", 
-              authMiddleware,
-              deleteUser
+router.delete("/:id",
+    authMiddleware,
+    deleteUser
 );
 
 

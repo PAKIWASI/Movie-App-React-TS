@@ -1,5 +1,7 @@
 import { Request, Response } from "express"
 import movieModel from "../models/Movie"
+import { TMDB_MOVIE_PROJECTION } from "../types/movie.type";
+import MovieCredit from "../models/MovieCredit";
 
 
 const MIN_PAGES = 1;
@@ -16,14 +18,16 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
-        // TODO: how to only show short movie info?
-        // can use select but dont want to manually type all fields
-        // also the genre_ids thing needs to be handeled
+        // const [movies, total] = await Promise.all([
+        //     movieModel.find(filter)
+        //         .skip(skip)
+        //         .limit(limit)
+        //         .select(TMDB_MOVIE_PROJECTION), // TODO: test this
+        //     movieModel.countDocuments(filter),
+        // ]);
 
         const [movies, total] = await Promise.all([
-            movieModel.find(filter)
-                .skip(skip)
-                .limit(limit),
+            movieModel.findSummaries(filter, skip, limit),
             movieModel.countDocuments(filter),
         ]);
 
@@ -39,21 +43,35 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 };
 
 
-// GET /api/movies/:id
+// GET /api/movies/:movieid
 export const getMovieDetails = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const movie = await movieModel.findOne({ id: parseInt(req.params.id as string) });
+        const movie = await movieModel.findOne({ id: parseInt(req.params.movieid as string) });
         if (!movie) {
             res.status(404).json({ success: false, message: "Movie not found" });
             return;
         }
 
         res.status(200).json({ success: true, data: movie });
-
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to get movie" });
     }
 };
 
+
+// GET /api/movies/:movieid/credits
+export const getMovieCredits = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const credits = await MovieCredit.findOne({ id: parseInt(req.params.movieid as string) })
+        if (!credits) {
+            res.status(404).json({ success: false, message: "Movie Credits not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, data: credits });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to get movie credits" });
+    }
+};
 
 

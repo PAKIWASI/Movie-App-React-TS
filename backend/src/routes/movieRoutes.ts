@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { getMovies, getMovieDetails } from "../controllers/movieController";
-
+import { 
+    getMovies, 
+    getMovieDetails, 
+    getMovieCredits 
+} from "../controllers/movieController";
 
 
 const router = Router();
@@ -12,10 +15,13 @@ router.get("/", getMovies);
 
 router.get("/:movieid", getMovieDetails);
 
-// TODO: is the order right ?
 router.get("/:movieid/credits", getMovieCredits);
 
-// router.post("/", postMovie);
+// router.post("/", 
+//      authMiddleware(), 
+//      validate(), 
+//      postMovie
+// );
 //
 // router.put("/:movieid", updateMovie);
 //

@@ -34,8 +34,19 @@ export const TMDB_MOVIE_PROJECTION = Object.fromEntries(
         .map(key => [key, 1])
 ) as Record<keyof TMDBmovie, 1>;
 
-// manually exclude _id
-(TMDB_MOVIE_PROJECTION as any)._id = 0;
+// manually add genres
+(TMDB_MOVIE_PROJECTION as any).genre_ids = 0;
+(TMDB_MOVIE_PROJECTION as any).genres = 1;
+
+// use this to get summery movies will all TMDB fields
+export const TMDB_MOVIE_AGG_PROJECTION = {
+    ...TMDB_MOVIE_PROJECTION,       // all the 1s and 0s from the select projection
+    genre_ids: { $map: {            // override genre_ids with the $map expression
+        input: "$genres",
+        as:    "g",
+        in:    "$$g.id"
+    }},
+};
 
 
 
@@ -106,24 +117,15 @@ export const MovieCreditsSchema = z.object({
         name:                 z.string(),
         job:                  z.string(),
         department:           z.string(),
-        profile_path:         z.string().nullable(),
-        gender:               z.number().optional(),    // TODO: diff b/w nullable and optional?
-        known_for_department: z.string().optional(),
+        profile_path:         z.string().nullable(),    // type: string | null      — field MUST be present, but can be null
+        gender:               z.number().optional(),    // type: string | undefined  — field can be absent entirely
+        known_for_department: z.string().optional(),    
         popularity:           z.number().optional(),
         credit_id:            z.string().optional(),
     })),
 });
 
 
-
-
-// TODO: like the tmdb api, maybe we shouldn't return credits with this
-// and let the user handle credits with the seperate endpoint
-
-// export const CompleteMovieDetailSchema = z.object({
-//     movieDetail:  MovieDetailsSchema.nullable(),
-//     movieCredits: MovieCreditsSchema.nullable(),
-// });
 
 
 export type TMDBmovie           = z.infer<typeof TMDBmovieSchema>;

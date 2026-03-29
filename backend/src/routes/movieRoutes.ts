@@ -33,7 +33,7 @@ router.post("/",
 
 router.put("/:movieid",
     authMiddleware,
-    validate(UpdateMovieSchema),          // every field is optional, can't update id
+    validate(UpdateMovieSchema), // every field is optional, can't update id
     updateMovie
 );
 

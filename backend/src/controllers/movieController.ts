@@ -1,10 +1,8 @@
 import { Request, Response } from "express"
 import movieModel from "../models/Movie"
 import MovieCredit from "../models/MovieCredit";
-import { MovieDetail } from "../types/movie.type";
+import { MovieDetail, TMDB_MOVIE_PROJECTION } from "../types/movie.type";
 
-
-// TODO: in logging an error, add function/endpoint name
 
 const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
@@ -19,13 +17,19 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
+        // const [movies, total] = await Promise.all([
+        //     movieModel.find(filter)
+        //         .skip(skip)
+        //         .limit(limit)
+        //         .select("-_id"),
+        //     movieModel.countDocuments(filter)
+        // ]);
         const [movies, total] = await Promise.all([
             movieModel.find(filter)
                 .skip(skip)
                 .limit(limit)
-                .select("-_id"),// TODO: we have our own id, this should be disabled (we did it in schema)
-                                //  but this got added due to the sample data into atlas
-            movieModel.countDocuments(filter)
+                .select(TMDB_MOVIE_PROJECTION),
+            movieModel.countDocuments(filter),
         ]);
 
         res.status(200).json({
@@ -44,7 +48,8 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 // GET /api/movies/:movieid
 export const getMovieDetails = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const movie = await movieModel.findOne({ id: parseInt(req.params.movieid as string) })
+        const movie = await movieModel.findOne({ id: parseInt(req.params.movieid as string) });
+
         if (!movie) {
             res.status(404).json({ success: false, message: "Movie not found" });
             return;
@@ -61,7 +66,7 @@ export const getMovieDetails = async (req: Request, res: Response) : Promise<voi
 // GET /api/movies/:movieid/credits
 export const getMovieCredits = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const credits = await MovieCredit.findOne({ id: parseInt(req.params.movieid as string) })
+        const credits = await MovieCredit.findOne({ id: parseInt(req.params.movieid as string) });
         if (!credits) {
             res.status(404).json({ success: false, message: "Movie Credits not found" });
             return;

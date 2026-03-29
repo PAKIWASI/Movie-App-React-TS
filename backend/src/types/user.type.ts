@@ -18,8 +18,6 @@ export const LoginSchema = UserSchema.pick({
     password: true,
 });
 
-// TODO: validator will throw if we pass in an _id ??
-
 export const UpdateUserSchema = UserSchema
     .omit({ password: true })   // don't let password update
     .partial();                 // every other field optional

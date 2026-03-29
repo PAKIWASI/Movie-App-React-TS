@@ -28,6 +28,15 @@ export const TMDBresponseSchema = z.object({
 });
 
 
+// to get only the fields in TMDBmovie from MovieDetail in /api/movies/:movieid
+export const TMDB_MOVIE_PROJECTION = Object.fromEntries(
+    Object.keys(TMDBmovieSchema.shape).map(key => [key, 1])
+) as Record<keyof TMDBmovie, 1>;
+
+(TMDB_MOVIE_PROJECTION as any)._id = 0; // we dont' _id as well
+
+
+
 // /api/movies/:id
 export const MovieDetailsSchema = z.object({
     adult:             z.boolean(),
@@ -103,8 +112,6 @@ export const MovieCreditsSchema = z.object({
     })),
 });
 
-
-// TODO: we accedently have _id from atlas, should we exclude that?
 
 export const UpdateMovieSchema = MovieDetailsSchema
     .omit({ id: true })

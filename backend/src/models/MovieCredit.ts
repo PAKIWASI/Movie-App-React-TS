@@ -11,6 +11,7 @@ const movieCreditSchema: Schema = new Schema(
     {
         id: { type: Number, required: true, unique: true }, // TMDB movie id
         cast: [{
+            _id: false,
             id:                     { type: Number, required: true },
             name:                   { type: String, required: true },
             character:              { type: String, },
@@ -22,6 +23,7 @@ const movieCreditSchema: Schema = new Schema(
             credit_id:              { type: String },
         }],
         crew: [{
+             _id: false,
              id:                    { type: Number, required: true },
              name:                  { type: String, required: true },
              job:                   { type: String, required: true },
@@ -36,6 +38,7 @@ const movieCreditSchema: Schema = new Schema(
     },
     {
         timestamps: false,
+        _id: false,         // disable mongodb's implicit id
         id: false,          // disable mongoose's virtual .id getter (would conflict with our id field)
     }
 );

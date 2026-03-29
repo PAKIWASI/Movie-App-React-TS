@@ -13,8 +13,10 @@ import { ZodType } from "zod";
 export const validate = (schema: ZodType) =>
     (req: Request, res: Response, next: NextFunction) => {
 
-        // use safeParse to  get back a plain result object containing either the successfully parsed data or a ZodError
+        // use safeParse to get back a plain result object containing either the successfully parsed data or a ZodError
         const result = schema.safeParse(req.body);
+        // safe parse alse strips id or _id as we dont' have in the schema (like user)
+        // else, we can exprelitly remove the id, like in movie update schema
 
         if (!result.success) {
             const errors = result.error.issues.map(issue => ({

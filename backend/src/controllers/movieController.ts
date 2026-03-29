@@ -3,6 +3,7 @@ import movieModel from "../models/Movie"
 import MovieCredit from "../models/MovieCredit";
 import { MovieDetail } from "../types/movie.type";
 
+// TODO: log catched errors to the console
 
 const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
@@ -17,17 +18,13 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
-        // const [movies, total] = await Promise.all([
-        //     movieModel.find(filter)
-        //         .skip(skip)
-        //         .limit(limit)
-        //         .select(TMDB_MOVIE_PROJECTION), // TODO: test this
-        //     movieModel.countDocuments(filter),
-        // ]);
-
         const [movies, total] = await Promise.all([
-            movieModel.findSummaries(filter, skip, limit),
-            movieModel.countDocuments(filter),
+            movieModel.find(filter)
+                .skip(skip)
+                .limit(limit)
+                .select("-_id"),// TODO: we have our own id, this should be disabled (we did it in schema)
+                                //  but this got added due to the sample data into atlas
+            movieModel.countDocuments(filter)
         ]);
 
         res.status(200).json({
@@ -37,6 +34,7 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
         });
 
     } catch (error) {
+        console.log(error);
         res.status(500).json({ success: false, message: "Failed to get movies" });
     }
 };
@@ -91,4 +89,13 @@ export const postMovie = async (req: Request, res: Response) : Promise<void> => 
     }
 };
 
+
+// PUT /api/movies/:movieid
+export const updateMovie = async (req: Request, res: Response) : Promise<void> => {
+    try {
+
+    } catch (error) {
+
+    }
+};
 

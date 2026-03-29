@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
-import { MovieDetail, TMDB_MOVIE_AGG_PROJECTION, TMDBmovie } from "../types/movie.type";
+import mongoose, { Schema, Document } from "mongoose";
+import { MovieDetail } from "../types/movie.type";
 
 
 
@@ -52,28 +52,12 @@ const movieSchema: Schema = new Schema(
     }
 );
 
-// Static method on Movie model
-
-movieSchema.statics.findSummaries = async function(filter: object, skip: number, limit: number) {
-    return this.aggregate([
-        { $match: filter },
-        { $skip: skip },
-        { $limit: limit },
-        { $project: TMDB_MOVIE_AGG_PROJECTION },
-    ]);
-};
-
-
 // movieSchema.index({ id: 1 });  // id has unique so it's already indexed
 movieSchema.index({ title: "text", original_title: "text" });  // full-text search
 movieSchema.index({ popularity: -1 });                         // sort by popularity
 movieSchema.index({ vote_average: -1 });                       // sort by rating
 
-// export default mongoose.model<IMovie>("Movie", movieSchema);
+export default mongoose.model<IMovie>("Movie", movieSchema);
 // collection will be called movies
 
-interface IMovieModel extends Model<IMovie> {
-    findSummaries(filter: object, skip: number, limit: number): Promise<TMDBmovie[]>;
-}
 
-export default mongoose.model<IMovie, IMovieModel>("Movie", movieSchema);

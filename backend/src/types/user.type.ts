@@ -18,6 +18,8 @@ export const LoginSchema = UserSchema.pick({
     password: true,
 });
 
+// TODO: shold we emit _id ??
+
 export const UpdateUserSchema = UserSchema
     .omit({ password: true })   // don't let password update
     .partial();                 // every other field optional

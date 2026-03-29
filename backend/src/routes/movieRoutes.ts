@@ -3,11 +3,12 @@ import {
     getMovies, 
     getMovieDetails, 
     getMovieCredits, 
-    postMovie
+    postMovie,
+    updateMovie
 } from "../controllers/movieController";
 import authMiddleware from "../middleware/authMiddleware";
 import { validate } from "../middleware/validate";
-import { MovieDetailsSchema } from "../types/movie.type";
+import { MovieDetailsSchema, UpdateMovieSchema } from "../types/movie.type";
 
 
 const router = Router();
@@ -29,7 +30,7 @@ router.post("/",
 
 router.put("/:movieid", 
     authMiddleware,
-    validate()          // every field is optional
+    validate(UpdateMovieSchema),          // every field is optional, can't update id
     updateMovie
 );
 

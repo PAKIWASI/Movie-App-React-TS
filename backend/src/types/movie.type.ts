@@ -4,7 +4,7 @@ import { z } from "zod";
 export const TMDBmovieSchema = z.object({
     adult:             z.boolean(),
     backdrop_path:     z.string(),
-    genre_ids:         z.array(z.number()), // only the id part of genre {id, name}
+    genres:            z.array(z.object({ id: z.number(), name: z.string() })),
     id:                z.number(),
     original_language: z.string(),
     original_title:    z.string(),
@@ -26,27 +26,6 @@ export const TMDBresponseSchema = z.object({
     total_pages:   z.number(),
     total_results: z.number(),
 });
-
-
-// this is for .select() to only get the fields in TMDBmovieSchema
-export const TMDB_MOVIE_PROJECTION = Object.fromEntries(
-    Object.keys(TMDBmovieSchema.shape)
-        .map(key => [key, 1])
-) as Record<keyof TMDBmovie, 1>;
-
-// manually add genres
-(TMDB_MOVIE_PROJECTION as any).genre_ids = 0;
-(TMDB_MOVIE_PROJECTION as any).genres = 1;
-
-// use this to get summery movies will all TMDB fields
-export const TMDB_MOVIE_AGG_PROJECTION = {
-    ...TMDB_MOVIE_PROJECTION,       // all the 1s and 0s from the select projection
-    genre_ids: { $map: {            // override genre_ids with the $map expression
-        input: "$genres",
-        as:    "g",
-        in:    "$$g.id"
-    }},
-};
 
 
 // /api/movies/:id
@@ -122,6 +101,7 @@ export const MovieCreditsSchema = z.object({
         credit_id:            z.string().optional(),
     })),
 });
+
 
 
 export const UpdateMovieSchema = MovieDetailsSchema

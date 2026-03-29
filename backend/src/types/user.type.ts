@@ -19,8 +19,8 @@ export const LoginSchema = UserSchema.pick({
 });
 
 export const UpdateUserSchema = UserSchema
-    .omit({ password: true })
-    .partial();
+    .omit({ password: true })   // don't let password update
+    .partial();                 // every other field optional
 
 
 export type User = z.infer<typeof UserSchema>;

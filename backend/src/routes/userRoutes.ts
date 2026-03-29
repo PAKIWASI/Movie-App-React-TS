@@ -29,8 +29,7 @@ router.get("/:id", getUserByID);   // the implicit mongoose id
 // The middleware runs first. If validation fails, the controller never runs. 
 // If it passes, req.body is already the correct typed shape.
 
-// TODO: we shouldn't allow password updates
-
+// UpdateUserSchema doesn't allow password updates
 router.put("/:id",
     authMiddleware,             // calls next() -> go to validate
     validate(UpdateUserSchema), // calls next() -> go to updateUser

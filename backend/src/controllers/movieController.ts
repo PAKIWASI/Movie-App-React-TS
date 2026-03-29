@@ -8,7 +8,6 @@ const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
-
 // GET /api/movies?name=Ali&page=1&limit=10
 export const getMovies = async (req: Request, res: Response) : Promise<void> => {
     try { 
@@ -81,8 +80,15 @@ export const postMovie = async (req: Request, res: Response) : Promise<void> => 
         const movie: MovieDetail  = req.body;   // zod-validated MovieDetail object
         const insertedMovie = await movieModel.create(movie); // TODO: should the fields by spread ?
 
-        res.status(201).json({})
-    } catch (error) {
-
+        res.status(201).json({ success: true, data: insertedMovie });
+    } catch (error: any) {
+        if (error.code === 11000) {
+            res.status(409).json({ success: false, message: "Movie with TMDB ID already exists"})
+            return;
+        }    
+        
+        res.status(500).json({ success: false, message: "Failed to post Movie" });
     }
 };
+
+

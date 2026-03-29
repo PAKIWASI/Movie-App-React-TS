@@ -2,7 +2,8 @@ import { Router } from "express";
 import { 
     getMovies, 
     getMovieDetails, 
-    getMovieCredits 
+    getMovieCredits, 
+    postMovie
 } from "../controllers/movieController";
 import authMiddleware from "../middleware/authMiddleware";
 import { validate } from "../middleware/validate";
@@ -26,7 +27,11 @@ router.post("/",
      postMovie
 );
 
-// router.put("/:movieid", updateMovie);
+router.put("/:movieid", 
+    authMiddleware,
+    validate()          // every field is optional
+    updateMovie
+);
 
 // router.delete("/:movieid", deleteMovie);
 

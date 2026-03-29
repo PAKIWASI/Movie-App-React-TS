@@ -124,11 +124,15 @@ export const MovieCreditsSchema = z.object({
 });
 
 
+export const UpdateMovieSchema = MovieDetailsSchema
+    .omit({ id: true })
+    .partial();
 
 
-export type TMDBmovie           = z.infer<typeof TMDBmovieSchema>;
-export type TMDBresponse        = z.infer<typeof TMDBresponseSchema>;
-export type MovieDetail         = z.infer<typeof MovieDetailsSchema>;
-export type MovieCredit         = z.infer<typeof MovieCreditsSchema>;
+export type TMDBmovie    = z.infer<typeof TMDBmovieSchema>;
+export type TMDBresponse = z.infer<typeof TMDBresponseSchema>;
+export type MovieDetail  = z.infer<typeof MovieDetailsSchema>;
+export type MovieCredit  = z.infer<typeof MovieCreditsSchema>;
+export type UpdateMovie  = z.infer<typeof UpdateMovieSchema>; 
 // export type CompleteMovieDetail = z.infer<typeof CompleteMovieDetailSchema>;
 

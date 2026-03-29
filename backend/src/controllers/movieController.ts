@@ -3,7 +3,6 @@ import movieModel from "../models/Movie"
 import MovieCredit from "../models/MovieCredit";
 import { MovieDetail } from "../types/movie.type";
 
-// TODO: log catched errors to the console
 
 const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
@@ -34,7 +33,7 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
         });
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ success: false, message: "Failed to get movies" });
     }
 };
@@ -43,7 +42,7 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 // GET /api/movies/:movieid
 export const getMovieDetails = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const movie = await movieModel.findOne({ id: parseInt(req.params.movieid as string) });
+        const movie = await movieModel.findOne({ id: parseInt(req.params.movieid as string) })
         if (!movie) {
             res.status(404).json({ success: false, message: "Movie not found" });
             return;
@@ -51,6 +50,7 @@ export const getMovieDetails = async (req: Request, res: Response) : Promise<voi
 
         res.status(200).json({ success: true, data: movie });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: "Failed to get movie" });
     }
 };
@@ -67,6 +67,7 @@ export const getMovieCredits = async (req: Request, res: Response) : Promise<voi
 
         res.status(200).json({ success: true, data: credits });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: "Failed to get movie credits" });
     }
 };
@@ -76,7 +77,7 @@ export const getMovieCredits = async (req: Request, res: Response) : Promise<voi
 export const postMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
         const movie: MovieDetail  = req.body;   // zod-validated MovieDetail object
-        const insertedMovie = await movieModel.create(movie); // TODO: should the fields by spread ?
+        const insertedMovie = await movieModel.create(movie);
 
         res.status(201).json({ success: true, data: insertedMovie });
     } catch (error: any) {
@@ -85,7 +86,8 @@ export const postMovie = async (req: Request, res: Response) : Promise<void> => 
             return;
         }    
         
-        res.status(500).json({ success: false, message: "Failed to post Movie" });
+        console.error(error);
+        res.status(500).json({ success: false, message: "Failed to Post Movie" });
     }
 };
 
@@ -93,9 +95,39 @@ export const postMovie = async (req: Request, res: Response) : Promise<void> => 
 // PUT /api/movies/:movieid
 export const updateMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
+        const movie = await movieModel.findOneAndUpdate(
+            { id: parseInt(req.params.movieid as string) },
+            req.body,
+            { returnDocument: 'after', runValidators: true }
+        );
 
+        if (!movie) {
+            res.status(404).json({ success: false, message: "Movie not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, data: movie });
     } catch (error) {
-
+        console.error(error);
+        res.status(500).json({ success: false, message: "Failed to Update Movie" });
     }
 };
+
+
+// DELETE /api/movies/:movieid
+export const deleteMovie = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const result = await movieModel.deleteOne({ id: parseInt(req.params.movieid as string) });
+        if (result.deletedCount === 0) {
+            res.status(404).json({ success: false, message: "Movie not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, message: "Movie deleted" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Failed to Delete Movie" });
+    }
+};
+
 

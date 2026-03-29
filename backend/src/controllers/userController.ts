@@ -29,6 +29,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
         });
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: "Failed to get users" });
     }
 };
@@ -44,6 +45,7 @@ export const getUserByID = async (req: Request, res: Response): Promise<void> =>
 
         res.status(200).json({ success: true, data: user });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: "Failed to get user" });
     }
 };
@@ -64,6 +66,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 
         res.status(200).json({ success: true, data: user });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: "Failed to update user" });
     }
 };
@@ -72,14 +75,17 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 // DELETE /api/users/:id
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await userModel.findByIdAndDelete(req.params.id);
-        if (!user) {
+        // const user = await userModel.findByIdAndDelete(req.params.id);
+        // we don't want the deleted doc back so using deleteOne
+        const result = await userModel.deleteOne({ _id: req.params.id})
+        if (result.deletedCount === 0) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
         }
 
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ success: false, message: "Failed to delete user" });
     }
 };

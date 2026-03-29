@@ -34,15 +34,17 @@ app.use(express.json());
 app.use(cookieParser());
 
 
-// Routes 
+// Routes - Deciding which route to go based on url
+//          Each route has many endpoints
 
-// Any thing hitting /api/users will go to userRoutes
-app.use("/api/users", userRoutes);
-
-// Any thing hitting /api/auth will go to authRoutes
 app.use("/api/auth", authRoutes);
 
+app.use("/api/users", userRoutes);
+
 app.use("/api/movies/", movieRoutes);
+
+// TODO: each user will also have a collection of movie ids as fav and watchlist
+// wo we'll have seperate endpoints to add, delete those
 
 
 // Health check endpoint

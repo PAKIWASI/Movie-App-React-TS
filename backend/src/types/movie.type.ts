@@ -103,9 +103,11 @@ export const MovieCreditsSchema = z.object({
 });
 
 
+// TODO: we accedently have _id from atlas, should we exclude that?
 
 export const UpdateMovieSchema = MovieDetailsSchema
     .omit({ id: true })
+    .omit({ imdb_id: true })
     .partial();
 
 

@@ -17,13 +17,6 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
-        // const [movies, total] = await Promise.all([
-        //     movieModel.find(filter)
-        //         .skip(skip)
-        //         .limit(limit)
-        //         .select("-_id"),
-        //     movieModel.countDocuments(filter)
-        // ]);
         const [movies, total] = await Promise.all([
             movieModel.find(filter)
                 .skip(skip)

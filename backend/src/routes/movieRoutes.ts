@@ -42,4 +42,7 @@ router.delete("/:movieid",
     deleteMovie
 );
 
+// TODO: once we add roles, then all routes will require authMiddleware
+// and then protected routes will additionally require adminAuth
+
 export default router;

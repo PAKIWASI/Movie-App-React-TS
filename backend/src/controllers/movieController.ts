@@ -4,11 +4,13 @@ import MovieCredit from "../models/MovieCredit";
 import { MovieDetail } from "../types/movie.type";
 
 
+// TODO: in logging an error, add function/endpoint name
+
 const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
-// GET /api/movies?name=Ali&page=1&limit=10
+// GET /api/movies?name=movie&page=1&limit=10
 export const getMovies = async (req: Request, res: Response) : Promise<void> => {
     try { 
         const page  = Math.max(MIN_PAGES, parseInt(req.query.page  as string) || MIN_PAGES);

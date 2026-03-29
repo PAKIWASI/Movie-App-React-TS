@@ -71,10 +71,9 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("getUserMovies Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get user movies" });
     }
 };
-
 
 

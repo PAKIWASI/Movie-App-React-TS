@@ -17,6 +17,7 @@ const router = Router();
 
 // general get endpoint for movies by popularity (with ?name&page&limit)
 // only give general info, not all data
+// TODO: add param id and if present, just do a normal lookup for that one movie
 router.get("/", getMovies);
 
 // get all data on a single movie

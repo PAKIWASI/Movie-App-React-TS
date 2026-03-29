@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import movieModel from "../models/Movie"
-import MovieCredit from "../models/MovieCredit";
+import movieCredit from "../models/MovieCredit";
 import { MovieDetail, TMDB_MOVIE_PROJECTION } from "../types/movie.type";
 
 
@@ -21,7 +21,7 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
             movieModel.find(filter)
                 .skip(skip)
                 .limit(limit)
-                .select(TMDB_MOVIE_PROJECTION),
+                .select(TMDB_MOVIE_PROJECTION), // TODO: maybe do a normal projection ?
             movieModel.countDocuments(filter),
         ]);
 
@@ -59,7 +59,7 @@ export const getMovieDetails = async (req: Request, res: Response) : Promise<voi
 // GET /api/movies/:movieid/credits
 export const getMovieCredits = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const credits = await MovieCredit.findOne({ id: parseInt(req.params.movieid as string) });
+        const credits = await movieCredit.findOne({ id: parseInt(req.params.movieid as string) });
         if (!credits) {
             res.status(404).json({ success: false, message: "Movie Credits not found" });
             return;

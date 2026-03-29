@@ -39,12 +39,10 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 
-app.use("/api/users", userRoutes);
+app.use("/api/user", userRoutes);
 
-app.use("/api/movies/", movieRoutes);
+app.use("/api/movie/", movieRoutes);
 
-// TODO: each user will also have a collection of movie ids as fav and watchlist
-// wo we'll have seperate endpoints to add, delete those
 
 
 // Health check endpoint

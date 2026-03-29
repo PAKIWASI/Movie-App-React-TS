@@ -8,6 +8,7 @@ import {
 import { validate } from "../middleware/validate";
 import { UpdateUserSchema } from "../types/user.type";
 import authMiddleware from "../middleware/authMiddleware";
+import userMovieRoutes from "./userMovieRoutes";
 
 
 const router = Router();
@@ -16,6 +17,10 @@ const router = Router();
 // the order here matters. we have /:name but if that one was the first, then /api/users would get mapped to it and name would be empty
 // if two routes are /:something, Express cannot tell them apart. It'll always match the first one and never reach the second.
 
+
+// his endpoint leads to more routes
+// rather than app-level routing, we route in user
+router.use("/:id/movie", userMovieRoutes);  // specific — must come first
 
 // at root with no extra params, has query parameters
 // GET  /api/users

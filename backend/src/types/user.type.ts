@@ -7,6 +7,14 @@ export const UserSchema = z.object({
     age:        z.number().int().min(0).max(150),
     email:      z.email(),
     password:   z.string().min(8),
+    movies:     z.array(z.object({ 
+        tmdbid: z.number(), 
+        watched: z.boolean(),
+        userRating: z.number(), 
+        userReview: z.string(),
+    })),    // general movie storage
+    favMovies:  z.array(z.number()),    // tmdbid's from user's movies
+    watchlist:  z.array(z.number()),
 });
 
 export const PublicUserSchema = UserSchema.omit({

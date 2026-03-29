@@ -13,7 +13,7 @@ const movieCreditSchema: Schema = new Schema(
         cast: [{
             id:                     { type: Number, required: true },
             name:                   { type: String, required: true },
-            character:              { type: String, required: true },
+            character:              { type: String, },
             profile_path:           { type: String },
             order:                  { type: Number, required: true },
             gender:                 { type: Number },
@@ -36,8 +36,7 @@ const movieCreditSchema: Schema = new Schema(
     },
     {
         timestamps: false,
-        _id: false,
-        id: false,
+        id: false,          // disable mongoose's virtual .id getter (would conflict with our id field)
     }
 );
 

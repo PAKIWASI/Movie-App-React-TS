@@ -20,7 +20,7 @@ const movieSchema: Schema = new Schema(
         genres:            [{ id: Number, name: String }],
         homepage:          { type: String },
         id:                { type: Number,   required: true, unique: true },
-        imdb_id:           { type: String,   required: true },
+        imdb_id:           { type: String, },
         origin_country:    { type: [String], required: true },
         original_language: { type: String,   required: true },
         original_title:    { type: String,   required: true },
@@ -47,7 +47,6 @@ const movieSchema: Schema = new Schema(
     },
     {
         timestamps: false,
-        _id: false,         // disable mongodb _id, use TMDB id instead
         id: false,          // disable mongoose's virtual .id getter (would conflict with our id field)
     }
 );

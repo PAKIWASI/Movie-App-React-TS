@@ -75,10 +75,8 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 // DELETE /api/users/:id
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        // const user = await userModel.findByIdAndDelete(req.params.id);
-        // we don't want the deleted doc back so using deleteOne
-        const result = await userModel.deleteOne({ _id: req.params.id})
-        if (result.deletedCount === 0) {
+        const user = await userModel.findByIdAndDelete(req.params.id);
+        if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
         }

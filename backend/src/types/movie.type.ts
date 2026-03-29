@@ -40,9 +40,9 @@ export const MovieDetailsSchema = z.object({
     }).nullable(),
     budget:            z.number(),
     genres:            z.array(z.object({ id: z.number(), name: z.string() })),
-    homepage:          z.string(),
+    homepage:          z.string().nullable(),
     id:                z.number(),
-    imdb_id:           z.string(),
+    imdb_id:           z.string().nullable(),
     origin_country:    z.array(z.string()),
     original_language: z.string(),
     original_title:    z.string(),
@@ -68,7 +68,7 @@ export const MovieDetailsSchema = z.object({
         name:         z.string(),
     })),
     status:       z.string(),
-    tagline:      z.string(),
+    tagline:      z.string().nullable(),
     title:        z.string(),
     video:        z.boolean(),
     vote_average: z.number(),
@@ -78,6 +78,7 @@ export const MovieDetailsSchema = z.object({
 
 // /api/movies/:id/credits
 export const MovieCreditsSchema = z.object({
+    id: z.number(),
     cast: z.array(z.object({
         id:                   z.number(),
         name:                 z.string(),
@@ -107,7 +108,6 @@ export const MovieCreditsSchema = z.object({
 
 export const UpdateMovieSchema = MovieDetailsSchema
     .omit({ id: true })
-    .omit({ imdb_id: true })
     .partial();
 
 
@@ -116,5 +116,4 @@ export type TMDBresponse = z.infer<typeof TMDBresponseSchema>;
 export type MovieDetail  = z.infer<typeof MovieDetailsSchema>;
 export type MovieCredit  = z.infer<typeof MovieCreditsSchema>;
 export type UpdateMovie  = z.infer<typeof UpdateMovieSchema>; 
-// export type CompleteMovieDetail = z.infer<typeof CompleteMovieDetailSchema>;
 

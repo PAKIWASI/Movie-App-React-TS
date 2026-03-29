@@ -65,8 +65,13 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
         }
 
         res.status(200).json({ success: true, data: user });
-    } catch (error) {
+    } catch (error: any) {
         console.error(error);
+        // Duplicate email (MongoDB error code 11000)
+        if (error.code === 11000) {
+            res.status(409).json({ success: false, message: "Email already exists" });
+            return;
+        }
         res.status(500).json({ success: false, message: "Failed to update user" });
     }
 };

@@ -2,6 +2,8 @@ import mongoose, { Schema, Document } from "mongoose";
 import { MovieDetail } from "../types/movie.type";
 
 
+// TODO: add mongoose queries, static methods to make controllers simpler
+
 
 export interface IMovie extends MovieDetail, Document {}
 

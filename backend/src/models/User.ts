@@ -2,9 +2,6 @@ import mongoose, { Schema, Document } from "mongoose";
 import { User } from "../types/user.type";
 
 
-// TODO: each user will have an array of movie id's for fav and watchlist
-
-
 // Main document interface for Users
 interface IUser extends User, Document {
     // User interface in types already defines all the fields

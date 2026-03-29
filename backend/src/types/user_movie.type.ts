@@ -1,13 +1,19 @@
+import mongoose from "mongoose";
 import z from "zod"
 
 
 
-export const UserMovie = z.object({
-    userId:         z.object(),     // ref to user
+export const UserMovieSchema = z.object({
+    userId: z.string().refine(val => mongoose.Types.ObjectId.isValid(val), "Invalid ObjectId"),
     tmdbId:         z.number(),     // ref to movie
-    inFavs:         z.boolean(),
-    inWatchlist:    z.boolean(),
-    watched:        z.boolean(),
-    userRating:     z.number(),     // 0-10
-    userReview:     z.string(),
+    inFavs:         z.boolean().default(false),
+    inWatchlist:    z.boolean().default(false),
+    watched:        z.boolean().default(false),
+    userRating:  z.number().min(0).max(10).default(0),
+    userReview:  z.string().default(""),
 });
+
+
+
+
+export type UserMovie = z.infer<typeof UserMovieSchema>;

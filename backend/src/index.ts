@@ -28,7 +28,7 @@ app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173" }));
 // if we have users and we do: 
 // curl -X POST http://localhost:5000/api/users -H "Content-Type: application/json" -d '{"name":"Ali","age":25,"email":"ali@example.com"}'
 // then this middleware will put the name, age and email into req.body
-app.use(express.json());    
+app.use(express.json());
 
 // parse cookies from requests
 app.use(cookieParser());
@@ -52,8 +52,10 @@ app.get("/", (_req, res) => {
 
 
 // Error middleware — must come LAST, order matters
+// we come here if any of the middlewares do next(error)
 app.use(notFound);      // catches requests to unknown routes
 app.use(errorHandler);  // catches thrown errors from any route
+// we can also have local error middlewares on each of the routes
 
 
 app.listen(PORT, () => {

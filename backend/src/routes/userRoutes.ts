@@ -31,9 +31,9 @@ router.get("/:id", getUserByID);   // the implicit mongoose id
 
 
 router.put("/:id",
-    authMiddleware,
-    validate(UpdateUserSchema),
-    updateUser
+    authMiddleware,             // calls next() -> go to validate
+    validate(UpdateUserSchema), // calls next() -> go to updateUser
+    updateUser                  // if at any point call next(error), go to the next error middleware
 );
 
 router.delete("/:id",

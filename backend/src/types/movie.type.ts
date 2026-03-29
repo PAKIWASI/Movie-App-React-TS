@@ -18,6 +18,17 @@ export const TMDBmovieSchema = z.object({
     vote_count:        z.number(),
 });
 
+
+// the response from /api/popular movies (no details)
+export const TMDBresponseSchema = z.object({
+    page:          z.number(),
+    results:       z.array(TMDBmovieSchema),
+    total_pages:   z.number(),
+    total_results: z.number(),
+});
+
+
+// this is for .select() to only get the fields in TMDBmovieSchema
 export const TMDB_MOVIE_PROJECTION = Object.fromEntries(
     Object.keys(TMDBmovieSchema.shape)
         .map(key => [key, 1])
@@ -27,6 +38,9 @@ export const TMDB_MOVIE_PROJECTION = Object.fromEntries(
 (TMDB_MOVIE_PROJECTION as any)._id = 0;
 
 
+
+
+// /api/movies/:id
 export const MovieDetailsSchema = z.object({
     adult:             z.boolean(),
     backdrop_path:     z.string(),
@@ -74,7 +88,7 @@ export const MovieDetailsSchema = z.object({
 });
 
 
-// /api/movies/credits/:id
+// /api/movies/:id/credits
 export const MovieCreditsSchema = z.object({
     cast: z.array(z.object({
         id:                   z.number(),
@@ -93,7 +107,7 @@ export const MovieCreditsSchema = z.object({
         job:                  z.string(),
         department:           z.string(),
         profile_path:         z.string().nullable(),
-        gender:               z.number().optional(),
+        gender:               z.number().optional(),    // TODO: diff b/w nullable and optional?
         known_for_department: z.string().optional(),
         popularity:           z.number().optional(),
         credit_id:            z.string().optional(),
@@ -101,28 +115,20 @@ export const MovieCreditsSchema = z.object({
 });
 
 
-// the response from /api/popular movies (no details)
-export const TMDBresponseSchema = z.object({
-    page:          z.number(),
-    results:       z.array(TMDBmovieSchema),
-    total_pages:   z.number(),
-    total_results: z.number(),
-});
 
 
 // TODO: like the tmdb api, maybe we shouldn't return credits with this
 // and let the user handle credits with the seperate endpoint
 
-// response from /api/movie/id
-export const CompleteMovieDetailSchema = z.object({
-    movieDetail:  MovieDetailsSchema.nullable(),
-    // movieCredits: MovieCreditsSchema.nullable(),
-});
+// export const CompleteMovieDetailSchema = z.object({
+//     movieDetail:  MovieDetailsSchema.nullable(),
+//     movieCredits: MovieCreditsSchema.nullable(),
+// });
 
 
 export type TMDBmovie           = z.infer<typeof TMDBmovieSchema>;
+export type TMDBresponse        = z.infer<typeof TMDBresponseSchema>;
 export type MovieDetail         = z.infer<typeof MovieDetailsSchema>;
 export type MovieCredit         = z.infer<typeof MovieCreditsSchema>;
-export type TMDBresponse        = z.infer<typeof TMDBresponseSchema>;
-export type CompleteMovieDetail = z.infer<typeof CompleteMovieDetailSchema>;
+// export type CompleteMovieDetail = z.infer<typeof CompleteMovieDetailSchema>;
 

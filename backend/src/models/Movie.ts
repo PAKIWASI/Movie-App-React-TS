@@ -5,6 +5,7 @@ import { MovieDetail } from "../types/movie.type";
 
 export interface IMovie extends MovieDetail, Document {}
 
+
 const movieSchema: Schema = new Schema(
     {
         adult:             { type: Boolean, required: true },

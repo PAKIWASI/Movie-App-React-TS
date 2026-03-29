@@ -4,6 +4,9 @@ import {
     getMovieDetails, 
     getMovieCredits 
 } from "../controllers/movieController";
+import authMiddleware from "../middleware/authMiddleware";
+import { validate } from "../middleware/validate";
+import { MovieDetailsSchema } from "../types/movie.type";
 
 
 const router = Router();
@@ -17,14 +20,14 @@ router.get("/:movieid", getMovieDetails);
 
 router.get("/:movieid/credits", getMovieCredits);
 
-// router.post("/", 
-//      authMiddleware(), 
-//      validate(), 
-//      postMovie
-// );
-//
+router.post("/", 
+     authMiddleware, 
+     validate(MovieDetailsSchema),
+     postMovie
+);
+
 // router.put("/:movieid", updateMovie);
-//
+
 // router.delete("/:movieid", deleteMovie);
 
 export default router;

@@ -9,3 +9,7 @@ dist-ssr
 *.local
 
 .env
+
+
+data.json
+credit_data.json

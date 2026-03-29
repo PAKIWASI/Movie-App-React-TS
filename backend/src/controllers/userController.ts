@@ -51,8 +51,6 @@ export const getUserByID = async (req: Request, res: Response): Promise<void> =>
 // PUT /api/users/:id
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        // zod validator middleware already checked req.body
-        
         const user = await userModel.findByIdAndUpdate(
             req.params.id,
             req.body,

@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import movieModel from "../models/Movie"
-import { TMDB_MOVIE_PROJECTION } from "../types/movie.type";
 import MovieCredit from "../models/MovieCredit";
+import { MovieDetail } from "../types/movie.type";
 
 
 const MIN_PAGES = 1;
@@ -75,3 +75,14 @@ export const getMovieCredits = async (req: Request, res: Response) : Promise<voi
 };
 
 
+// POST /api/movies
+export const postMovie = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const movie: MovieDetail  = req.body;   // zod-validated MovieDetail object
+        const insertedMovie = await movieModel.create(movie); // TODO: should the fields by spread ?
+
+        res.status(201).json({})
+    } catch (error) {
+
+    }
+};

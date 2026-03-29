@@ -29,12 +29,15 @@ router.get("/:id", getUserByID);   // the implicit mongoose id
 // The middleware runs first. If validation fails, the controller never runs. 
 // If it passes, req.body is already the correct typed shape.
 
+// TODO: we shouldn't allow password updates
 
 router.put("/:id",
     authMiddleware,             // calls next() -> go to validate
     validate(UpdateUserSchema), // calls next() -> go to updateUser
     updateUser                  // if at any point call next(error), go to the next error middleware
 );
+
+// TODO: add roles, so only admins can do this
 
 router.delete("/:id",
     authMiddleware,

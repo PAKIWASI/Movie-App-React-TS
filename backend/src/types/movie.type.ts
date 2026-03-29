@@ -49,8 +49,6 @@ export const TMDB_MOVIE_AGG_PROJECTION = {
 };
 
 
-
-
 // /api/movies/:id
 export const MovieDetailsSchema = z.object({
     adult:             z.boolean(),

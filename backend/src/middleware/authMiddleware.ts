@@ -11,7 +11,6 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-        // BUG:             // we put userid filed when we created token
         (req as any).userid = (decoded as any).userid;        // TODO: that type extention thing is not working
         next();
     } catch (error) {

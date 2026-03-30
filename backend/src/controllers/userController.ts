@@ -1,14 +1,20 @@
 import { Request, Response } from "express";
 import UserModel from "../models/User";
 
+
 const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
-// TODO: should add id param ?
-// GET /api/users?name=Ali&page=1&limit=10
+
+// GET /api/users?name=wasi&userid=387437&page=1&limit=10
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
+            // if we have id param, just seach for and return that user
+        if (req.query.userid) {
+            await getUserByID(req, res);
+        }
+
         const page  = Math.max(MIN_PAGES, parseInt(req.query.page  as string) || MIN_PAGES);
         const limit = Math.min(MAX_LIMIT, parseInt(req.query.limit as string) || DEFAULT_LIMIT); // cap at 100
         const skip  = (page - 1) * limit;
@@ -36,7 +42,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 };
 
 // GET /api/users/:userid
-export const getUserByID = async (req: Request, res: Response): Promise<void> => {
+const getUserByID = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await UserModel.findById(req.params.userid).select("-password");
         if (!user) {

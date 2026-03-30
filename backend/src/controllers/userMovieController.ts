@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import UserMovieModel from "../models/UserMovie"
+import UserMovieModel from "../models/UserMovie";
+import MovieModel from "../models/Movie";
 import { PostUserMovie, SetRating, SetReview } from "../types/user_movie.type";
+import { success } from "zod";
 
 
 
@@ -86,8 +88,6 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
             pagination: { page, limit, total, pages: Math.ceil(total / limit) }
         });
 
-        // TODO: how to check no movies found?
-
     } catch (error) {
         console.error("getUserMovies Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get user movies" });
@@ -100,12 +100,15 @@ export const postUserMovie = async (req: Request, res: Response) : Promise<void>
         const um: PostUserMovie = req.body; // this type doesnot have userId
         const userId = new mongoose.Types.ObjectId((req as any).userid as string);
 
-        // TODO: we should also check if tmdbId exists in out database or not
+        // check if tmdbId exists in out database or not
+        const movie = await MovieModel.exists({ id: um.tmdbId });
+        if (!movie) {
+            res.status(404).json({ success: false, message: "Movie with tmdbid doesnot exist in database" });
+            return;
+        }
 
-        const insertedUM = await UserMovieModel.create({...um,  userId });  // throws
-
+        const insertedUM = await UserMovieModel.create({...um,  userId });  // throws on error
         res.status(201).json({ success: true , data: insertedUM });
-
     } catch (error: any) {
         console.error("postUserMovie Error: ", error);
         // Duplicate (MongoDB error code 11000)

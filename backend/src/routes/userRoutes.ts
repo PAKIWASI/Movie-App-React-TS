@@ -4,7 +4,6 @@ import { UpdateUserSchema } from "../types/user.type";
 import userMovieRoutes from "./userMovieRoutes";
 import {
     getUsers,
-    getUserByID,
     updateUser,
     deleteUser
 } from "../controllers/userController";
@@ -21,13 +20,8 @@ const router = Router();
 router.use("/me/movie", userMovieRoutes);  // specific — must come first
 
 // at root with no extra params, has query parameters
-// GET  /api/users
+// GET  /api/user
 router.get("/", getUsers);
-
-// the catch-all params one should be last, if we are at root but some param was passed
-// GET /api/users/:id
-router.get("/:userid", getUserByID);   // the implicit mongoose id
-
 
 // The middleware runs first. If validation fails, the controller never runs. 
 // If it passes, req.body is already the correct typed shape.

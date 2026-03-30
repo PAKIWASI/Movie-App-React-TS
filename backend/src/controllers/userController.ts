@@ -18,7 +18,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
         const page  = Math.max(MIN_PAGES, parseInt(req.query.page  as string) || MIN_PAGES);
         const limit = Math.min(MAX_LIMIT, parseInt(req.query.limit as string) || DEFAULT_LIMIT); // cap at 100
-        const skip  = (page - 1) * limit;
+        const skip  = (page - 1) * limit;           // SQL: LIMIT 10 OFFSET 10
 
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 

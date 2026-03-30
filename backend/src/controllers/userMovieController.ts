@@ -27,9 +27,9 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
         const userId = new mongoose.Types.ObjectId((req as any).userid as string);
 
         // pagination
-        const page  = Math.max(MIN_PAGES, parseInt(req.query.page  as string) || MIN_PAGES);
+        const page = Math.max(MIN_PAGES, parseInt(req.query.page as string) || MIN_PAGES);
         const limit = Math.min(MAX_LIMIT, parseInt(req.query.limit as string) || DEFAULT_LIMIT);
-        const skip  = (page - 1) * limit;
+        const skip = (page - 1) * limit;
 
         // build filter dynamically — only add fields that were actually passed
         const filter: Record<string, any> = { userId }; // key is string, value is any
@@ -37,26 +37,42 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
         if (req.query.inFavs !== undefined)      filter.inFavs = req.query.inFavs === "true";
         if (req.query.inWatchlist !== undefined) filter.inWatchlist = req.query.inWatchlist === "true";
         if (req.query.watched !== undefined)     filter.watched = req.query.watched === "true";
+        /*
+           filter afterwards:
+        {
+          userId: ObjectId(...),
+          inFavs: true,
+          watched: true
+        }
+        */
 
+        // Aggregation pipelines are like data processing stages.
+        // Each stage processes the output of the previous stage.
         const pipeline: mongoose.PipelineStage[] = [
             { $match: filter },             // first apply filter to reduce docs
             {
                 $lookup: {
-                    from:         "movies", // the other collection to join
-                    localField:   "tmdbId", // name in current doc
-                    foreignField: "id",     // name in other collection
-                    as:           "movie",  // name of new field to attach result to
+                    from: "movies",       // the other collection to join
+                    localField: "tmdbId", // name in current doc
+                    foreignField: "id",   // name in other collection
+                    as: "movie",          // name of new field to attach result to
                 }
+                /*
+                    SELECT *
+                    FROM userMovies
+                    JOIN movies
+                    ON userMovies.tmdbId = movies.id
+                */
             },
             { $unwind: "$movie" },      // it's an array, unwraps it into a single object
         ];
 
-        if (req.query.name) {
+        if (req.query.name) { 
             const matchingMovies = await MovieModel
                 .find({ $text: { $search: req.query.name as string } })
                 .select("id");
             const ids = matchingMovies.map(m => m.id);
-            filter.tmdbId = { $in: ids };  // add to initial $match instead
+            filter.tmdbId = { $in: ids };  // WHERE tmdbId IN (...)        
         }
 
         // get total before slicing for pagination metadata
@@ -99,7 +115,7 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
 };
 
 // POST /api/user/me/movie
-export const postUserMovie = async (req: Request, res: Response) : Promise<void> => {
+export const postUserMovie = async (req: Request, res: Response): Promise<void> => {
     try {
         const um: PostUserMovie = req.body; // this type doesnot have userId
         const userId = new mongoose.Types.ObjectId((req as any).userid as string);
@@ -111,8 +127,8 @@ export const postUserMovie = async (req: Request, res: Response) : Promise<void>
             return;
         }
 
-        const insertedUM = await UserMovieModel.create({...um,  userId });  // throws on error
-        res.status(201).json({ success: true , data: insertedUM });
+        const insertedUM = await UserMovieModel.create({ ...um, userId });  // throws on error
+        res.status(201).json({ success: true, data: insertedUM });
     } catch (error: any) {
         console.error("postUserMovie Error: ", error);
         // Duplicate (MongoDB error code 11000)
@@ -125,7 +141,7 @@ export const postUserMovie = async (req: Request, res: Response) : Promise<void>
 };
 
 // PUT  /api/user/me/movie/:tmdbId
-export const updateUserMovie = async (req: Request, res: Response) : Promise<void> => {
+export const updateUserMovie = async (req: Request, res: Response): Promise<void> => {
     try {
         const um = await UserMovieModel.findOneAndUpdate(
             getCompositeKey(req),     // search by composite key
@@ -146,7 +162,7 @@ export const updateUserMovie = async (req: Request, res: Response) : Promise<voi
 };
 
 // DELETE /api/user/me/movie/:tmdbId
-export const deleteUserMovie = async (req: Request, res: Response) : Promise<void> => {
+export const deleteUserMovie = async (req: Request, res: Response): Promise<void> => {
     try {
         const um = await UserMovieModel.findOneAndDelete(getCompositeKey(req));
         if (!um) {
@@ -169,7 +185,7 @@ export const toggleWatchlist = async (req: Request, res: Response): Promise<void
         const um = await UserMovieModel.findOneAndUpdate(
             getCompositeKey(req),
             [{ $set: { inWatchlist: { $not: "$inWatchlist" } } }],
-            { returnDocument: "after" , updatePipeline: true }
+            { returnDocument: "after", updatePipeline: true }
         );
 
         if (!um) {

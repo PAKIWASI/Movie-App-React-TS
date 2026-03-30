@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import userModel from "../models/User";
+import UserModel from "../models/User";
 
 const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
@@ -15,11 +15,11 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
         const [users, total] = await Promise.all([
-            userModel.find(filter)
+            UserModel.find(filter)
                 .skip(skip)
                 .limit(limit)
                 .select("-password"),
-            userModel.countDocuments(filter),
+            UserModel.countDocuments(filter),
         ]);
 
         res.status(200).json({
@@ -29,7 +29,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("getUsers Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get users" });
     }
 };
@@ -37,7 +37,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 // GET /api/users/:id
 export const getUserByID = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await userModel.findById(req.params.id).select("-password");
+        const user = await UserModel.findById(req.params.id).select("-password");
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
@@ -45,7 +45,7 @@ export const getUserByID = async (req: Request, res: Response): Promise<void> =>
 
         res.status(200).json({ success: true, data: user });
     } catch (error) {
-        console.error(error);
+        console.error("getUserByID Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get user" });
     }
 };
@@ -53,7 +53,7 @@ export const getUserByID = async (req: Request, res: Response): Promise<void> =>
 // PUT /api/users/:id
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await userModel.findByIdAndUpdate(
+        const user = await UserModel.findByIdAndUpdate(
             req.params.id,
             req.body,
             { returnDocument: 'after', runValidators: true }  // return updated doc, runValidators: enforce schema rules
@@ -66,7 +66,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 
         res.status(200).json({ success: true, data: user });
     } catch (error: any) {
-        console.error(error);
+        console.error("updateUser Error: ", error);
         // Duplicate email (MongoDB error code 11000)
         if (error.code === 11000) {
             res.status(409).json({ success: false, message: "Email already exists" });
@@ -80,7 +80,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 // DELETE /api/users/:id
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await userModel.findByIdAndDelete(req.params.id);
+        const user = await UserModel.findByIdAndDelete(req.params.id);
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
@@ -88,7 +88,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {
-        console.error(error);
+        console.error("deleteUser Error: ", error);
         res.status(500).json({ success: false, message: "Failed to delete user" });
     }
 };

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import UserMovieModel from "../models/UserMovie"
 import { PostUserMovie } from "../types/user_movie.type";
+import { success } from "zod";
 
 
 
@@ -125,5 +126,22 @@ export const updateUserMovie = async (req: Request, res: Response) : Promise<voi
     } catch (error) {
         console.error("updateMovie Error: ", error);
         res.status(500).json({ success: false, message: "Failed to Update UserMovie" });
+    }
+};
+
+// DELETE /api/user/:id/movie/:tmdbId
+export const deleteUserMovie = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const userId = new mongoose.Types.ObjectId(req.params.id as string);    
+        const tmdbId = parseInt(req.params.tmdbId as string);
+        const um = await UserMovieModel.findOneAndDelete({ userId, tmdbId });
+        if (!um) {
+            res.status(404).json({ success: false, message: "UserMovie not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, message: "UserMovie deleted" });
+    } catch (error) {
+        console.error("deleteUserMovie Error: ", error);
     }
 };

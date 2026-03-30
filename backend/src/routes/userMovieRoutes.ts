@@ -1,7 +1,11 @@
 import { Router } from "express";
-import { getUserMovies, postUserMovie } from "../controllers/userMovieController";
-import { validate } from "../middleware/validate";
 import { PostUserMovieSchema, UpdateUserMovieSchema } from "../types/user_movie.type";
+import { validate } from "../middleware/validate";
+import { 
+    getUserMovies, 
+    postUserMovie, 
+    updateUserMovie 
+} from "../controllers/userMovieController";
 
 
 const router = Router();
@@ -15,7 +19,7 @@ router.get("/",  getUserMovies);    // GET  /api/user/:id/movie
 router.post("/", validate(PostUserMovieSchema), postUserMovie);    // POST /api/user/:id/movie
 
 router.put("/:tmdbId", validate(UpdateUserMovieSchema), updateUserMovie);  // PUT  /api/user/:id/movie/:tmdbId
-router.delete("/:tmdbId", deleteUserMovie);  // DELETE
+router.delete("/:tmdbId", deleteUserMovie);  // DELETE /api/user/:id/movie/:tmdbId
 
 router.patch("/:tmdbId/watchlist",  validate(UpdateUserMovieSchema), toggleWatchlist);  // PATCH /api/user/:id/movie/:tmdbId/watchlist
 router.patch("/:tmdbId/favorites",  validate(UpdateUserMovieSchema),  toggleFavorites);  // PATCH

@@ -10,7 +10,7 @@ import {
     getUser
 } from "../controllers/userController";
 
-// TODO: a user should be able to modify ad delete their own account or userMovies
+
 // this route is already protected by auth, so anyone here can do anything
 
 const router = Router();
@@ -40,6 +40,10 @@ router.put("/me",
 );
 
 router.delete("/me", deleteUser);
+
+// TODO: how to allow admins to delete users?
+
+// router.delete("/:userid", adminMiddleware, deleteUserById);
 
 
 export default router;

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import AdminModel from "../models/Admin";
+import UserModel from "../models/User";
 
 
 
@@ -34,8 +35,15 @@ export const getAdmin = async (req: Request, res: Response) => {
 // POST /api/auth/admin/:userid — make user an admin
 export const makeAdmin = async (req: Request, res: Response) => {
     try {
+        // TODO: addBy is a confirmed admin but what about :userid ?
+        const id = await UserModel.exists({_id: req.params.userid as string });
+        if (!id) {
+            res.status(404).json({ success: false, message: "User not found "}); 
+            return;
+        }
+
         const admin = await AdminModel.create({ 
-            userId: req.params.userid as string, 
+            userId: id._id, 
             addedBy: (req as any).userid 
         });
 

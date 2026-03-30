@@ -17,7 +17,7 @@ const router = Router();
 
 
 // only give general info, not all data
-// GET /api/movies?name=movie&id=111&page=1&limit=10
+// GET /api/movie?name=movie&id=111&page=1&limit=10
 router.get("/", getMovies);
 
 // get all data on a single movie

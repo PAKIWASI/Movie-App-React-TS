@@ -23,7 +23,9 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
             password: hashedPassword
         });  // this throws if already exist 
 
-        const safeUser: PublicUser = PublicUserSchema.parse(user.toObject());
+        // this strips _id which is not in zod schema but is in mongoose
+        // const safeUser: PublicUser = PublicUserSchema.parse(user.toObject());
+        const { password: _, ...safeUser } = user.toObject();
         res.status(201).json({ success: true, data: safeUser });
 
     } catch (error: any) {

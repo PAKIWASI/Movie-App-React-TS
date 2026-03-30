@@ -13,7 +13,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
             // if we have id param, just seach for and return that user
         if (req.query.userid) {
-            await getUser(req, res);
+            await getUserById(req, res);
             return;
         }
 
@@ -43,7 +43,23 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// called by getUsers
+
+// called by getUsers()
+const getUserById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const user = await UserModel.findById(req.query.userid as string).select("-password");
+        if (!user) {
+            res.status(404).json({ success: false, message: "User not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        console.error("getUser Error: ", error);
+        res.status(500).json({ success: false, message: "Failed to get user" });
+    }
+};
+
 // and GET /api/user/me
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     try {

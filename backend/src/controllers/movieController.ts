@@ -8,7 +8,7 @@ const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
-// GET /api/movies?name=movie&id=111&page=1&limit=10
+// GET /api/movie?name=movie&id=111&page=1&limit=10
 export const getMovies = async (req: Request, res: Response) : Promise<void> => {
     try { 
 
@@ -17,8 +17,9 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
             const movie = await MovieModel
                 .findOne({ id: parseInt(req.query.id as string) })
                 .select(TMDB_MOVIE_PROJECTION);
+
             if (!movie) { 
-                res.status(404).json({ success: true, data: movie }); 
+                res.status(404).json({ success: false, message: "Movie not found" }); 
                 return; 
             }
             res.status(200).json({ success: true, data: [movie] });
@@ -46,13 +47,13 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("getMovies Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get movies" });
     }
 };
 
 
-// GET /api/movies/:movieid
+// GET /api/movie/:movieid
 export const getMovieDetails = async (req: Request, res: Response) : Promise<void> => {
     try {
         const movie = await MovieModel.findOne({ id: parseInt(req.params.movieid as string) });
@@ -63,13 +64,13 @@ export const getMovieDetails = async (req: Request, res: Response) : Promise<voi
 
         res.status(200).json({ success: true, data: movie });
     } catch (error) {
-        console.error(error);
+        console.error("getMovieDetails Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get movie" });
     }
 };
 
 
-// GET /api/movies/:movieid/credits
+// GET /api/movie/:movieid/credits
 export const getMovieCredits = async (req: Request, res: Response) : Promise<void> => {
     try {
         const credits = await movieCredit.findOne({ id: parseInt(req.params.movieid as string) });
@@ -80,13 +81,13 @@ export const getMovieCredits = async (req: Request, res: Response) : Promise<voi
 
         res.status(200).json({ success: true, data: credits });
     } catch (error) {
-        console.error(error);
+        console.error("getMovieCredits Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get movie credits" });
     }
 };
 
 
-// POST /api/movies
+// POST /api/movie
 export const postMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
         const movie: MovieDetail  = req.body;   // zod-validated MovieDetail object
@@ -94,18 +95,18 @@ export const postMovie = async (req: Request, res: Response) : Promise<void> => 
 
         res.status(201).json({ success: true, data: insertedMovie });
     } catch (error: any) {
+
         if (error.code === 11000) {
             res.status(409).json({ success: false, message: "Movie with TMDB ID already exists"})
             return;
         }    
-        
-        console.error(error);
+        console.error("postMovie Error: ", error);
         res.status(500).json({ success: false, message: "Failed to Post Movie" });
     }
 };
 
 
-// PUT /api/movies/:movieid
+// PUT /api/movie/:movieid
 export const updateMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
         const movie = await MovieModel.findOneAndUpdate(
@@ -127,7 +128,7 @@ export const updateMovie = async (req: Request, res: Response) : Promise<void> =
 };
 
 
-// DELETE /api/movies/:movieid
+// DELETE /api/movie/:movieid
 export const deleteMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
         const result = await MovieModel.deleteOne({ id: parseInt(req.params.movieid as string) });
@@ -138,7 +139,7 @@ export const deleteMovie = async (req: Request, res: Response) : Promise<void> =
 
         res.status(200).json({ success: true, message: "Movie deleted" });
     } catch (error) {
-        console.error(error);
+        console.error("deleteMovie Error: ", error);
         res.status(500).json({ success: false, message: "Failed to Delete Movie" });
     }
 };

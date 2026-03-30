@@ -3,6 +3,10 @@ import { MovieDetail } from "../types/movie.type";
 
 
 // TODO: add mongoose queries, static methods to make controllers simpler
+//The controllers have a lot of repeated patterns. Good candidates to move to the model:
+// Movie.findByTmdbId(id) — used in 4 places
+// Movie.search(name, page, limit) — the full pagination logic
+// UserMovie.findByCompositeKey(userId, tmdbId) — extracted as getCompositeKey in the controller already, but could live on the model
 
 
 export interface IMovie extends MovieDetail, Document {}
@@ -56,7 +60,7 @@ const movieSchema: Schema = new Schema(
     },
     {
         timestamps: false,
-        _id: false,         // disable mongodb's implicit id
+        // _id: false,         // disable mongodb's implicit id
         id: false,          // disable mongoose's virtual .id getter (would conflict with our id field)
     }
 );

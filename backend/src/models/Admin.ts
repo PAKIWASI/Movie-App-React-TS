@@ -27,9 +27,6 @@ export enum Roles {
 };
 
 
-// Index for quick lookups
-adminSchema.index({ userId: 1 });
-
 // export default mongoose.model<IAdmin>("Admin", adminSchema);
 // collection name admins
 
@@ -43,3 +40,4 @@ adminSchema.statics.getRole = async function(userId: string): Promise<Roles> {
 };
 
 export default mongoose.model<IAdmin, IAdminModel>("Admin", adminSchema);
+

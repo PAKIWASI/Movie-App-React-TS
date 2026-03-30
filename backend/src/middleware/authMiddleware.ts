@@ -23,7 +23,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-// TODO: the role is embedded in the token at login and never updated until the token expires. 
+// the role is embedded in the token at login and never updated until the token expires. 
 // If you make someone an admin, they won't get admin access until they log out and back in
 // this is because when a user logs in and makes request, this func just sets the role that was in the token
 // maybe someone promoted user, user won't have admin status until the next time they log in (hit the loginUser func)

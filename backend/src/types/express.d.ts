@@ -1,17 +1,11 @@
-import { JwtPayload } from "jsonwebtoken";
-
 // BUG: not working ? is ts-node the issue ?
 
 // req.user doesn't exist on Express's Request type, we need to extend it
 // This resolves the TypeScript error on req.user = decoded and on req.user in dashboardController
 
-declare global {
-    namespace Express {
-        interface Request {
-            userid?: string;
-            role?: number;      // TODO: isnt role a number? it has value 0 or 1 an enum
-        }
+declare namespace Express {
+    interface Request {
+        userid: string;
+        role: import("../models/Admin").Roles;
     }
 }
-
-export { };

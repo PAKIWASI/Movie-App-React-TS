@@ -62,7 +62,7 @@ const movieSchema: Schema = new Schema(
 );
 
 // movieSchema.index({ id: 1 });  // id has unique so it's already indexed
-movieSchema.index({ title: "text", original_title: "text" });  // full-text search
+movieSchema.index({ title: "text" });  // full-text search
 movieSchema.index({ popularity: -1 });                         // sort by popularity
 movieSchema.index({ vote_average: -1 });                       // sort by rating
 

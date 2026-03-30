@@ -14,7 +14,9 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 
         // Early return if we have id param, just return that movie
         if (req.query.id) {
-            const movie = await MovieModel.findOne({ id: parseInt(req.query.id as string) }).select(TMDB_MOVIE_PROJECTION);
+            const movie = await MovieModel
+                .findOne({ id: parseInt(req.query.id as string) })
+                .select(TMDB_MOVIE_PROJECTION);
             if (!movie) { 
                 res.status(404).json({ success: true, data: movie }); 
                 return; 
@@ -33,7 +35,7 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
             MovieModel.find(filter)
                 .skip(skip)
                 .limit(limit)
-                .select(TMDB_MOVIE_PROJECTION), // TODO: maybe do a normal projection ?
+                .select(TMDB_MOVIE_PROJECTION),
             MovieModel.countDocuments(filter),
         ]);
 
@@ -54,7 +56,6 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 export const getMovieDetails = async (req: Request, res: Response) : Promise<void> => {
     try {
         const movie = await MovieModel.findOne({ id: parseInt(req.params.movieid as string) });
-
         if (!movie) {
             res.status(404).json({ success: false, message: "Movie not found" });
             return;

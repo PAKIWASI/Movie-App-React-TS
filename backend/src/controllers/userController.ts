@@ -13,6 +13,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
             // if we have id param, just seach for and return that user
         if (req.query.userid) {
             await getUserByID(req, res);
+            return;
         }
 
         const page  = Math.max(MIN_PAGES, parseInt(req.query.page  as string) || MIN_PAGES);
@@ -41,10 +42,10 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// GET /api/users/:userid
+// called by getUsers
 const getUserByID = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await UserModel.findById(req.params.userid).select("-password");
+        const user = await UserModel.findById(req.query.userid as string).select("-password");
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;

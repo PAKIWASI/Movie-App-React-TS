@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 import UserMovieModel from "../models/UserMovie";
 import MovieModel from "../models/Movie";
 import { PostUserMovie, SetRating, SetReview } from "../types/user_movie.type";
-import { success } from "zod";
 
+
+// TODO: understand how filtering, aggregate works here
 
 
 // helper — shared logic for getting userId and tmdbId from params
@@ -50,9 +51,12 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
             { $unwind: "$movie" },      // it's an array, unwraps it into a single object
         ];
 
-        // name search — filter by movie title after the join
-        if (req.query.name) {       // TODO: this is slow. We do have in index on movie name
-            pipeline.push({ $match: { "movie.title": { $regex: req.query.name as string, $options: "i" } } });
+        if (req.query.name) {
+            const matchingMovies = await MovieModel
+                .find({ $text: { $search: req.query.name as string } })
+                .select("id");
+            const ids = matchingMovies.map(m => m.id);
+            filter.tmdbId = { $in: ids };  // add to initial $match instead
         }
 
         // get total before slicing for pagination metadata

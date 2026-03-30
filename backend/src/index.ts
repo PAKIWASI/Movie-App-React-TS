@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes';
 import cookieParser from 'cookie-parser';
 import movieRoutes from './routes/movieRoutes'
 import { notFound, errorHandler } from './middleware/errorHandler';
+import authMiddleware from './middleware/authMiddleware';
 
 
 // BACKEND ENTRY POINT
@@ -39,9 +40,9 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 
-app.use("/api/user", userRoutes);
+app.use("/api/user", authMiddleware, userRoutes);   // TODO: auth middleware here as we need it for every endpoint
 
-app.use("/api/movie/", movieRoutes);
+app.use("/api/movie/", authMiddleware, movieRoutes);
 
 
 

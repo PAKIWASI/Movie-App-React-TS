@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { getUserMovies } from "../controllers/userMovieController";
+import { getUserMovies, postUserMovie } from "../controllers/userMovieController";
+import { validate } from "../middleware/validate";
+import { PostUserMovieSchema, UpdateUserMovieSchema } from "../types/user_movie.type";
 
 
 const router = Router();
@@ -8,18 +10,18 @@ const router = Router();
 
 // GET /api/user/:id/movie
 // get all movies associated with user
-// GET /api/user/:userId/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception
-router.get("/",                     getUserMovies);    // GET  /api/user/:id/movie
-router.post("/",                    postUserMovie);    // POST /api/user/:id/movie
+// GET /api/user/:id/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception
+router.get("/",  getUserMovies);    // GET  /api/user/:id/movie
+router.post("/", validate(PostUserMovieSchema), postUserMovie);    // POST /api/user/:id/movie
 
-router.put("/:tmdbId",              updateUserMovie);  // PUT  /api/user/:id/movie/:tmdbId
-router.delete("/:tmdbId",           deleteUserMovie);  // DELETE
+router.put("/:tmdbId", validate(UpdateUserMovieSchema), updateUserMovie);  // PUT  /api/user/:id/movie/:tmdbId
+router.delete("/:tmdbId", deleteUserMovie);  // DELETE
 
-router.patch("/:tmdbId/watchlist",  toggleWatchlist);  // PATCH /api/user/:id/movie/:tmdbId/watchlist
-router.patch("/:tmdbId/favorites",  toggleFavorites);  // PATCH
-router.patch("/:tmdbId/watched",    toggleWatched);    // PATCH
-router.patch("/:tmdbId/rating",     setRating);        // PATCH
-router.patch("/:tmdbId/review",     setReview);        // PATCH
+router.patch("/:tmdbId/watchlist",  validate(UpdateUserMovieSchema), toggleWatchlist);  // PATCH /api/user/:id/movie/:tmdbId/watchlist
+router.patch("/:tmdbId/favorites",  validate(UpdateUserMovieSchema),  toggleFavorites);  // PATCH
+router.patch("/:tmdbId/watched",    validate(UpdateUserMovieSchema),  toggleWatched);    // PATCH
+router.patch("/:tmdbId/rating",     validate(UpdateUserMovieSchema),  setRating);        // PATCH
+router.patch("/:tmdbId/review",     validate(UpdateUserMovieSchema),  setReview);        // PATCH
 // using patch to toggle watchlist, favlist (put implies whole object changed)
 
 export default router;

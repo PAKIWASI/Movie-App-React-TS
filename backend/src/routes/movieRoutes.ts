@@ -1,5 +1,4 @@
 import { Router } from "express";
-import authMiddleware from "../middleware/authMiddleware";
 import { validate } from "../middleware/validate";
 import { MovieDetailsSchema, UpdateMovieSchema } from "../types/movie.type";
 import {
@@ -27,19 +26,19 @@ router.get("/:movieid", getMovieDetails);
 router.get("/:movieid/credits", getMovieCredits);
 
 router.post("/",
-    authMiddleware,
+    // authMiddleware,
     validate(MovieDetailsSchema),
     postMovie
 );
 
 router.put("/:movieid",
-    authMiddleware,
+    // authMiddleware,
     validate(UpdateMovieSchema), // every field is optional, can't update id
     updateMovie
 );
 
 router.delete("/:movieid",
-    authMiddleware,
+    // authMiddleware,
     deleteMovie
 );
 

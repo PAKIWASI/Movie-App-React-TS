@@ -7,7 +7,6 @@ import {
 } from "../controllers/userController";
 import { validate } from "../middleware/validate";
 import { UpdateUserSchema } from "../types/user.type";
-import authMiddleware from "../middleware/authMiddleware";
 import userMovieRoutes from "./userMovieRoutes";
 
 
@@ -36,7 +35,7 @@ router.get("/:id", getUserByID);   // the implicit mongoose id
 
 // UpdateUserSchema doesn't allow password updates
 router.put("/:id",
-    authMiddleware,             // calls next() -> go to validate
+    // authMiddleware,             // calls next() -> go to validate
     validate(UpdateUserSchema), // calls next() -> go to updateUser
     updateUser                  // if at any point call next(error), go to the next error middleware
 );
@@ -44,7 +43,7 @@ router.put("/:id",
 // TODO: add roles, so only admins can do this
 
 router.delete("/:id",
-    authMiddleware,
+    // authMiddleware,
     deleteUser
 );
 

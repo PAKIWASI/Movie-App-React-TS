@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import z from "zod"
+import UserMovie from "../models/UserMovie";
 
 
 
@@ -14,6 +15,23 @@ export const UserMovieSchema = z.object({
 });
 
 
+export const PostUserMovieSchema = UserMovieSchema
+    .omit({ userId: true })     // omit userId
+    .partial()                  // make everything partial
+    .required({ tmdbId: true });// make tmdbId required
 
 
-export type UserMovie = z.infer<typeof UserMovieSchema>;
+export const UpdateUserMovieSchema = UserMovieSchema
+    .omit({ userId: true, tmdbId: true })
+    .partial()
+    .refine(    // dont let empty object through
+        data => Object.values(data).some(v => v !== undefined),
+        { message: "At least one field must be provided" }
+    );
+
+
+export type UserMovie       = z.infer<typeof UserMovieSchema>;
+export type PostUserMovie   = z.infer<typeof PostUserMovieSchema>;
+export type UpdateUserMovie = z.infer<typeof UpdateUserMovieSchema>;
+
+

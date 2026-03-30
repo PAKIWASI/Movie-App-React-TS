@@ -25,7 +25,7 @@ const router = Router();
 
 // GET /api/user/me/movie
 // get all movies associated with user
-// GET /api/user/me/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception
+// GET /api/user/me/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception&tmdbId
 router.get("/",  getUserMovies);    // GET  /api/user/me/movie
 router.post("/", validate(PostUserMovieSchema), postUserMovie);    // POST /api/user/me/movie
 

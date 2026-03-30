@@ -5,9 +5,6 @@ import MovieModel from "../models/Movie";
 import { PostUserMovie, SetRating, SetReview } from "../types/user_movie.type";
 
 
-// TODO: understand how filtering, aggregate works here
-
-
 // helper — shared logic for getting userId and tmdbId from params
 const getCompositeKey = (req: Request) => ({
     // jwt token
@@ -20,72 +17,67 @@ const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
-// GET /api/user/me/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception
+// GET /api/user/me/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception&tmdbId
 export const getUserMovies = async (req: Request, res: Response): Promise<void> => {
     try {
-        // cast to correct mongoose type                    // jwt auth middlware sets this
+        // jwt middleware sets this
         const userId = new mongoose.Types.ObjectId((req as any).userid as string);
 
         // pagination
-        const page = Math.max(MIN_PAGES, parseInt(req.query.page as string) || MIN_PAGES);
+        const page  = Math.max(MIN_PAGES, parseInt(req.query.page as string) || MIN_PAGES);
         const limit = Math.min(MAX_LIMIT, parseInt(req.query.limit as string) || DEFAULT_LIMIT);
-        const skip = (page - 1) * limit;
+        const skip  = (page - 1) * limit;
 
-        // build filter dynamically — only add fields that were actually passed
-        const filter: Record<string, any> = { userId }; // key is string, value is any
+        // dynamic filter
+        const filter: Record<string, any> = { userId };
 
         if (req.query.inFavs !== undefined)      filter.inFavs = req.query.inFavs === "true";
         if (req.query.inWatchlist !== undefined) filter.inWatchlist = req.query.inWatchlist === "true";
         if (req.query.watched !== undefined)     filter.watched = req.query.watched === "true";
-        /*
-           filter afterwards:
-        {
-          userId: ObjectId(...),
-          inFavs: true,
-          watched: true
+
+        // tmdbId search (we'll get a single doc)
+        if (req.query.tmdbId) {
+            filter.tmdbId = Number(req.query.tmdbId);
         }
-        */
 
-        // Aggregation pipelines are like data processing stages.
-        // Each stage processes the output of the previous stage.
-        const pipeline: mongoose.PipelineStage[] = [
-            { $match: filter },             // first apply filter to reduce docs
-            {
-                $lookup: {
-                    from: "movies",       // the other collection to join
-                    localField: "tmdbId", // name in current doc
-                    foreignField: "id",   // name in other collection
-                    as: "movie",          // name of new field to attach result to
-                }
-                /*
-                    SELECT *
-                    FROM userMovies
-                    JOIN movies
-                    ON userMovies.tmdbId = movies.id
-                */
-            },
-            { $unwind: "$movie" },      // it's an array, unwraps it into a single object
-        ];
-
-        if (req.query.name) { 
+        // movie name search
+        if (req.query.name) {
             const matchingMovies = await MovieModel
                 .find({ $text: { $search: req.query.name as string } })
                 .select("id");
+
             const ids = matchingMovies.map(m => m.id);
-            filter.tmdbId = { $in: ids };  // WHERE tmdbId IN (...)        
+
+            // if no matches, short-circuit
+            if (ids.length === 0) {
+                res.status(200).json({
+                    success: true,
+                    data: [],
+                    pagination: { page, limit, total: 0, pages: 0 }
+                });
+                return;
+            }
+            filter.tmdbId = { $in: ids };
         }
 
-        // get total before slicing for pagination metadata
-        const countPipeline = [...pipeline, { $count: "total" }];
-        const countResult = await UserMovieModel.aggregate(countPipeline);
-        const total = countResult[0]?.total ?? 0;
+        // count no of docs
+        const total = await UserMovieModel.countDocuments(filter);
 
-        // now add pagination and projection
-        pipeline.push(
+        const pipeline: mongoose.PipelineStage[] = [
+            { $match: filter },
+            {
+                $lookup: {
+                    from: "movies",
+                    localField: "tmdbId",
+                    foreignField: "id",
+                    as: "movie"
+                }
+            },
+            { $unwind: "$movie" },
             { $skip: skip },
             { $limit: limit },
             {
-                $project: {     // like SELECT
+                $project: {
                     tmdbId: 1,
                     inFavs: 1,
                     inWatchlist: 1,
@@ -94,25 +86,33 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
                     userReview: 1,
                     "movie.title": 1,
                     "movie.poster_path": 1,
-                    "movie.release_date": 1,
-                    // other fields that may be used to render a frontend
+                    "movie.release_date": 1
                 }
             }
-        );
+        ];
 
-        const um = await UserMovieModel.aggregate(pipeline);
+        const movies = await UserMovieModel.aggregate(pipeline);
 
         res.status(200).json({
             success: true,
-            data: um,
-            pagination: { page, limit, total, pages: Math.ceil(total / limit) }
+            data: movies,
+            pagination: {
+                page,
+                limit,
+                total,
+                pages: Math.ceil(total / limit)
+            }
         });
 
     } catch (error) {
-        console.error("getUserMovies Error: ", error);
-        res.status(500).json({ success: false, message: "Failed to get user movies" });
+        console.error("getUserMovies Error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to get user movies"
+        });
     }
 };
+
 
 // POST /api/user/me/movie
 export const postUserMovie = async (req: Request, res: Response): Promise<void> => {

@@ -28,7 +28,7 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
         const skip  = (page - 1) * limit;
 
         // build filter dynamically — only add fields that were actually passed
-        const filter: Record<string, any> = { userId };
+        const filter: Record<string, any> = { userId }; // key is string, value is any
 
         if (req.query.inFavs !== undefined)      filter.inFavs = req.query.inFavs === "true";
         if (req.query.inWatchlist !== undefined) filter.inWatchlist = req.query.inWatchlist === "true";
@@ -136,9 +136,7 @@ export const updateUserMovie = async (req: Request, res: Response) : Promise<voi
 // DELETE /api/user/:id/movie/:tmdbId
 export const deleteUserMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const userId = new mongoose.Types.ObjectId(req.params.id as string);    
-        const tmdbId = parseInt(req.params.tmdbId as string);
-        const um = await UserMovieModel.findOneAndDelete({ userId, tmdbId });
+        const um = await UserMovieModel.findOneAndDelete(getCompositeKey(req));
         if (!um) {
             res.status(404).json({ success: false, message: "UserMovie not found" });
             return;

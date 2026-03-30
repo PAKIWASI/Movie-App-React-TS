@@ -8,9 +8,21 @@ const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
-// GET /api/movies?name=movie&page=1&limit=10
+// GET /api/movies?name=movie&id=111&page=1&limit=10
 export const getMovies = async (req: Request, res: Response) : Promise<void> => {
     try { 
+
+        // Early return if we have id param, just return that movie
+        if (req.query.id) {
+            const movie = await MovieModel.findOne({ id: parseInt(req.query.id as string) }).select(TMDB_MOVIE_PROJECTION);
+            if (!movie) { 
+                res.status(404).json({ success: true, data: movie }); 
+                return; 
+            }
+            res.status(200).json({ success: true, data: [movie] });
+            return;
+        }
+
         const page  = Math.max(MIN_PAGES, parseInt(req.query.page  as string) || MIN_PAGES);
         const limit = Math.min(MAX_LIMIT, parseInt(req.query.limit as string) || DEFAULT_LIMIT); // cap at 100
         const skip  = (page - 1) * limit;

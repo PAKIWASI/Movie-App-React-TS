@@ -40,9 +40,9 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 
-app.use("/api/user", authMiddleware, userRoutes);   // TODO: auth middleware here as we need it for every endpoint
+app.use("/api/user", authMiddleware, userRoutes);   // auth middleware here as we need it for every endpoint
 
-app.use("/api/movie/", authMiddleware, movieRoutes);
+app.use("/api/movie/", movieRoutes);
 
 
 

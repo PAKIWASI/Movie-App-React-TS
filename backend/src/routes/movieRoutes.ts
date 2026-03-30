@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate";
+import authMiddleware from "../middleware/authMiddleware";
 import { MovieDetailsSchema, UpdateMovieSchema } from "../types/movie.type";
 import {
     getMovies,
@@ -14,9 +15,8 @@ import {
 const router = Router();
 
 
-// general get endpoint for movies by popularity (with ?name&page&limit)
 // only give general info, not all data
-// TODO: add param id and if present, just do a normal lookup for that one movie
+// GET /api/movies?name=movie&id=111&page=1&limit=10
 router.get("/", getMovies);
 
 // get all data on a single movie
@@ -26,19 +26,19 @@ router.get("/:movieid", getMovieDetails);
 router.get("/:movieid/credits", getMovieCredits);
 
 router.post("/",
-    // authMiddleware,
+    authMiddleware,
     validate(MovieDetailsSchema),
     postMovie
 );
 
 router.put("/:movieid",
-    // authMiddleware,
+    authMiddleware,
     validate(UpdateMovieSchema), // every field is optional, can't update id
     updateMovie
 );
 
 router.delete("/:movieid",
-    // authMiddleware,
+    authMiddleware,
     deleteMovie
 );
 

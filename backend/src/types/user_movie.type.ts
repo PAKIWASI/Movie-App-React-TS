@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 import z from "zod"
-import UserMovie from "../models/UserMovie";
-
 
 
 export const UserMovieSchema = z.object({
@@ -29,9 +27,14 @@ export const UpdateUserMovieSchema = UserMovieSchema
         { message: "At least one field must be provided" }
     );
 
+export const SetRatingSchema = UserMovieSchema.pick({ userRating: true });
+export const SetReviewSchema = UserMovieSchema.pick({ userReview: true });
+
+
 
 export type UserMovie       = z.infer<typeof UserMovieSchema>;
 export type PostUserMovie   = z.infer<typeof PostUserMovieSchema>;
 export type UpdateUserMovie = z.infer<typeof UpdateUserMovieSchema>;
-
+export type SetRating       = z.infer<typeof SetRatingSchema>;
+export type SetReview       = z.infer<typeof SetReviewSchema>;
 

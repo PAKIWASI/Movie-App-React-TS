@@ -1,9 +1,15 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import UserMovieModel from "../models/UserMovie"
-import { PostUserMovie } from "../types/user_movie.type";
-import { success } from "zod";
+import { PostUserMovie, SetRating, SetReview } from "../types/user_movie.type";
 
+
+
+// helper — shared logic for getting userId and tmdbId from params
+const getCompositeKey = (req: Request) => ({
+    userId: new mongoose.Types.ObjectId(req.params.id as string),
+    tmdbId: parseInt(req.params.tmdbId as string),
+});
 
 
 const MIN_PAGES = 1;
@@ -66,7 +72,7 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
                     "movie.title": 1,
                     "movie.poster_path": 1,
                     "movie.release_date": 1,
-                    // TODO: other fields that may be used to render a frontend
+                    // other fields that may be used to render a frontend
                 }
             }
         );
@@ -109,10 +115,8 @@ export const postUserMovie = async (req: Request, res: Response) : Promise<void>
 // PUT  /api/user/:id/movie/:tmdbId
 export const updateUserMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const userId = new mongoose.Types.ObjectId(req.params.id as string);    
-        const tmdbId = parseInt(req.params.tmdbId as string);
         const um = await UserMovieModel.findOneAndUpdate(
-            { userId, tmdbId },     // search by composite key
+            getCompositeKey(req),     // search by composite key
             req.body,
             { returnDocument: 'after', runValidators: true }
         );
@@ -143,5 +147,118 @@ export const deleteUserMovie = async (req: Request, res: Response) : Promise<voi
         res.status(200).json({ success: true, message: "UserMovie deleted" });
     } catch (error) {
         console.error("deleteUserMovie Error: ", error);
+        res.status(500).json({ success: false, message: "Failed to Delete UserMovie" });
     }
 };
+
+
+
+// PATCH /api/user/:id/movie/:tmdbId/watchlist
+export const toggleWatchlist = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const um = await UserMovieModel.findOneAndUpdate(
+            getCompositeKey(req),
+            [{ $set: { inWatchlist: { $not: "$inWatchlist" } } }],
+            { returnDocument: "after" }
+        );
+
+        if (!um) {
+            res.status(404).json({ success: false, message: "UserMovie not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, data: um });
+    } catch (error) {
+        console.error("toggleWatchlist Error:", error);
+        res.status(500).json({ success: false, message: "Failed to toggle watchlist" });
+    }
+};
+
+
+// PATCH /api/user/:id/movie/:tmdbId/favorites
+export const toggleFavorites = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const um = await UserMovieModel.findOneAndUpdate(
+            getCompositeKey(req),
+            [{ $set: { inFavs: { $not: "$inFavs" } } }],
+            { returnDocument: "after" }
+        );
+        if (!um) {
+            res.status(404).json({ success: false, message: "UserMovie not found" });
+            return;
+        }
+        res.status(200).json({ success: true, data: um });
+    } catch (error) {
+        console.error("toggleFavorites Error:", error);
+        res.status(500).json({ success: false, message: "Failed to toggle favorites" });
+    }
+};
+
+// PATCH /api/user/:id/movie/:tmdbId/watched
+export const toggleWatched = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const um = await UserMovieModel.findOneAndUpdate(
+            getCompositeKey(req),
+            [{ $set: { watched: { $not: "$watched" } } }],
+            { returnDocument: "after" }
+        );
+        if (!um) {
+            res.status(404).json({ success: false, message: "UserMovie not found" });
+            return;
+        }
+        res.status(200).json({ success: true, data: um });
+    } catch (error) {
+        console.error("toggleWatched Error:", error);
+        res.status(500).json({ success: false, message: "Failed to toggle watched" });
+    }
+};
+
+
+// PATCH /api/user/:id/movie/:tmdbId/rating
+export const setRating = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const key = getCompositeKey(req);
+        const { userRating }: SetRating = req.body;
+
+        const um = await UserMovieModel.findOneAndUpdate(
+            key,
+            { $set: { userRating } },
+            { returnDocument: "after", runValidators: true }
+        );
+        if (!um) {
+            res.status(404).json({ success: false, message: "UserMovie not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, data: um });
+    } catch (error) {
+        console.error("setRating Error:", error);
+        res.status(500).json({ success: false, message: "Failed to set rating" });
+    }
+};
+
+
+// PATCH /api/user/:id/movie/:tmdbId/review
+export const setReview = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const key = getCompositeKey(req);
+        const { userReview }: SetReview = req.body;
+
+        const um = await UserMovieModel.findOneAndUpdate(
+            key,
+            { $set: { userReview } },
+            { returnDocument: "after", runValidators: true }
+        );
+        if (!um) {
+            res.status(404).json({ success: false, message: "UserMovie not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, data: um });
+    } catch (error) {
+        console.error("setReview Error:", error);
+        res.status(500).json({ success: false, message: "Failed to set review" });
+    }
+};
+
+

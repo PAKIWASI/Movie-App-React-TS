@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate";
 import authMiddleware from "../middleware/authMiddleware";
+import { adminMiddleware } from "../middleware/adminMiddleware";
 import { MovieDetailsSchema, UpdateMovieSchema } from "../types/movie.type";
 import {
     getMovies,
@@ -27,22 +28,22 @@ router.get("/:movieid/credits", getMovieCredits);
 
 router.post("/",
     authMiddleware,
+    adminMiddleware,
     validate(MovieDetailsSchema),
     postMovie
 );
 
 router.put("/:movieid",
     authMiddleware,
+    adminMiddleware,
     validate(UpdateMovieSchema), // every field is optional, can't update id
     updateMovie
 );
 
 router.delete("/:movieid",
     authMiddleware,
+    adminMiddleware,
     deleteMovie
 );
-
-// TODO: once we add roles, then all routes will require authMiddleware
-// and then protected routes will additionally require adminAuth
 
 export default router;

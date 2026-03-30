@@ -1,6 +1,7 @@
 import { LoginInput, PublicUser, PublicUserSchema, User } from "../types/user.type";
 import { Request, Response } from "express"
 import UserModel from "../models/User";
+import AdminModel from "../models/Admin";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 
@@ -9,17 +10,17 @@ import jwt from 'jsonwebtoken';
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { name, age, email, password }: User = req.body; // safe, Zod already confirmed this
-        
+
         // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // create() and save() always run validators
-        const user = await UserModel.create({ 
-            name, 
-            age, 
-            email, 
-            password: hashedPassword 
+        const user = await UserModel.create({
+            name,
+            age,
+            email,
+            password: hashedPassword
         });  // this throws if already exist 
 
         const safeUser: PublicUser = PublicUserSchema.parse(user.toObject());
@@ -56,7 +57,13 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         }
 
         // Generate JWT token       // we put user's id in the token
-        const token = jwt.sign({ userid: user!._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        const token = jwt.sign({
+            userid: user!._id,
+            role: await AdminModel.getRole(user._id.toString())
+        },
+            process.env.JWT_SECRET as string,
+            { expiresIn: '1h' }
+        );
 
         // send the JWT token to user as cookie
         res.cookie("token", token, {

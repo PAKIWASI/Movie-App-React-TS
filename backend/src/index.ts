@@ -42,13 +42,13 @@ app.use("/api/auth", authRoutes);
 
 app.use("/api/user", authMiddleware, userRoutes);
 
-app.use("/api/movie/", movieRoutes);
+app.use("/api/movie", movieRoutes);
 
 
 
 // Health check endpoint
 app.get("/", (_req, res) => {
-    res.json({ message: "User API is running" });
+    res.json({ message: "Backend is running" });
 });
 
 

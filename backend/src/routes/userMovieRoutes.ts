@@ -21,7 +21,9 @@ import {
 
 const router = Router();
 
-// all routes require user auth after we get roles
+// These routes get userid from the token (set as req.userid)
+
+// Only the user (via jwt token) can access their movie collection
 
 // GET /api/user/me/movie
 // get all movies associated with user

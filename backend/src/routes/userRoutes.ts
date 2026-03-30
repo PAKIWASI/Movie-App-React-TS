@@ -1,13 +1,17 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate";
+import { adminMiddleware } from "../middleware/adminMiddleware";
 import { UpdateUserSchema } from "../types/user.type";
 import userMovieRoutes from "./userMovieRoutes";
 import {
     getUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUser
 } from "../controllers/userController";
 
+// TODO: a user should be able to modify ad delete their own account or userMovies
+// this route is already protected by auth, so anyone here can do anything
 
 const router = Router();
 
@@ -21,24 +25,21 @@ router.use("/me/movie", userMovieRoutes);  // specific — must come first
 
 // at root with no extra params, has query parameters
 // GET  /api/user
-router.get("/", getUsers);
+router.get("/", adminMiddleware, getUsers); // only admins can see all users
+
+// GET /api/user/me
+router.get("/me", getUser); // allow the user themselves to see their account
 
 // The middleware runs first. If validation fails, the controller never runs. 
 // If it passes, req.body is already the correct typed shape.
 
 // UpdateUserSchema doesn't allow password updates
-router.put("/:userid",
-    // authMiddleware,          // calls next() -> go to validate
+router.put("/me",
     validate(UpdateUserSchema), // calls next() -> go to updateUser
     updateUser                  // if at any point call next(error), go to the next error middleware
 );
 
-// TODO: add roles, so only admins can do this
-
-router.delete("/:userid",
-    // authMiddleware,
-    deleteUser
-);
+router.delete("/me", deleteUser);
 
 
 export default router;

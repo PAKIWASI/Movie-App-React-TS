@@ -6,11 +6,12 @@ import { JwtPayload } from "jsonwebtoken";
 // This resolves the TypeScript error on req.user = decoded and on req.user in dashboardController
 
 declare global {
-  namespace Express {
-    interface Request {
-      userid?: string;
+    namespace Express {
+        interface Request {
+            userid?: string;
+            role?: number;      // TODO: isnt role a number? it has value 0 or 1 an enum
+        }
     }
-  }
 }
 
-export {};
+export { };

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import UserModel from "../models/User";
+import UserMovieModel from "../models/UserMovie";
 
 
 const MIN_PAGES = 1;
@@ -7,12 +8,12 @@ const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
 
-// GET /api/users?name=wasi&userid=387437&page=1&limit=10
+// GET /api/user?name=wasi&userid=387437&page=1&limit=10
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
             // if we have id param, just seach for and return that user
         if (req.query.userid) {
-            await getUserByID(req, res);
+            await getUser(req, res);
             return;
         }
 
@@ -43,9 +44,10 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 };
 
 // called by getUsers
-const getUserByID = async (req: Request, res: Response): Promise<void> => {
+// and GET /api/user/me
+export const getUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await UserModel.findById(req.query.userid as string).select("-password");
+        const user = await UserModel.findById((req as any).userid as string).select("-password");
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
@@ -53,16 +55,18 @@ const getUserByID = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json({ success: true, data: user });
     } catch (error) {
-        console.error("getUserByID Error: ", error);
+        console.error("getUser Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get user" });
     }
 };
 
-// PUT /api/users/:userid
+
+
+// PUT /api/user/me
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await UserModel.findByIdAndUpdate(
-            req.params.userid,
+            (req as any).userid,
             req.body,
             { returnDocument: 'after', runValidators: true }  // return updated doc, runValidators: enforce schema rules
         ).select("-password");  // exclude password field
@@ -85,14 +89,17 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 
-// DELETE /api/users/:userid
+// DELETE /api/user/me
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await UserModel.findByIdAndDelete(req.params.userid);
+        const user = await UserModel.findByIdAndDelete((req as any).userid);
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
         }
+
+        // cascade delete all their movie records
+        await UserMovieModel.deleteMany({ userId: user._id });
 
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {

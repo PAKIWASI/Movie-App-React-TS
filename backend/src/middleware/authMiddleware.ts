@@ -30,4 +30,10 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 // this can be fixed by checking admin db here using userid and updating role but that is a db op in auth middleware (very expensive)
 // So the rule is: always log in if you anticipate role change
 
+// TODO: 
+// 1. Refresh tokens — Short-lived access tokens (15min) + a POST /api/auth/refresh endpoint with a long-lived refresh token 
+//  in a separate httpOnly cookie is the standard fix.
+// 2. Rate limiting on auth routes — POST /api/auth/login and /register have zero brute-force protection. 
+//  Add express-rate-limit — it's a one-liner per route.
+
 export default authMiddleware;

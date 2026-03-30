@@ -64,3 +64,10 @@ app.listen(PORT, () => {
 })
 
 export default app;
+
+/* TODO:
+    1. Input sanitization — req.query.name goes straight into $text search untrimmed and uncapped. 
+        A 10,000 character search string is valid right now. Trim and length-cap all query params.
+    2. Pagination helper — the same MIN_PAGES / DEFAULT_LIMIT / MAX_LIMIT / 
+        skip block is copy-pasted in three controllers. Extract it into src/utils/paginate.ts.
+*/

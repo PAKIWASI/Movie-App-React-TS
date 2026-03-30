@@ -3,6 +3,7 @@ import AdminModel from "../models/Admin";
 import UserModel from "../models/User";
 
 
+// TODO: Pagination on the admins list (GET /api/auth/admin) — it returns all admins with no limit
 
 
 // GET /api/auth/admin — list all admins

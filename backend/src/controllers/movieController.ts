@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import movieModel from "../models/Movie"
+import MovieModel from "../models/Movie"
 import movieCredit from "../models/MovieCredit";
 import { MovieDetail, TMDB_MOVIE_PROJECTION } from "../types/movie.type";
 
@@ -18,11 +18,11 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
         const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
 
         const [movies, total] = await Promise.all([
-            movieModel.find(filter)
+            MovieModel.find(filter)
                 .skip(skip)
                 .limit(limit)
                 .select(TMDB_MOVIE_PROJECTION), // TODO: maybe do a normal projection ?
-            movieModel.countDocuments(filter),
+            MovieModel.countDocuments(filter),
         ]);
 
         res.status(200).json({
@@ -41,7 +41,7 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 // GET /api/movies/:movieid
 export const getMovieDetails = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const movie = await movieModel.findOne({ id: parseInt(req.params.movieid as string) });
+        const movie = await MovieModel.findOne({ id: parseInt(req.params.movieid as string) });
 
         if (!movie) {
             res.status(404).json({ success: false, message: "Movie not found" });
@@ -77,7 +77,7 @@ export const getMovieCredits = async (req: Request, res: Response) : Promise<voi
 export const postMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
         const movie: MovieDetail  = req.body;   // zod-validated MovieDetail object
-        const insertedMovie = await movieModel.create(movie);
+        const insertedMovie = await MovieModel.create(movie);
 
         res.status(201).json({ success: true, data: insertedMovie });
     } catch (error: any) {
@@ -95,7 +95,7 @@ export const postMovie = async (req: Request, res: Response) : Promise<void> => 
 // PUT /api/movies/:movieid
 export const updateMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const movie = await movieModel.findOneAndUpdate(
+        const movie = await MovieModel.findOneAndUpdate(
             { id: parseInt(req.params.movieid as string) },
             req.body,
             { returnDocument: 'after', runValidators: true }
@@ -108,7 +108,7 @@ export const updateMovie = async (req: Request, res: Response) : Promise<void> =
 
         res.status(200).json({ success: true, data: movie });
     } catch (error) {
-        console.error(error);
+        console.error("updateMovie Error: ", error);
         res.status(500).json({ success: false, message: "Failed to Update Movie" });
     }
 };
@@ -117,7 +117,7 @@ export const updateMovie = async (req: Request, res: Response) : Promise<void> =
 // DELETE /api/movies/:movieid
 export const deleteMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const result = await movieModel.deleteOne({ id: parseInt(req.params.movieid as string) });
+        const result = await MovieModel.deleteOne({ id: parseInt(req.params.movieid as string) });
         if (result.deletedCount === 0) {
             res.status(404).json({ success: false, message: "Movie not found" });
             return;

@@ -18,6 +18,8 @@ export const LoginSchema = UserSchema.pick({
     password: true,
 });
 
+// TODO: shouldn't let email update? it shold be unique
+
 export const UpdateUserSchema = UserSchema
     .omit({ password: true })   // don't let password update
     .partial();                 // every other field optional

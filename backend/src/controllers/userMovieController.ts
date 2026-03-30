@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import userMovie from "../models/UserMovie"
-import { PostUserMovie, UpdateUserMovie } from "../types/user_movie.type";
+import UserMovieModel from "../models/UserMovie"
+import { PostUserMovie } from "../types/user_movie.type";
 
 
 
@@ -47,7 +47,7 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
 
         // get total before slicing for pagination metadata
         const countPipeline = [...pipeline, { $count: "total" }];
-        const countResult = await userMovie.aggregate(countPipeline);
+        const countResult = await UserMovieModel.aggregate(countPipeline);
         const total = countResult[0]?.total ?? 0;
 
         // now add pagination and projection
@@ -70,7 +70,7 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
             }
         );
 
-        const um = await userMovie.aggregate(pipeline);
+        const um = await UserMovieModel.aggregate(pipeline);
 
         res.status(200).json({
             success: true,
@@ -85,15 +85,14 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
 };
 
 // POST /api/user/:id/movie
-export const postUserMovie = async(req: Request, res: Response) : Promise<void> => {
+export const postUserMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
-        // this type doesnot have userId
-        const um: PostUserMovie = req.body;
+        const um: PostUserMovie = req.body; // this type doesnot have userId
         const userId = new mongoose.Types.ObjectId(req.params.id as string);    
 
-        const insertedUM = userMovie.create({...um,  userId });
+        const insertedUM = await UserMovieModel.create({...um,  userId });
 
-        res.status(201).json({ success: true });    // dont return anything back?
+        res.status(201).json({ success: true , data: insertedUM });
 
     } catch (error: any) {
         console.error("postUserMovie Error: ", error);
@@ -103,5 +102,28 @@ export const postUserMovie = async(req: Request, res: Response) : Promise<void> 
             return;
         }
         res.status(500).json({ success: false, message: "Failed to Post UserMovie" });
+    }
+};
+
+// PUT  /api/user/:id/movie/:tmdbId
+export const updateUserMovie = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const userId = new mongoose.Types.ObjectId(req.params.id as string);    
+        const tmdbId = parseInt(req.params.tmdbId as string);
+        const um = await UserMovieModel.findOneAndUpdate(
+            { userId, tmdbId },     // search by composite key
+            req.body,
+            { returnDocument: 'after', runValidators: true }
+        );
+
+        if (!um) {
+            res.status(404).json({ success: false, message: "UserMovie not found" });
+            return;
+        }
+
+        res.status(200).json({ success: true, data: um });
+    } catch (error) {
+        console.error("updateMovie Error: ", error);
+        res.status(500).json({ success: false, message: "Failed to Update UserMovie" });
     }
 };

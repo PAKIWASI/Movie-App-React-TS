@@ -35,7 +35,7 @@ router.get("/:id", getUserByID);   // the implicit mongoose id
 
 // UpdateUserSchema doesn't allow password updates
 router.put("/:id",
-    // authMiddleware,             // calls next() -> go to validate
+    // authMiddleware,          // calls next() -> go to validate
     validate(UpdateUserSchema), // calls next() -> go to updateUser
     updateUser                  // if at any point call next(error), go to the next error middleware
 );

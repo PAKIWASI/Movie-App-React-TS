@@ -1,6 +1,6 @@
 import { LoginInput, PublicUser, PublicUserSchema, User } from "../types/user.type";
 import { Request, Response } from "express"
-import userModel from "../models/User";
+import UserModel from "../models/User";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 
@@ -15,7 +15,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // create() and save() always run validators
-        const user = await userModel.create({ 
+        const user = await UserModel.create({ 
             name, 
             age, 
             email, 
@@ -42,7 +42,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         const { email, password }: LoginInput = req.body;
 
         // Check if user exists
-        let user = await userModel.findOne({ email });
+        let user = await UserModel.findOne({ email });
         if (!user) {
             res.status(400).json({ message: "Invalid credentials" })
             return;

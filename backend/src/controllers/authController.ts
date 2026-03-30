@@ -29,7 +29,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         console.error("registerUser error:", error);
         // Duplicate email (MongoDB error code 11000)
         if (error.code === 11000) {
-            res.status(409).json({ success: false, message: "Email already exists" });
+            res.status(409).json({ success: false, message: "User already exists" });
             return;
         }
         res.status(500).json({ success: false, message: "Failed to register user" });
@@ -55,8 +55,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        // Generate JWT token
-        const token = jwt.sign({ id: user!._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        // Generate JWT token       // we put user's id in the token
+        const token = jwt.sign({ userid: user!._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
 
         // send the JWT token to user as cookie
         res.cookie("token", token, {
@@ -66,7 +66,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             maxAge: 60 * 60 * 1000, // 1 hour
         });
 
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, message: "User logged in" });
 
     } catch (error) {
         console.error("loginUser error:", error);

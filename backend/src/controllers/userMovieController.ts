@@ -7,7 +7,8 @@ import { PostUserMovie, SetRating, SetReview } from "../types/user_movie.type";
 
 // helper — shared logic for getting userId and tmdbId from params
 const getCompositeKey = (req: Request) => ({
-    userId: new mongoose.Types.ObjectId(req.params.id as string),
+    // jwt token
+    userId: new mongoose.Types.ObjectId((req as any).userid as string),
     tmdbId: parseInt(req.params.tmdbId as string),
 });
 
@@ -16,11 +17,11 @@ const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
-// GET /api/user/:id/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception
+// GET /api/user/me/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception
 export const getUserMovies = async (req: Request, res: Response): Promise<void> => {
     try {
-        // cast to correct mongoose type
-        const userId = new mongoose.Types.ObjectId(req.params.id as string);    
+        // cast to correct mongoose type                    // jwt auth middlware sets this
+        const userId = new mongoose.Types.ObjectId((req as any).userid as string);
 
         // pagination
         const page  = Math.max(MIN_PAGES, parseInt(req.query.page  as string) || MIN_PAGES);
@@ -48,7 +49,7 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
         ];
 
         // name search — filter by movie title after the join
-        if (req.query.name) {
+        if (req.query.name) {       // TODO: this is slow. We do have in index on movie name
             pipeline.push({ $match: { "movie.title": { $regex: req.query.name as string, $options: "i" } } });
         }
 
@@ -85,19 +86,23 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
             pagination: { page, limit, total, pages: Math.ceil(total / limit) }
         });
 
+        // TODO: how to check no movies found?
+
     } catch (error) {
         console.error("getUserMovies Error: ", error);
         res.status(500).json({ success: false, message: "Failed to get user movies" });
     }
 };
 
-// POST /api/user/:id/movie
+// POST /api/user/me/movie
 export const postUserMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
         const um: PostUserMovie = req.body; // this type doesnot have userId
-        const userId = new mongoose.Types.ObjectId(req.params.id as string);    
+        const userId = new mongoose.Types.ObjectId((req as any).userid as string);
 
-        const insertedUM = await UserMovieModel.create({...um,  userId });
+        // TODO: we should also check if tmdbId exists in out database or not
+
+        const insertedUM = await UserMovieModel.create({...um,  userId });  // throws
 
         res.status(201).json({ success: true , data: insertedUM });
 
@@ -112,7 +117,7 @@ export const postUserMovie = async (req: Request, res: Response) : Promise<void>
     }
 };
 
-// PUT  /api/user/:id/movie/:tmdbId
+// PUT  /api/user/me/movie/:tmdbId
 export const updateUserMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
         const um = await UserMovieModel.findOneAndUpdate(
@@ -133,7 +138,7 @@ export const updateUserMovie = async (req: Request, res: Response) : Promise<voi
     }
 };
 
-// DELETE /api/user/:id/movie/:tmdbId
+// DELETE /api/user/me/movie/:tmdbId
 export const deleteUserMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
         const um = await UserMovieModel.findOneAndDelete(getCompositeKey(req));
@@ -151,13 +156,13 @@ export const deleteUserMovie = async (req: Request, res: Response) : Promise<voi
 
 
 
-// PATCH /api/user/:id/movie/:tmdbId/watchlist
+// PATCH /api/user/me/movie/:tmdbId/watchlist
 export const toggleWatchlist = async (req: Request, res: Response): Promise<void> => {
     try {
         const um = await UserMovieModel.findOneAndUpdate(
             getCompositeKey(req),
             [{ $set: { inWatchlist: { $not: "$inWatchlist" } } }],
-            { returnDocument: "after" }
+            { returnDocument: "after" , updatePipeline: true }
         );
 
         if (!um) {
@@ -173,13 +178,13 @@ export const toggleWatchlist = async (req: Request, res: Response): Promise<void
 };
 
 
-// PATCH /api/user/:id/movie/:tmdbId/favorites
+// PATCH /api/user/me/movie/:tmdbId/favorites
 export const toggleFavorites = async (req: Request, res: Response): Promise<void> => {
     try {
         const um = await UserMovieModel.findOneAndUpdate(
             getCompositeKey(req),
             [{ $set: { inFavs: { $not: "$inFavs" } } }],
-            { returnDocument: "after" }
+            { returnDocument: "after", updatePipeline: true }
         );
         if (!um) {
             res.status(404).json({ success: false, message: "UserMovie not found" });
@@ -192,13 +197,13 @@ export const toggleFavorites = async (req: Request, res: Response): Promise<void
     }
 };
 
-// PATCH /api/user/:id/movie/:tmdbId/watched
+// PATCH /api/user/me/movie/:tmdbId/watched
 export const toggleWatched = async (req: Request, res: Response): Promise<void> => {
     try {
         const um = await UserMovieModel.findOneAndUpdate(
             getCompositeKey(req),
             [{ $set: { watched: { $not: "$watched" } } }],
-            { returnDocument: "after" }
+            { returnDocument: "after", updatePipeline: true }
         );
         if (!um) {
             res.status(404).json({ success: false, message: "UserMovie not found" });
@@ -212,7 +217,7 @@ export const toggleWatched = async (req: Request, res: Response): Promise<void> 
 };
 
 
-// PATCH /api/user/:id/movie/:tmdbId/rating
+// PATCH /api/user/me/movie/:tmdbId/rating
 export const setRating = async (req: Request, res: Response): Promise<void> => {
     try {
         const key = getCompositeKey(req);
@@ -236,7 +241,7 @@ export const setRating = async (req: Request, res: Response): Promise<void> => {
 };
 
 
-// PATCH /api/user/:id/movie/:tmdbId/review
+// PATCH /api/user/me/movie/:tmdbId/review
 export const setReview = async (req: Request, res: Response): Promise<void> => {
     try {
         const key = getCompositeKey(req);

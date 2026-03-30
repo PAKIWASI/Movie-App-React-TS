@@ -3,6 +3,7 @@ import { validate } from "../middleware/validate";
 import { registerUser, loginUser } from "../controllers/authController";
 import { UserSchema, LoginSchema } from "../types/user.type";
 
+
 const router = Router();
 
 

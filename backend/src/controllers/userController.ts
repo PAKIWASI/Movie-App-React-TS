@@ -5,6 +5,7 @@ const MIN_PAGES = 1;
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
 
+// TODO: should add id param ?
 // GET /api/users?name=Ali&page=1&limit=10
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -34,10 +35,10 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// GET /api/users/:id
+// GET /api/users/:userid
 export const getUserByID = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await UserModel.findById(req.params.id).select("-password");
+        const user = await UserModel.findById(req.params.userid).select("-password");
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
@@ -50,11 +51,11 @@ export const getUserByID = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
-// PUT /api/users/:id
+// PUT /api/users/:userid
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await UserModel.findByIdAndUpdate(
-            req.params.id,
+            req.params.userid,
             req.body,
             { returnDocument: 'after', runValidators: true }  // return updated doc, runValidators: enforce schema rules
         ).select("-password");  // exclude password field
@@ -77,10 +78,10 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 
-// DELETE /api/users/:id
+// DELETE /api/users/:userid
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await UserModel.findByIdAndDelete(req.params.id);
+        const user = await UserModel.findByIdAndDelete(req.params.userid);
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;

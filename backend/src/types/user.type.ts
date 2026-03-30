@@ -22,10 +22,15 @@ export const LoginSchema = UserSchema.pick({
 
 export const UpdateUserSchema = UserSchema
     .omit({ password: true })   // don't let password update
-    .partial();                 // every other field optional
+    .partial()                 // every other field optional
+    .refine(    // dont let empty object through
+        data => Object.values(data).some(v => v !== undefined),
+        { message: "At least one field must be provided" }
+    );
 
 
-export type User = z.infer<typeof UserSchema>;
-export type PublicUser = z.infer<typeof PublicUserSchema>;
-export type LoginInput = z.infer<typeof LoginSchema>;
+export type User            = z.infer<typeof UserSchema>;
+export type PublicUser      = z.infer<typeof PublicUserSchema>;
+export type LoginInput      = z.infer<typeof LoginSchema>;
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
+

@@ -1,13 +1,13 @@
 import { Router } from "express";
+import { validate } from "../middleware/validate";
+import { UpdateUserSchema } from "../types/user.type";
+import userMovieRoutes from "./userMovieRoutes";
 import {
     getUsers,
     getUserByID,
     updateUser,
     deleteUser
 } from "../controllers/userController";
-import { validate } from "../middleware/validate";
-import { UpdateUserSchema } from "../types/user.type";
-import userMovieRoutes from "./userMovieRoutes";
 
 
 const router = Router();
@@ -18,8 +18,7 @@ const router = Router();
 
 
 // his endpoint leads to more routes
-// rather than app-level routing, we route in user
-router.use("/:id/movie", userMovieRoutes);  // specific — must come first
+router.use("/me/movie", userMovieRoutes);  // specific — must come first
 
 // at root with no extra params, has query parameters
 // GET  /api/users
@@ -27,14 +26,14 @@ router.get("/", getUsers);
 
 // the catch-all params one should be last, if we are at root but some param was passed
 // GET /api/users/:id
-router.get("/:id", getUserByID);   // the implicit mongoose id
+router.get("/:userid", getUserByID);   // the implicit mongoose id
 
 
 // The middleware runs first. If validation fails, the controller never runs. 
 // If it passes, req.body is already the correct typed shape.
 
 // UpdateUserSchema doesn't allow password updates
-router.put("/:id",
+router.put("/:userid",
     // authMiddleware,          // calls next() -> go to validate
     validate(UpdateUserSchema), // calls next() -> go to updateUser
     updateUser                  // if at any point call next(error), go to the next error middleware
@@ -42,7 +41,7 @@ router.put("/:id",
 
 // TODO: add roles, so only admins can do this
 
-router.delete("/:id",
+router.delete("/:userid",
     // authMiddleware,
     deleteUser
 );

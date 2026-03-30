@@ -19,7 +19,7 @@ const movieSchema: Schema = new Schema(
             poster_path:   String,
             backdrop_path: String,
         },                                                      // nullable, no required
-        budget:            { _id: false, type: Number,   required: true },
+        budget:            { type: Number,   required: true },
         genres:            [{ _id: false, id: Number, name: String }],
         homepage:          { type: String },
         id:                { type: Number,   required: true, unique: true },

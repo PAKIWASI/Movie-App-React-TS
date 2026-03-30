@@ -31,7 +31,6 @@ export const SetRatingSchema = UserMovieSchema.pick({ userRating: true });
 export const SetReviewSchema = UserMovieSchema.pick({ userReview: true });
 
 
-
 export type UserMovie       = z.infer<typeof UserMovieSchema>;
 export type PostUserMovie   = z.infer<typeof PostUserMovieSchema>;
 export type UpdateUserMovie = z.infer<typeof UpdateUserMovieSchema>;

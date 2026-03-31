@@ -42,7 +42,6 @@ req() {
     fi
 }
 
-
 # Assert jq expression is truthy against $RESP
 assert() {
     local label="$1"
@@ -55,7 +54,6 @@ assert() {
         fail "$label — got: $(echo "$RESP" | jq -c '.' 2>/dev/null || echo "$RESP")"
     fi
 }
-
 
 # Save a jq value from $RESP into a variable
 # Usage: extract VAR_NAME '.data._id'
@@ -381,6 +379,8 @@ req "$SESSION_CANDIDATE" POST "/api/auth/login" \
 req "$SESSION_CANDIDATE" DELETE "/api/user/me"
 assert "DELETE /user/me: second test user deleted" '.success == true'
 rm -f "$SESSION_CANDIDATE"
+
+# TODO: test-created admins not deleted
 
 
 # ══════════════════════════════════════════════════════════════════════════════

@@ -159,7 +159,6 @@ const generateRefreshToken = async (userid: string, res: Response) => {
         { expiresIn: refreshTokenAge }
     );
 
-
     // save auth token in db                // throws on failure
     await RefreshTokenModel.create({ 
         userId: userid,

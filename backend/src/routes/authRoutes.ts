@@ -33,6 +33,7 @@ router.post("/login", authRateLimit, validate(LoginSchema), loginUser);
 // after access token expires in 15 mins, frontend sends the refresh token and if
 // it's present in db we provide user with new access token, along with updated role
 router.post("/refresh", refreshMiddleware, refreshAccessToken);    // no authmiddleware on this
+// BUG: this req hangs ?
 
 // this will delete the user's current refresh token from db
 router.post("/logout", authMiddleware, logoutUser);

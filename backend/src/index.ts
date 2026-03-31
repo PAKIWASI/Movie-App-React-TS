@@ -1,13 +1,13 @@
-import express from 'express'
-import dotenv from 'dotenv';
-import cors from 'cors'
-import connectUserDB from './config/db';
-import userRoutes from './routes/userRoutes'
-import authRoutes from './routes/authRoutes';
-import cookieParser from 'cookie-parser';
-import movieRoutes from './routes/movieRoutes'
+import cors                       from 'cors';
+import dotenv                     from 'dotenv';
+import express                    from 'express';
+import connectUserDB              from './config/db';
+import cookieParser               from 'cookie-parser';
+import userRoutes                 from './routes/userRoutes'
+import authRoutes                 from './routes/authRoutes';
+import movieRoutes                from './routes/movieRoutes';
+import { authMiddleware }         from './middleware/authMiddleware';
 import { notFound, errorHandler } from './middleware/errorHandler';
-import { authMiddleware } from './middleware/authMiddleware';
 
 
 // BACKEND ENTRY POINT
@@ -64,8 +64,9 @@ app.listen(PORT, () => {
 })
 
 /* TODO: 
-    We have to think about where cascade deletion applies
-    We now have RefreshToken collection so it should apply on that as well
+    1. We have to think about where cascade deletion applies
+        We now have RefreshToken collection so it should apply on that as well
+    2. Update api testing script with new tests
 */
 
 export default app;

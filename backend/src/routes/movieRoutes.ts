@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate";
-import authMiddleware from "../middleware/authMiddleware";
 import { adminMiddleware } from "../middleware/adminMiddleware";
 import { MovieDetailsSchema, UpdateMovieSchema } from "../types/movie.type";
+import { authMiddleware } from "../middleware/authMiddleware";
 import {
     getMovies,
     getMovieDetails,

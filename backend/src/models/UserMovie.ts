@@ -43,12 +43,11 @@ userMovieSchema.index({ userId: 1, tmdbId: 1 }, { unique: true });
 
 // Static methods 
 
-// TODO: make async?
-userMovieSchema.statics.findByCompositeKey = function (
+userMovieSchema.statics.findByCompositeKey = async function (
     userId: mongoose.Types.ObjectId,
     tmdbId: number
 ){
-    return this.findOne({ userId, tmdbId });
+    return await this.findOne({ userId, tmdbId });
 };
 
 

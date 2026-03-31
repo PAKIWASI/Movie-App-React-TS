@@ -1,6 +1,7 @@
-import { NextFunction, Request, Response } from "express"
+import { Request, Response } from "express"
 import { LoginInput, User } from "../types/user.type";
 import UserModel, { IUser } from "../models/User";
+import RefreshTokenModel from "../models/RefreshToken";
 import AdminModel from "../models/Admin";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
@@ -40,6 +41,8 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 };
 
 
+// generat new access and refresh tokens, add refresh to db
+// even if user didn't logout next time, we create a new refresh token
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password }: LoginInput = req.body;
@@ -58,22 +61,26 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        // Generate JWT Acess token       // we put user's id and role in the token
-        const token = jwt.sign({
-            userid: user!._id,
-            role: await AdminModel.getRole(user._id.toString())
-        },
-            process.env.JWT_SECRET as string,
-            { expiresIn: '1h' }
-        );
+        await generateRefreshToken(user!._id.toString(), res);  // TODO: does the catch{} catch the error 
+                                                // generated in that function?
+        await generateAccessToken(user!._id.toString(), res);   
 
-        // send the JWT token to user as cookie
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 60 * 60 * 1000, // 1 hour
-        });
+        // // Generate JWT Acess token       // we put user's id and role in the token
+        // const token = jwt.sign({
+        //     userid: user!._id,
+        //     role: await AdminModel.getRole(user._id.toString())
+        // },
+        //     process.env.JWT_SECRET as string,
+        //     { expiresIn: '1h' }
+        // );
+        //
+        // // send the JWT token to user as cookie
+        // res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === "production",
+        //     sameSite: "strict",
+        //     maxAge: 60 * 60 * 1000, // 1 hour
+        // });
 
         res.status(200).json({ success: true, message: "User logged in" });
 
@@ -83,50 +90,77 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+// TODO: is this right
 
+// after refreshMiddleware, we have a valid refresh token so generate a new access token
+// we get userid from refresh token (set as req.userid in middleware) and fetch role from db
 export const refreshAccessToken = async (req: Request, res: Response) : Promise<void> => {
     try {
-
+        await generateAccessToken((req as any).userid, res);
     } catch (error) {
-
+        console.error("refreshAccessToken Error: ", error);
     }
 };
 
 
 // Private
 
-const accessTokenAge  = 15 * 60 * 1000;         // 15 mins
-const refreshTokenAge = 24 * 60 * 60 * 1000;    // 1 day (for now)
+                    // in seconds
+const accessTokenAge  = 15 * 60;         // 15 mins
+const refreshTokenAge = 24 * 60 * 60;     // 1 day (for now)
 
 // the auth middleware checks if this token is valid or not
 
-const generateAccessToken = async (user: IUser, res: Response) => {
+const generateAccessToken = async (userid: string, res: Response) => {
 
     // Generate JWT Acess token       // we put user's id and role in the token
-    const token = jwt.sign({
-        userid: user!._id,
-        role: await AdminModel.getRole(user._id.toString())     // db lookup everytime token created
+    const access = jwt.sign({
+        userid,
+        role: await AdminModel.getRole(userid)     // db lookup everytime token created
     },
         process.env.JWT_SECRET as string,
         { expiresIn: accessTokenAge }
     );
 
     // send the token to user as cookie
-    res.cookie("token", token, {
+    res.cookie("access", access, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: accessTokenAge,
+        maxAge: accessTokenAge * 1000, // to milliseconds
     });
 };
 
-const generateRefreshToken = async (user: IUser) => {
+// we hit this on login only
+const generateRefreshToken = async (userid: string, res: Response) => {
 
-    const token = jwt.sign({
-        
+    const refresh = jwt.sign({
+        userid
     },
         process.env.JWT_SECRET as string,
         { expiresIn: refreshTokenAge }
     );
+
+    const date = new Date();
+    try {
+        // save auth token in db
+        const savedRefresh = await RefreshTokenModel.create({   // TODO: throws if fails right?
+            userId: userid,
+            token: refresh,         // this is the ENCODED token
+            expiresAt: date.setTime(date.getTime() + (refreshTokenAge * 1000)),  // this is in milliseconds
+        });
+
+        res.cookie("refresh", refresh, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: refreshTokenAge * 1000, // to milliseconds
+        });
+
+    } catch (error) {
+        console.error("generateRefreshToken Error: ", error);
+    }
 };
+
+
 

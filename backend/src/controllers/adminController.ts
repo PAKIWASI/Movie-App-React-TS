@@ -1,7 +1,7 @@
+import { getPagination, buildPaginationMeta } from "../utils/paginate";
 import { Request, Response } from "express";
 import AdminModel from "../models/Admin";
 import UserModel from "../models/User";
-import { getPagination, buildPaginationMeta } from "../utils/paginate";
 
 
 // GET /api/auth/admin?page=1&limit=10

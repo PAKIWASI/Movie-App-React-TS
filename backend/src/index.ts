@@ -63,5 +63,9 @@ app.listen(PORT, () => {
     console.log(`Express Server running at http://localhost:${PORT}`);
 })
 
+/* TODO: 
+    We have to think about where cascade deletion applies
+    We now have RefreshToken collection so it should apply on that as well
+*/
 
 export default app;

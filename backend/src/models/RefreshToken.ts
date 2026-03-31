@@ -2,7 +2,11 @@ import mongoose, { Document, Schema } from "mongoose";
 
 
 
-interface IRefreshToken extends Document {};
+interface IRefreshToken extends Document {
+    token:      string;
+    userId:     mongoose.Types.ObjectId;
+    expiresAt:  Date;
+};
 
 
 const refreshTokenSchema = new Schema(

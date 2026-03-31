@@ -1,27 +1,59 @@
 import { Request, Response, NextFunction } from 'express';
+import RefreshTokenModel from '../models/RefreshToken';
 import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 
 
-
+// authenticates the access token that comes with every req
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
-    const token = req.cookies?.token;   // this is set by the cookieparser middleware
-    if (!token) {
+    const accessToken = req.cookies?.access;   // we set the cookie name in generateAccessToken
+    if (!accessToken) {
         return res.status(401).json({ message: "Access denied, no token provided" });
     }
 
     try {
         // TODO: does this test for expired access token?
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+        const decoded = jwt.verify(accessToken, process.env.JWT_SECRET as string);
         (req as any).userid = (decoded as any).userid;        // TODO: that type extention thing is not working
 
         (req as any).role = (decoded as any).role;  // we added role field in userLogin
 
         next();
     } catch (error) {
-        // console.error("authMiddleware Error: ", error);
+        console.error("authMiddleware Error: ", error);
         res.status(401).json({ message: "Invalid token" });
+    }
+};
+
+// authenticates the refresh token send to /api/auth/refresh
+// checks if refresh token in db
+// if not that means token expired and user needs to login again // TODO: is this right ?
+export const refreshMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+    const refreshToken = req.cookies?.refresh;   // we set the cookie name in generateAccessToken
+    if (!refreshToken) {
+        return res.status(401).json({ message: "Access denied, no Refresh token provided" });
+    }
+
+    // check in db                                      // we give it the encoded token
+    const id = await RefreshTokenModel.exists({ token: refreshToken });
+    if (!id) {
+        res.status(401).json({ message: "Invalid Refresh token" });
+        return;
+    }
+    
+    // decode it
+    // TODO: does this test for expired token?
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET as string);
+    (req as any).userid = (decoded as any).userid;        // TODO: that type extention thing is not working
+    // role will be fetched by refreshaccesstoken
+    
+    next();
+
+    } catch (error) {
+        console.error("refreshMiddleware Error: ", error);
+        res.status(401).json({ message: "Invalid Refresh token" });
     }
 };
 

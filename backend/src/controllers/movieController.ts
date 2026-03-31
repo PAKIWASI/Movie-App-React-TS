@@ -117,6 +117,7 @@ export const updateMovie = async (req: Request, res: Response) : Promise<void> =
 
 // TODO: if we delete the movie but it is referenced in a userMovie entry? 
 // should we do a cascade delete or let it slide ?
+// we can show the user that the movie they referenced is no longer in database
 
 // DELETE /api/movie/:movieid
 export const deleteMovie = async (req: Request, res: Response) : Promise<void> => {
@@ -126,6 +127,8 @@ export const deleteMovie = async (req: Request, res: Response) : Promise<void> =
             res.status(404).json({ success: false, message: "Movie not found" });
             return;
         }
+
+        // await UserMovieModel.deleteMany({ tmdbId }); // cascade
 
         res.status(200).json({ success: true, message: "Movie deleted" });
     } catch (error) {

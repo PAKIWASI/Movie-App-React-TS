@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { LoginInput, User } from "../types/user.type";
-import UserModel, { IUser } from "../models/User";
+import UserModel from "../models/User";
 import RefreshTokenModel from "../models/RefreshToken";
 import AdminModel from "../models/Admin";
 import bcrypt from "bcryptjs";
@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 
 
 
+// POST /api/auth/register
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { name, age, email, password }: User = req.body; // safe, Zod already confirmed this
@@ -43,6 +44,10 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
 // generat new access and refresh tokens, add refresh to db
 // even if user didn't logout next time, we create a new refresh token
+// this is done considering the fact that user might have multiple logged in devices
+// TODO: is this standard practice given the context ? what if we limit number of allowed tokens ?
+
+// POST /api/auth/login
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password }: LoginInput = req.body;
@@ -61,44 +66,58 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        await generateRefreshToken(user!._id.toString(), res);  // TODO: does the catch{} catch the error 
-                                                // generated in that function?
+        await generateRefreshToken(user!._id.toString(), res);
         await generateAccessToken(user!._id.toString(), res);   
-
-        // // Generate JWT Acess token       // we put user's id and role in the token
-        // const token = jwt.sign({
-        //     userid: user!._id,
-        //     role: await AdminModel.getRole(user._id.toString())
-        // },
-        //     process.env.JWT_SECRET as string,
-        //     { expiresIn: '1h' }
-        // );
-        //
-        // // send the JWT token to user as cookie
-        // res.cookie("token", token, {
-        //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === "production",
-        //     sameSite: "strict",
-        //     maxAge: 60 * 60 * 1000, // 1 hour
-        // });
 
         res.status(200).json({ success: true, message: "User logged in" });
 
     } catch (error) {
+        // we catch errors thrown by called funcs as we are awaiting them
         console.error("loginUser error:", error);
         res.status(500).json({ success: false, message: "Failed to login user" });
     }
 };
 
-// TODO: is this right
 
 // after refreshMiddleware, we have a valid refresh token so generate a new access token
 // we get userid from refresh token (set as req.userid in middleware) and fetch role from db
+// POST /api/auth/refresh
 export const refreshAccessToken = async (req: Request, res: Response) : Promise<void> => {
     try {
         await generateAccessToken((req as any).userid, res);
+        // TODO: are are async funcs throwable or just these db ones ?
     } catch (error) {
         console.error("refreshAccessToken Error: ", error);
+        res.status(500).json({ success: false, message: "Failed to refresh token" }); // AND THIS
+    }
+};
+
+// DELETE refresh token on logout
+// POST /api/auth/logout
+export const logoutUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const refreshToken = req.cookies?.refresh;
+        if (refreshToken) {
+            await RefreshTokenModel.deleteOne({ token: refreshToken });
+        }
+        res.clearCookie("access");
+        res.clearCookie("refresh");
+        res.status(200).json({ success: true, message: "Logged out" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Logout failed" });
+    }
+};
+
+// DELETE all refresh tokens for this user (logout all devices)
+// POST /api/auth/logout-all
+export const logoutUserAll = async (req: Request, res: Response): Promise<void> => {
+    try {
+        await RefreshTokenModel.deleteMany({ userId: (req as any).userid });
+        res.clearCookie("access");
+        res.clearCookie("refresh");
+        res.status(200).json({ success: true, message: "Logged out from all devices" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Logout failed" });
     }
 };
 
@@ -141,25 +160,23 @@ const generateRefreshToken = async (userid: string, res: Response) => {
         { expiresIn: refreshTokenAge }
     );
 
-    const date = new Date();
-    try {
-        // save auth token in db
-        const savedRefresh = await RefreshTokenModel.create({   // TODO: throws if fails right?
-            userId: userid,
-            token: refresh,         // this is the ENCODED token
-            expiresAt: date.setTime(date.getTime() + (refreshTokenAge * 1000)),  // this is in milliseconds
-        });
 
-        res.cookie("refresh", refresh, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: refreshTokenAge * 1000, // to milliseconds
-        });
+    // save auth token in db                // throws on failure
+    await RefreshTokenModel.create({ 
+        userId: userid,
+        token: refresh,         // this is the ENCODED token
+        expiresAt: new Date(Date.now() + refreshTokenAge * 1000)    // milliseconds
+    });
 
-    } catch (error) {
-        console.error("generateRefreshToken Error: ", error);
-    }
+    res.cookie("refresh", refresh, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: refreshTokenAge * 1000, // to milliseconds
+    });
+
+    // create throws on failure, if we had try/catch, we would have to catch and rethrow
+    // the error back to caller or it is sollowed by catch here. now caller handles thrown errors
 };
 
 

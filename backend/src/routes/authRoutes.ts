@@ -5,7 +5,9 @@ import { UserSchema, LoginSchema } from "../types/user.type";
 import { 
     registerUser, 
     loginUser, 
-    refreshAccessToken 
+    refreshAccessToken, 
+    logoutUser,
+    logoutUserAll
 } from "../controllers/authController";
 import { 
     authMiddleware, 

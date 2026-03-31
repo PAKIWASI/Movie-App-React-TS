@@ -104,7 +104,12 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
             return;
         }
 
+        // a user is referenced in userMovie, we must delete
         await UserMovieModel.deleteMany({ userId: user._id });
+
+        // a user also has refreshToken entries
+        // TODO: can a deleted user still access routes if their token is in db?
+        // await RefreshTokenModel.deleteMany({ userId: user._id }); // ADD THIS
 
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {

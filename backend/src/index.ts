@@ -15,7 +15,7 @@ import { authMiddleware } from './middleware/authMiddleware';
 
 
 dotenv.config(); // loads .env into process.env
-connectUserDB(); // opens the MongoDB connection before any request hits
+connectUserDB(); // opens the MongoDB connection using credentials from .env
 
 const app = express();                  // get the express app object
 const PORT = process.env.PORT || 5000;  // set port from .env

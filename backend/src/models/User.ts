@@ -3,7 +3,7 @@ import { User } from "../types/user.type";
 
 
 // Main document interface for Users
-interface IUser extends User, Document {
+export interface IUser extends User, Document {
     // User interface in types already defines all the fields
 }
 

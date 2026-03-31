@@ -1,6 +1,6 @@
-import { LoginInput, PublicUser, PublicUserSchema, User } from "../types/user.type";
-import { Request, Response } from "express"
-import UserModel from "../models/User";
+import { NextFunction, Request, Response } from "express"
+import { LoginInput, User } from "../types/user.type";
+import UserModel, { IUser } from "../models/User";
 import AdminModel from "../models/Admin";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
@@ -58,7 +58,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        // Generate JWT token       // we put user's id in the token
+        // Generate JWT Acess token       // we put user's id and role in the token
         const token = jwt.sign({
             userid: user!._id,
             role: await AdminModel.getRole(user._id.toString())
@@ -83,4 +83,50 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+
+export const refreshAccessToken = async (req: Request, res: Response) : Promise<void> => {
+    try {
+
+    } catch (error) {
+
+    }
+};
+
+
+// Private
+
+const accessTokenAge  = 15 * 60 * 1000;         // 15 mins
+const refreshTokenAge = 24 * 60 * 60 * 1000;    // 1 day (for now)
+
+// the auth middleware checks if this token is valid or not
+
+const generateAccessToken = async (user: IUser, res: Response) => {
+
+    // Generate JWT Acess token       // we put user's id and role in the token
+    const token = jwt.sign({
+        userid: user!._id,
+        role: await AdminModel.getRole(user._id.toString())     // db lookup everytime token created
+    },
+        process.env.JWT_SECRET as string,
+        { expiresIn: accessTokenAge }
+    );
+
+    // send the token to user as cookie
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: accessTokenAge,
+    });
+};
+
+const generateRefreshToken = async (user: IUser) => {
+
+    const token = jwt.sign({
+        
+    },
+        process.env.JWT_SECRET as string,
+        { expiresIn: refreshTokenAge }
+    );
+};
 

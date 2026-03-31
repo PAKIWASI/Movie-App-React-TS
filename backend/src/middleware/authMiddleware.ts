@@ -1,16 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
+import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 
 
 
-const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
-    const token = req.cookies?.token;   // this uses the cookieparser middleware
+    const token = req.cookies?.token;   // this is set by the cookieparser middleware
     if (!token) {
         return res.status(401).json({ message: "Access denied, no token provided" });
     }
 
     try {
+        // TODO: does this test for expired access token?
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
         (req as any).userid = (decoded as any).userid;        // TODO: that type extention thing is not working
 
@@ -18,22 +20,32 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 
         next();
     } catch (error) {
-        console.error("authMiddleware Error: ", error);
+        // console.error("authMiddleware Error: ", error);
         res.status(401).json({ message: "Invalid token" });
     }
 };
 
-// the role is embedded in the token at login and never updated until the token expires. 
-// If you make someone an admin, they won't get admin access until they log out and back in
-// this is because when a user logs in and makes request, this func just sets the role that was in the token
-// maybe someone promoted user, user won't have admin status until the next time they log in (hit the loginUser func)
-// this can be fixed by checking admin db here using userid and updating role but that is a db op in auth middleware (very expensive)
-// So the rule is: always log in if you anticipate role change
+
+// Rate limiting 
+// Brute-force / credential-stuffing protection on the two unauthenticated endpoints.
+// register/login have no auth, so we need protection
+export const authRateLimit = rateLimit({
+    windowMs:         15 * 60 * 1000,  // 15 minutes
+    max:              10,              // max requests per window per IP
+    standardHeaders:  true,            // return rate limit info in RateLimit-* headers
+    legacyHeaders:    false,
+    message: { success: false, message: "Too many attempts, please try again later" },
+});
+
+
 
 // TODO: 
-// 1. Refresh tokens — Short-lived access tokens (15min) + a POST /api/auth/refresh endpoint with a long-lived refresh token 
-//  in a separate httpOnly cookie is the standard fix.
-// 2. Rate limiting on auth routes — POST /api/auth/login and /register have zero brute-force protection. 
-//  Add express-rate-limit — it's a one-liner per route.
+// 1. Refresh tokens — Short-lived access tokens (15min) + a POST /api/auth/refresh endpoint 
+//      with a long-lived refresh token in a separate httpOnly cookie is the standard fix.
+// 2. We store refresh tokens server side in a collection
+// 3. We send both tokens to user on login
+// 4. When access token expires, frontend sents req to /refresh with refresh token
+// 5. We check if refresh is in DB, if yes then we generate new access token (and maybe renew the refresh token ?)
+// 6. But how does frontend know to switch tokens? is it storing them all the time ?
+// 7. /logout deletes the refresh token from db
 
-export default authMiddleware;

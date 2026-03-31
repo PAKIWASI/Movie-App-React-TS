@@ -32,8 +32,6 @@ export enum Roles {
 };
 
 
-
-
 adminSchema.statics.getRole = async function(userId: string): Promise<Roles> {
     const id = await this.exists({ userId });
     return id ? Roles.admin : Roles.user;

@@ -7,7 +7,7 @@ import authRoutes from './routes/authRoutes';
 import cookieParser from 'cookie-parser';
 import movieRoutes from './routes/movieRoutes'
 import { notFound, errorHandler } from './middleware/errorHandler';
-import authMiddleware from './middleware/authMiddleware';
+import { authMiddleware } from './middleware/authMiddleware';
 
 
 // BACKEND ENTRY POINT
@@ -63,11 +63,5 @@ app.listen(PORT, () => {
     console.log(`Express Server running at http://localhost:${PORT}`);
 })
 
-export default app;
 
-/* TODO:
-    1. Input sanitization — req.query.name goes straight into $text search untrimmed and uncapped. 
-        A 10,000 character search string is valid right now. Trim and length-cap all query params.
-    2. Pagination helper — the same MIN_PAGES / DEFAULT_LIMIT / MAX_LIMIT / 
-        skip block is copy-pasted in three controllers. Extract it into src/utils/paginate.ts.
-*/
+export default app;

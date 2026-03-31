@@ -6,6 +6,11 @@ interface IAdmin extends Document {
     addedBy: mongoose.Types.ObjectId; // Track who added this admin
 }
 
+
+interface IAdminModel extends mongoose.Model<IAdmin> {
+    getRole(userId: string): Promise<Roles>;
+}
+
 const adminSchema: Schema = new Schema(
     {
         userId: { 
@@ -27,17 +32,15 @@ export enum Roles {
 };
 
 
-// export default mongoose.model<IAdmin>("Admin", adminSchema);
-// collection name admins
 
-interface IAdminModel extends mongoose.Model<IAdmin> {
-    getRole(userId: string): Promise<Roles>;
-}
 
 adminSchema.statics.getRole = async function(userId: string): Promise<Roles> {
     const id = await this.exists({ userId });
     return id ? Roles.admin : Roles.user;
 };
 
+// export default mongoose.model<IAdmin>("Admin", adminSchema);
+// collection name admins
 export default mongoose.model<IAdmin, IAdminModel>("Admin", adminSchema);
+// colledtion called admins
 

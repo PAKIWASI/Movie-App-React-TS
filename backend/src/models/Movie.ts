@@ -2,15 +2,25 @@ import mongoose, { Schema, Document } from "mongoose";
 import { MovieDetail } from "../types/movie.type";
 
 
-// TODO: add mongoose queries, static methods to make controllers simpler
-//The controllers have a lot of repeated patterns. Good candidates to move to the model:
-// Movie.findByTmdbId(id) — used in 4 places
-// Movie.search(name, page, limit) — the full pagination logic
-// UserMovie.findByCompositeKey(userId, tmdbId) — extracted as getCompositeKey in the controller already, but could live on the model
-
-
+// base interface
 export interface IMovie extends MovieDetail, Document {}
 
+
+// Static-method interface
+
+interface IMovieModel extends mongoose.Model<IMovie> {
+
+    findByTmdbId(tmdbId: number): ReturnType<mongoose.Model<IMovie>["findOne"]>;
+
+    search(
+        name: string | undefined,
+        skip: number,
+        limit: number,
+        projection?: Record<string, 0 | 1>
+    ): Promise<{ movies: IMovie[]; total: number }>;
+}
+
+// Schema 
 
 const movieSchema: Schema = new Schema(
     {
@@ -22,7 +32,7 @@ const movieSchema: Schema = new Schema(
             name:          String,
             poster_path:   String,
             backdrop_path: String,
-        },                                                      // nullable, no required
+        },
         budget:            { type: Number,   required: true },
         genres:            [{ _id: false, id: Number, name: String }],
         homepage:          { type: String },
@@ -37,7 +47,7 @@ const movieSchema: Schema = new Schema(
         production_companies: [{
             _id:            false,
             id:             Number,
-            logo_path:      String,     // nullable, no required
+            logo_path:      String,
             name:           String,
             origin_country: String,
         }],
@@ -60,17 +70,46 @@ const movieSchema: Schema = new Schema(
     },
     {
         timestamps: false,
-        // _id: false,         // disable mongodb's implicit id
-        id: false,          // disable mongoose's virtual .id getter (would conflict with our id field)
+        id: false,  // disable mongoose's virtual .id getter (conflicts with our id field)
     }
 );
 
-// movieSchema.index({ id: 1 });  // id has unique so it's already indexed
-movieSchema.index({ title: "text" });  // full-text search
-movieSchema.index({ popularity: -1 });                         // sort by popularity
-movieSchema.index({ vote_average: -1 });                       // sort by rating
-
-export default mongoose.model<IMovie>("Movie", movieSchema);
-// collection will be called movies
+movieSchema.index({ title: "text" });
+movieSchema.index({ popularity: -1 });
+movieSchema.index({ vote_average: -1 });
 
 
+// Static methods 
+
+/**
+ * Find a single movie by TMDB id.
+ * Usage: await MovieModel.findByTmdbId(123)
+ */
+movieSchema.statics.findByTmdbId = function (tmdbId: number) {
+    return this.findOne({ id: tmdbId });
+};
+
+/**
+ * Full-text + pagination search.
+ * Pass name=undefined to get all movies (no text filter).
+ * Usage: const { movies, total } = await MovieModel.search(name, skip, limit, TMDB_MOVIE_PROJECTION)
+ */
+movieSchema.statics.search = async function (
+    name: string | undefined,
+    skip: number,
+    limit: number,
+    projection: Record<string, 0 | 1> = {}
+): Promise<{ movies: IMovie[]; total: number }> {
+    const filter = name ? { $text: { $search: name } } : {};
+
+    const [movies, total] = await Promise.all([
+        this.find(filter).skip(skip).limit(limit).select(projection),
+        this.countDocuments(filter),
+    ]);
+
+    return { movies, total };
+};
+
+
+export default mongoose.model<IMovie, IMovieModel>("Movie", movieSchema);
+// collection called movies

@@ -2,20 +2,18 @@ import { Request, Response } from "express"
 import MovieModel from "../models/Movie"
 import movieCredit from "../models/MovieCredit";
 import { MovieDetail, TMDB_MOVIE_PROJECTION } from "../types/movie.type";
+import { getPagination, buildPaginationMeta } from "../utils/paginate";
+import { sanitizeString } from "../utils/sanitize";
 
-
-const MIN_PAGES = 1;
-const DEFAULT_LIMIT = 10;
-const MAX_LIMIT = 100;
 
 // GET /api/movie?name=movie&id=111&page=1&limit=10
 export const getMovies = async (req: Request, res: Response) : Promise<void> => {
     try { 
 
-        // Early return if we have id param, just return that movie
+        // Early return — id param means fetch a single movie
         if (req.query.id) {
             const movie = await MovieModel
-                .findOne({ id: parseInt(req.query.id as string) })
+                .findByTmdbId(parseInt(req.query.id as string))
                 .select(TMDB_MOVIE_PROJECTION);
 
             if (!movie) { 
@@ -26,24 +24,15 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
             return;
         }
 
-        const page  = Math.max(MIN_PAGES, parseInt(req.query.page  as string) || MIN_PAGES);
-        const limit = Math.min(MAX_LIMIT, parseInt(req.query.limit as string) || DEFAULT_LIMIT); // cap at 100
-        const skip  = (page - 1) * limit;
+        const { page, limit, skip } = getPagination(req);
+        const name = sanitizeString(req.query.name);
 
-        const filter = req.query.name ? { $text: { $search: req.query.name as string } } : {};
-
-        const [movies, total] = await Promise.all([
-            MovieModel.find(filter)
-                .skip(skip)
-                .limit(limit)
-                .select(TMDB_MOVIE_PROJECTION),
-            MovieModel.countDocuments(filter),
-        ]);
+        const { movies, total } = await MovieModel.search(name, skip, limit, TMDB_MOVIE_PROJECTION);
 
         res.status(200).json({
             success: true,
             data: movies,
-            pagination: { page, limit, total, pages: Math.ceil(total / limit) }
+            pagination: buildPaginationMeta(page, limit, total),
         });
 
     } catch (error) {
@@ -56,7 +45,7 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 // GET /api/movie/:movieid
 export const getMovieDetails = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const movie = await MovieModel.findOne({ id: parseInt(req.params.movieid as string) });
+        const movie = await MovieModel.findByTmdbId(parseInt(req.params.movieid as string));
         if (!movie) {
             res.status(404).json({ success: false, message: "Movie not found" });
             return;
@@ -90,14 +79,13 @@ export const getMovieCredits = async (req: Request, res: Response) : Promise<voi
 // POST /api/movie
 export const postMovie = async (req: Request, res: Response) : Promise<void> => {
     try {
-        const movie: MovieDetail  = req.body;   // zod-validated MovieDetail object
+        const movie: MovieDetail  = req.body;
         const insertedMovie = await MovieModel.create(movie);
 
         res.status(201).json({ success: true, data: insertedMovie });
     } catch (error: any) {
-
         if (error.code === 11000) {
-            res.status(409).json({ success: false, message: "Movie with TMDB ID already exists"})
+            res.status(409).json({ success: false, message: "Movie with TMDB ID already exists" });
             return;
         }    
         console.error("postMovie Error: ", error);
@@ -127,6 +115,8 @@ export const updateMovie = async (req: Request, res: Response) : Promise<void> =
     }
 };
 
+// TODO: if we delete the movie but it is referenced in a userMovie entry? 
+// should we do a cascade delete or let it slide ?
 
 // DELETE /api/movie/:movieid
 export const deleteMovie = async (req: Request, res: Response) : Promise<void> => {
@@ -143,5 +133,3 @@ export const deleteMovie = async (req: Request, res: Response) : Promise<void> =
         res.status(500).json({ success: false, message: "Failed to Delete Movie" });
     }
 };
-
-

@@ -380,7 +380,7 @@ req "$SESSION_CANDIDATE" DELETE "/api/user/me"
 assert "DELETE /user/me: second test user deleted" '.success == true'
 rm -f "$SESSION_CANDIDATE"
 
-echo -e "   ${YELLOW}real admin account (ullahwasi@gmail.com) left untouched${RESET}"
+# TODO: test-created admins not deleted
 
 
 # ══════════════════════════════════════════════════════════════════════════════

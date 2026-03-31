@@ -13,6 +13,17 @@ interface IUserMovie extends Omit<UserMovie, "userId">, Document {
     userId: mongoose.Types.ObjectId;  // stored as ObjectId, validated as string on input
 }
 
+// Static-method interface 
+interface IUserMovieModel extends mongoose.Model<IUserMovie> {
+    // Find a single UserMovie by its composite primary key.
+    findByCompositeKey(
+        userId: mongoose.Types.ObjectId,
+        tmdbId: number
+    ): ReturnType<mongoose.Model<IUserMovie>["findOne"]>;
+}
+
+// ── Schema ────────────────────────────────────────────────────────────────────
+
 const userMovieSchema: Schema = new Schema(
     {
         userId:      { type: Schema.Types.ObjectId, ref: "User",  required: true },
@@ -29,8 +40,20 @@ const userMovieSchema: Schema = new Schema(
 // composite unique key — one record per (user, movie) pair
 userMovieSchema.index({ userId: 1, tmdbId: 1 }, { unique: true });
 
-export default mongoose.model<IUserMovie>("UserMovie", userMovieSchema);
-// collection: usermovies
+
+// Static methods 
+
+// TODO: make async?
+userMovieSchema.statics.findByCompositeKey = function (
+    userId: mongoose.Types.ObjectId,
+    tmdbId: number
+){
+    return this.findOne({ userId, tmdbId });
+};
+
+
+export default mongoose.model<IUserMovie, IUserMovieModel>("UserMovie", userMovieSchema);
+// collection called usermovies
 
 
 /* Remember Database course:

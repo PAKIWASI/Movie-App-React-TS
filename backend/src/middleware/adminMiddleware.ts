@@ -11,7 +11,7 @@ import { Roles } from "../models/Admin";
 // we call this right after authMiddleware, it has req.userid and req.role
 export const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
     try {
-        const role = (req as any).role as Roles;
+        const role = req.role as Roles;
         if (role === undefined || role === null) {
             return res.status(401).json({ success: false, message: "No role found in token" });
         }

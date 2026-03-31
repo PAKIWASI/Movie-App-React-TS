@@ -1,4 +1,3 @@
-// BUG: not working ? is ts-node the issue ?
 
 // req.user doesn't exist on Express's Request type, we need to extend it
 

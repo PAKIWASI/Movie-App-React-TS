@@ -45,7 +45,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 // generat new access and refresh tokens, add refresh to db
 // even if user didn't logout next time, we create a new refresh token
 // this is done considering the fact that user might have multiple logged in devices
-// TODO: is this standard practice given the context ? what if we limit number of allowed tokens ?
 
 // POST /api/auth/login
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
@@ -84,8 +83,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 // POST /api/auth/refresh
 export const refreshAccessToken = async (req: Request, res: Response) : Promise<void> => {
     try {
-        await generateAccessToken((req as any).userid, res);
-        // TODO: are are async funcs throwable or just these db ones ?
+        await generateAccessToken(req.userid as string, res);
+        // all async funcs are throwable
     } catch (error) {
         console.error("refreshAccessToken Error: ", error);
         res.status(500).json({ success: false, message: "Failed to refresh token" }); // AND THIS
@@ -112,7 +111,7 @@ export const logoutUser = async (req: Request, res: Response): Promise<void> => 
 // POST /api/auth/logout-all
 export const logoutUserAll = async (req: Request, res: Response): Promise<void> => {
     try {
-        await RefreshTokenModel.deleteMany({ userId: (req as any).userid });
+        await RefreshTokenModel.deleteMany({ userId: req.userid });
         res.clearCookie("access");
         res.clearCookie("refresh");
         res.status(200).json({ success: true, message: "Logged out from all devices" });

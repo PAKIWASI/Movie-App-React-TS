@@ -15,9 +15,9 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     try {
         // throws a TokenExpiredError if the token is expired.
         const decoded = jwt.verify(accessToken, process.env.JWT_SECRET as string);
-        (req as any).userid = (decoded as any).userid;        // TODO: that type extention thing is not working
+        req.userid = (decoded as any).userid
 
-        (req as any).role = (decoded as any).role;  // we added role field in userLogin
+        req.role = (decoded as any).role;  // we added role field in userLogin
 
         next();
     } catch (error) {   
@@ -28,7 +28,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
 // authenticates the refresh token send to /api/auth/refresh
 // checks if refresh token in db
-// if not that means token expired and user needs to login again // TODO: is this right ?
+// if not that means token expired and user needs to login again
 export const refreshMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const refreshToken = req.cookies?.refresh;   // we set the cookie name in generateAccessToken
@@ -45,7 +45,7 @@ export const refreshMiddleware = async (req: Request, res: Response, next: NextF
         
         // decode it and verify it's not expired
         const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET as string);
-        (req as any).userid = (decoded as any).userid;        // TODO: that type extention thing is not working
+        req.userid = (decoded as any).userid;
         // role will be fetched by refreshaccesstoken
         
         next();

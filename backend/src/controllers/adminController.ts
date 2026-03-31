@@ -63,7 +63,7 @@ export const makeAdmin = async (req: Request, res: Response) => {
 
         const admin = await AdminModel.create({ 
             userId:  id._id, 
-            addedBy: (req as any).userid,
+            addedBy: req.userid,
         });
 
         res.status(201).json({ success: true, data: admin });

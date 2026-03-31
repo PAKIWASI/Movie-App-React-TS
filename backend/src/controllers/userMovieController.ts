@@ -9,7 +9,7 @@ import { sanitizeString } from "../utils/sanitize";
 
 // helper to get composite key { userid, tmdbid }
 const getCompositeKey = (req: Request) => ({
-    userId: new mongoose.Types.ObjectId((req as any).userid as string),
+    userId: new mongoose.Types.ObjectId(req.userid as string),
     tmdbId: parseInt(req.params.tmdbId as string),
 });
 
@@ -17,7 +17,7 @@ const getCompositeKey = (req: Request) => ({
 // GET /api/user/me/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception&tmdbId=123
 export const getUserMovies = async (req: Request, res: Response): Promise<void> => {
     try {
-        const userId = new mongoose.Types.ObjectId((req as any).userid as string);
+        const userId = new mongoose.Types.ObjectId(req.userid as string);
         const { page, limit, skip } = getPagination(req);
 
         const filter: Record<string, any> = { userId };
@@ -95,7 +95,7 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
 export const postUserMovie = async (req: Request, res: Response): Promise<void> => {
     try {
         const um: PostUserMovie = req.body;
-        const userId = new mongoose.Types.ObjectId((req as any).userid as string);
+        const userId = new mongoose.Types.ObjectId(req.userid as string);
 
         const movie = await MovieModel.exists({ id: um.tmdbId });
         if (!movie) {

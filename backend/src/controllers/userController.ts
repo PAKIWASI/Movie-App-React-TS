@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserModel from "../models/User";
 import UserMovieModel from "../models/UserMovie";
+import RefreshTokenModel from "../models/RefreshToken";
 import { getPagination, buildPaginationMeta } from "../utils/paginate";
 import { sanitizeString } from "../utils/sanitize";
 
@@ -55,7 +56,7 @@ const getUserById = async (req: Request, res: Response): Promise<void> => {
 // GET /api/user/me
 export const getUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await UserModel.findById((req as any).userid as string).select("-password");
+        const user = await UserModel.findById(req.userid as string).select("-password");
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
@@ -73,7 +74,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const user = await UserModel.findByIdAndUpdate(
-            (req as any).userid,
+            req.userid,
             req.body,
             { returnDocument: 'after', runValidators: true }
         ).select("-password");
@@ -98,7 +99,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 // DELETE /api/user/me
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await UserModel.findByIdAndDelete((req as any).userid);
+        const user = await UserModel.findByIdAndDelete(req.userid);
         if (!user) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
@@ -108,8 +109,9 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         await UserMovieModel.deleteMany({ userId: user._id });
 
         // a user also has refreshToken entries
-        // TODO: can a deleted user still access routes if their token is in db?
-        // await RefreshTokenModel.deleteMany({ userId: user._id }); // ADD THIS
+        // deleted user still has access with access token for 15 min
+        // this prevents from refreshing that token
+        await RefreshTokenModel.deleteMany({ userId: user._id });
 
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {

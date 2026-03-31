@@ -50,7 +50,7 @@ export const refreshMiddleware = async (req: Request, res: Response, next: NextF
         
         next();
 
-    } catch (error) { // TODO: if jwt.verify threw expiry error, then token was already deleted my mongodb
+    } catch (error) { // if jwt.verify threw expiry error, then token was already deleted my mongodb
         console.error("refreshMiddleware Error: ", error);
         res.status(401).json({ message: "Invalid Refresh token" });
     }
@@ -69,14 +69,4 @@ export const authRateLimit = rateLimit({
 });
 
 
-
-// TODO: 
-// 1. Refresh tokens — Short-lived access tokens (15min) + a POST /api/auth/refresh endpoint 
-//      with a long-lived refresh token in a separate httpOnly cookie is the standard fix.
-// 2. We store refresh tokens server side in a collection
-// 3. We send both tokens to user on login
-// 4. When access token expires, frontend sents req to /refresh with refresh token
-// 5. We check if refresh is in DB, if yes then we generate new access token (and maybe renew the refresh token ?)
-// 6. But how does frontend know to switch tokens? is it storing them all the time ?
-// 7. /logout deletes the refresh token from db
 

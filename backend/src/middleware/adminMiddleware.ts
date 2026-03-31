@@ -1,11 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Roles } from "../models/Admin";
 
-// interface MyReq extends Request {       // TODO: this solves the (req as any) problem
-//     userid?: string;                    // but i dont like it
-//     role?: import("../models/Admin").Roles;
-// }
-
 
 
 // we call this right after authMiddleware, it has req.userid and req.role

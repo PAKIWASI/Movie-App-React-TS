@@ -7,7 +7,8 @@ import {
     getUsers,
     updateUser,
     deleteUser,
-    getUser
+    getUser,
+    deleteUserById
 } from "../controllers/userController";
 
 
@@ -41,9 +42,9 @@ router.put("/me",
 
 router.delete("/me", deleteUser);
 
-// TODO: how to allow admins to delete users?
-
-// router.delete("/:userid", adminMiddleware, deleteUserById);
+// this comes after the /me route
+//  allow admins to delete users
+router.delete("/:userid", adminMiddleware, deleteUserById);
 
 
 export default router;

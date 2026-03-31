@@ -33,14 +33,15 @@ req() {
     local path="$1";    shift
 
     if [[ "$session" == "none" ]]; then
-        RESP=$(http \
+        RESP=$(http --timeout=10 \
             "$method" "${BASE_URL}${path}" "$@" 2>/dev/null)
     else
-        RESP=$(http \
+        RESP=$(http --timeout=10 \
             --session="$session" \
             "$method" "${BASE_URL}${path}" "$@" 2>/dev/null)
     fi
 }
+
 
 # Assert jq expression is truthy against $RESP
 assert() {
@@ -54,6 +55,7 @@ assert() {
         fail "$label — got: $(echo "$RESP" | jq -c '.' 2>/dev/null || echo "$RESP")"
     fi
 }
+
 
 # Save a jq value from $RESP into a variable
 # Usage: extract VAR_NAME '.data._id'
@@ -379,8 +381,6 @@ req "$SESSION_CANDIDATE" POST "/api/auth/login" \
 req "$SESSION_CANDIDATE" DELETE "/api/user/me"
 assert "DELETE /user/me: second test user deleted" '.success == true'
 rm -f "$SESSION_CANDIDATE"
-
-# TODO: test-created admins not deleted
 
 
 # ══════════════════════════════════════════════════════════════════════════════

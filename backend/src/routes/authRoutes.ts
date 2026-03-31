@@ -39,7 +39,8 @@ router.post("/logout", authMiddleware, logoutUser);
 
 router.post("/logout-all", authMiddleware, logoutUserAll);
 
-// TODO: im I missing something ? 
+// we dont have delete as then we would need super user
+// i can just delete from atlas
 
 
 //  Admin Routes

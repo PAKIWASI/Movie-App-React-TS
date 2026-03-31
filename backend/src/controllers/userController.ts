@@ -121,3 +121,22 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 
+// DELETE /api/user/:userid
+export const deleteUserById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const user = await UserModel.findByIdAndDelete(req.params.userid);
+        if (!user) {
+            res.status(404).json({ success: false, message: "User not found" });
+            return;
+        }
+        await UserMovieModel.deleteMany({ userId: user._id });
+        await RefreshTokenModel.deleteMany({ userId: user._id });
+
+        res.status(200).json({ success: true, message: "User deleted" });
+    } catch (error) {
+        console.error("deleteUserById Error:", error);
+        res.status(500).json({ success: false, message: "Failed to delete user" });
+    }
+};
+
+

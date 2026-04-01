@@ -1,8 +1,8 @@
 import type { CompleteMovieDetail, MovieCredits, MovieDetails, TMDBresponse } from "../types";
 
 
-export const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-export const BASE_URL = "https://api.themoviedb.org/3"; //base endpoint of api (where we send request)
+export const API_KEY = import.meta.env.TMDB_API_KEY;
+export const BASE_URL = import.meta.env.API_URL; 
 
 
 // TODO: no try/catch ?

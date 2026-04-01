@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import SearchSuggestion from "../Components/SearchSuggestion.tsx";
 
 
-
-function Home({isSearching}: {isSearching: boolean}) // entire UI for the homepage 
+// entire UI for the homepage 
+function Home({isSearching}: {isSearching: boolean}) 
 { 
     const [searchQuery, setSearchQuery] = useState("");
     const [movies, setMovies] = useState<TMDBmovie[]>([]);

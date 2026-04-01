@@ -14,6 +14,8 @@ const getCompositeKey = (req: Request) => ({
 });
 
 
+// this doesnot check if user exists or not (if we delete user but access token is valid for 15min) - probably fine
+
 // GET /api/user/me/movie?inFavs=true&inWatchlist=true&watched=false&page=1&limit=10&name=inception&tmdbId=123
 export const getUserMovies = async (req: Request, res: Response): Promise<void> => {
     try {

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserModel from "../models/User";
 import UserMovieModel from "../models/UserMovie";
+import AdminModel, { Roles } from "../models/Admin";
 import RefreshTokenModel from "../models/RefreshToken";
 import { getPagination, buildPaginationMeta } from "../utils/paginate";
 import { sanitizeString } from "../utils/sanitize";
@@ -121,16 +122,27 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 
+// TODO: test
 // DELETE /api/user/:userid
 export const deleteUserById = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await UserModel.findByIdAndDelete(req.params.userid);
-        if (!user) {
+        const id = await UserModel.exists({ _id: req.params.userid });
+        if (!id) {
             res.status(404).json({ success: false, message: "User not found" });
             return;
         }
-        await UserMovieModel.deleteMany({ userId: user._id });
-        await RefreshTokenModel.deleteMany({ userId: user._id });
+        // check if user is an admin or not
+        const role = await AdminModel.getRole(id._id.toString());
+        if (role == Roles.admin) {
+            res.status(500).json({ success: false, message: "Can't delete an admin" });
+            return; 
+        }
+
+        // safe to delete
+        await UserModel.findByIdAndDelete(req.params.userid);
+        await UserMovieModel.deleteMany({ userId: id._id });
+        await RefreshTokenModel.deleteMany({ userId: id._id });
+        await AdminModel.deleteOne({ userId: id._id });
 
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {

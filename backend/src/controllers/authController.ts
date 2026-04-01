@@ -83,8 +83,9 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 // POST /api/auth/refresh
 export const refreshAccessToken = async (req: Request, res: Response) : Promise<void> => {
     try {
-        await generateAccessToken(req.userid as string, res);
-        // all async funcs are throwable
+        await generateAccessToken(req.userid as string, res); // all async funcs are throwable
+
+        res.status(200).json({ success: true, message: "Token Refreshed "});
     } catch (error) {
         console.error("refreshAccessToken Error: ", error);
         res.status(500).json({ success: false, message: "Failed to refresh token" }); // AND THIS

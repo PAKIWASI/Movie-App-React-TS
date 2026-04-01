@@ -43,7 +43,7 @@ router.put("/me",
 router.delete("/me", deleteUser);
 
 // this comes after the /me route
-//  allow admins to delete users
+//  allow admins to delete users (not other admins)
 router.delete("/:userid", adminMiddleware, deleteUserById);
 
 

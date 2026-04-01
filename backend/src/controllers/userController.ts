@@ -114,6 +114,10 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         // this prevents from refreshing that token
         await RefreshTokenModel.deleteMany({ userId: user._id });
 
+        // TODO: is this needed?
+        res.clearCookie("access");
+        res.clearCookie("refresh");
+
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {
         console.error("deleteUser Error: ", error);
@@ -122,7 +126,6 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 };
 
 
-// TODO: test
 // DELETE /api/user/:userid
 export const deleteUserById = async (req: Request, res: Response): Promise<void> => {
     try {

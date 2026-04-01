@@ -3,11 +3,11 @@ import dotenv                     from 'dotenv';
 import express                    from 'express';
 import connectUserDB              from './config/db';
 import cookieParser               from 'cookie-parser';
-import userRoutes                 from './routes/userRoutes'
+import userRoutes                 from './routes/userRoutes';
 import authRoutes                 from './routes/authRoutes';
 import movieRoutes                from './routes/movieRoutes';
-import { authMiddleware }         from './middleware/authMiddleware';
 import { notFound, errorHandler } from './middleware/errorHandler';
+import { authMiddleware }         from './middleware/authMiddleware';
 
 
 // BACKEND ENTRY POINT

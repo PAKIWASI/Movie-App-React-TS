@@ -43,8 +43,13 @@ router.post("/logout-all", authMiddleware, logoutUserAll);
 // we dont have delete as then we would need super user
 // i can just delete from atlas
 
+/* TODO: 
+    logoutUserAll uses req.userid — this comes from the access token, which still works for 15 min after logout. 
+    A user whose access token was stolen can't truly invalidate all sessions if attacker refreshes first. Minor issue tho
+*/
 
 //  Admin Routes
+//  TODO: move these to /api/user/admin ?
 
 router.get("/admin", authMiddleware, adminMiddleware, getAdmins);
 

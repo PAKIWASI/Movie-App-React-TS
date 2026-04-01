@@ -3,14 +3,19 @@ import z from "zod"
 
 
 export const UserMovieSchema = z.object({
-    userId:      z.string().refine(val => mongoose.Types.ObjectId.isValid(val), "Invalid ObjectId"),
-    tmdbId:      z.number(),     // ref to movie
+    userId:      z.string()
+                    .trim().length(24)
+                    .refine(val => mongoose.Types.ObjectId.isValid(val), "Invalid ObjectId"),
+    tmdbId:      z.number().int().positive(),     // ref to movie
     inFavs:      z.boolean().default(false),
     inWatchlist: z.boolean().default(false),
     watched:     z.boolean().default(false),
     userRating:  z.number().min(0).max(10).default(0),
-    userReview:  z.string().default(""),
-});
+    userReview:  z.string().trim().max(2000).default(""),
+});                 
+
+// should I add .strict() to all my zod schemas
+// then unknown fields in schema will give error, instead of silent removal
 
 
 export const PostUserMovieSchema = UserMovieSchema

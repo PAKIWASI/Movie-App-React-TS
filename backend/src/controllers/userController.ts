@@ -17,7 +17,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
         }
 
         const { page, limit, skip } = getPagination(req);
-        const name = sanitizeString(req.query.name);
+        const name = sanitizeString(req.query.name);        // we can't use zod here
         const filter = name ? { $text: { $search: name } } : {};
 
         const [users, total] = await Promise.all([
@@ -137,7 +137,7 @@ export const deleteUserById = async (req: Request, res: Response): Promise<void>
         // check if user is an admin or not
         const role = await AdminModel.getRole(id._id.toString());
         if (role == Roles.admin) {
-            res.status(500).json({ success: false, message: "Can't delete an admin" });
+            res.status(403).json({ success: false, message: "Can't delete an admin" });
             return; 
         }
 

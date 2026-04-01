@@ -3,10 +3,10 @@ import { z } from "zod";
 
 // zod schema (used for input/output validation)
 export const UserSchema = z.object({
-    name:       z.string().min(2),
+    name:       z.string().trim().min(2).max(100),
     age:        z.number().int().min(0).max(150),
-    email:      z.email(),
-    password:   z.string().min(8),
+    email:      z.email().trim().toLowerCase(),      // TODO: do i need trim, lowecase on this ?
+    password:   z.string().min(8).max(128),
 });
 
 export const PublicUserSchema = UserSchema.omit({

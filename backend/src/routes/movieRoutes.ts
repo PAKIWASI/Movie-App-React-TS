@@ -29,7 +29,7 @@ router.get("/:movieid/credits", getMovieCredits);
 router.post("/",
     authMiddleware,
     adminMiddleware,
-    validate(MovieDetailsSchema),
+    validate(MovieDetailsSchema),   // this can set tmdb id but we need it
     postMovie
 );
 

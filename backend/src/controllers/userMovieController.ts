@@ -214,7 +214,7 @@ export const toggleWatched = async (req: Request, res: Response): Promise<void> 
 // PATCH /api/user/me/movie/:tmdbId/rating
 export const setRating = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { userRating }: SetRating = req.body;
+        const { userRating }: SetRating = req.body;         // zod verified
         const um = await UserMovieModel.findOneAndUpdate(
             getCompositeKey(req),
             { $set: { userRating } },

@@ -31,7 +31,7 @@ export const apiLogout = async (): Promise<void> => {
 // User profile
 
 export const getMe = async (): Promise<{ success: boolean; data: User }> => {
-    const res = await apiFetch("user/me");      // TODO: no methid specified. does it default to GET??
+    const res = await apiFetch("user/me");  // no method so GET
     return res.json();
 };
 

@@ -50,6 +50,8 @@ router.put("/me",
     updateUser                  // if at any point call next(error), go to the next error middleware
 );
 
+// TODO: should we enforce user names to be unique ?
+
 
 router.delete("/me", deleteUser);
 

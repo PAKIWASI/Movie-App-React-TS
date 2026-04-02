@@ -4,8 +4,6 @@ import { useUser } from "../contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 
 
-// TODO: add a link to register
-
 
 function Login() 
 {

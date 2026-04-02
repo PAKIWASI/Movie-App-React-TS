@@ -42,4 +42,8 @@ function App() {
     );
 }
 
+/* TODO: 
+    1. admin portal ? admins can view a lot of stuff from backend
+*/
+
 export default App;

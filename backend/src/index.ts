@@ -71,7 +71,7 @@ app.listen(PORT, () => {
 })
 
 /*  TODO:  
-    1. change password route
+    1. We need a change password route
 
 */
 export default app;

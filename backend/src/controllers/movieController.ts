@@ -7,21 +7,12 @@ import { sanitizeString } from "../utils/sanitize";
 
 
 // GET /api/movie?name=movie&id=111&page=1&limit=10
-export const getMovies = async (req: Request, res: Response) : Promise<void> => {
-    try { 
+export const getMovies = async (req: Request, res: Response): Promise<void> => {
+    try {
 
         // Early return — id param means fetch a single movie
         if (req.query.id) {
-            const movie = await MovieModel
-                .findByTmdbId(parseInt(req.query.id as string))
-                .select(TMDB_MOVIE_PROJECTION);
-
-            if (!movie) { 
-                res.status(404).json({ success: false, message: "Movie not found" }); 
-                return; 
-            }
-            res.status(200).json({ success: true, data: [movie] });
-            return;
+            return await getMovieById(req, res);    // TODO: is this right?
         }
 
         const { page, limit, skip } = getPagination(req);
@@ -42,8 +33,24 @@ export const getMovies = async (req: Request, res: Response) : Promise<void> => 
 };
 
 
+// get movie summery (not details) with an ID
+// called by upper function
+const getMovieById = async (req: Request, res: Response): Promise<void> => {
+    const movie = await MovieModel
+        .findByTmdbId(parseInt(req.query.id as string))
+        .select(TMDB_MOVIE_PROJECTION);
+
+    if (!movie) {
+        res.status(404).json({ success: false, message: "Movie not found" });
+        return;
+    }
+
+    res.status(200).json({ success: true, data: [movie] });
+};
+
+
 // GET /api/movie/:movieid
-export const getMovieDetails = async (req: Request, res: Response) : Promise<void> => {
+export const getMovieDetails = async (req: Request, res: Response): Promise<void> => {
     try {
         const movie = await MovieModel.findByTmdbId(parseInt(req.params.movieid as string));
         if (!movie) {
@@ -60,7 +67,7 @@ export const getMovieDetails = async (req: Request, res: Response) : Promise<voi
 
 
 // GET /api/movie/:movieid/credits
-export const getMovieCredits = async (req: Request, res: Response) : Promise<void> => {
+export const getMovieCredits = async (req: Request, res: Response): Promise<void> => {
     try {
         const credits = await movieCredit.findOne({ id: parseInt(req.params.movieid as string) });
         if (!credits) {
@@ -77,9 +84,9 @@ export const getMovieCredits = async (req: Request, res: Response) : Promise<voi
 
 
 // POST /api/movie
-export const postMovie = async (req: Request, res: Response) : Promise<void> => {
+export const postMovie = async (req: Request, res: Response): Promise<void> => {
     try {
-        const movie: MovieDetail  = req.body;
+        const movie: MovieDetail = req.body;
         const insertedMovie = await MovieModel.create(movie);
 
         res.status(201).json({ success: true, data: insertedMovie });
@@ -87,7 +94,7 @@ export const postMovie = async (req: Request, res: Response) : Promise<void> => 
         if (error.code === 11000) {
             res.status(409).json({ success: false, message: "Movie with TMDB ID already exists" });
             return;
-        }    
+        }
         console.error("postMovie Error: ", error);
         res.status(500).json({ success: false, message: "Failed to Post Movie" });
     }
@@ -95,7 +102,7 @@ export const postMovie = async (req: Request, res: Response) : Promise<void> => 
 
 
 // PUT /api/movie/:movieid
-export const updateMovie = async (req: Request, res: Response) : Promise<void> => {
+export const updateMovie = async (req: Request, res: Response): Promise<void> => {
     try {
         const movie = await MovieModel.findOneAndUpdate(
             { id: parseInt(req.params.movieid as string) },
@@ -120,7 +127,7 @@ export const updateMovie = async (req: Request, res: Response) : Promise<void> =
 // we can show the user that the movie they referenced is no longer in database
 
 // DELETE /api/movie/:movieid
-export const deleteMovie = async (req: Request, res: Response) : Promise<void> => {
+export const deleteMovie = async (req: Request, res: Response): Promise<void> => {
     try {
         const result = await MovieModel.deleteOne({ id: parseInt(req.params.movieid as string) });
         if (result.deletedCount === 0) {

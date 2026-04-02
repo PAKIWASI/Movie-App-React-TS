@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
-import MovieDisplay from "../components/MovieDisplay";
 import type { TMDBmovie } from "../types/Movie";
+import MovieDisplay from "../components/MovieDisplay";
 import { getPopularMovies, searchMovies } from "../services/movieAPI";
 
+
+
+// TODO: how to do search pages?
 
 function Home() 
 {
@@ -27,7 +30,9 @@ function Home()
                 setMovieLoading(false);
             }
         };
-        if (!isSearching) fetchPopular();
+        if (!isSearching) {
+            fetchPopular();
+        }
     }, [page, isSearching]);
 
     const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,7 +47,9 @@ function Home()
             setMovieLoading(true);
             setIsSearching(true);
             const res = await searchMovies(searchQuery, 1);
-            if (res.success) setMovies(res.data);
+            if (res.success) {
+                setMovies(res.data);
+            }
         } catch (err) {
             console.error("handleSearch error:", err);
             setMovies([]);
@@ -53,6 +60,9 @@ function Home()
 
     // TODO: if user was at a particular page and searched then goes back,
     // how to go back to the previous page ?
+    // should search be another route like /search
+    // we also have to implement a "view more" button to get next pages,
+    // for both search and home page
 
     return (
         <div className="flex flex-col gap-6">

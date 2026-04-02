@@ -28,9 +28,10 @@ export interface backendResponse {
     success:    boolean;
     data:       TMDBmovie[];
     pagination: {
-        page:   number,
-        limit:  number,
-        total:  number,
+        page:   number;
+        limit:  number;
+        total:  number;
+        pages:  number;
     };
 };
 

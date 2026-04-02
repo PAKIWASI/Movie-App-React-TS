@@ -1,8 +1,8 @@
 import { Request } from "express";
 
-const MIN_PAGE    = 1;
+const MIN_PAGE      = 1;
 const DEFAULT_LIMIT = 10;
-const MAX_LIMIT   = 100;
+const MAX_LIMIT     = 100;
 
 export interface PaginationParams {
     page:  number;
@@ -14,7 +14,7 @@ export interface PaginationMeta {
     page:  number;
     limit: number;
     total: number;
-    // pages: number;
+    pages: number;
 }
 
  // Reads ?page and ?limit from a request and returns safe, clamped values
@@ -30,8 +30,8 @@ export const getPagination = (req: Request): PaginationParams => {
 export const buildPaginationMeta = (page: number, limit: number, total: number): PaginationMeta => ({
     page,
     limit,
-    total
-    //pages: Math.ceil(total / limit),
+    total,
+    pages: Math.ceil(total / limit)
 });
 
 

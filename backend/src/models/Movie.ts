@@ -74,42 +74,41 @@ const movieSchema: Schema = new Schema(
     }
 );
 
-movieSchema.index({ title: "text" });
-movieSchema.index({ popularity: -1 });
-movieSchema.index({ vote_average: -1 });
 
 
 // Static methods 
 
-/**
- * Find a single movie by TMDB id.
- * Usage: await MovieModel.findByTmdbId(123)
- */
+// Find a single movie by TMDB id.
 movieSchema.statics.findByTmdbId = function (tmdbId: number) {
     return this.findOne({ id: tmdbId });
 };
 
-/**
- * Full-text + pagination search.
- * Pass name=undefined to get all movies (no text filter).
- * Usage: const { movies, total } = await MovieModel.search(name, skip, limit, TMDB_MOVIE_PROJECTION)
- */
+/*
+ Full-text + pagination search.
+ Pass name=undefined to get all movies (no text filter).
+ Usage: const { movies, total } = await MovieModel.search(name, skip, limit, TMDB_MOVIE_PROJECTION)
+*/
 movieSchema.statics.search = async function (
     name: string | undefined,
     skip: number,
     limit: number,
     projection: Record<string, 0 | 1> = {}
-): Promise<{ movies: IMovie[]; total: number }> {
+): Promise<{ movies: IMovie[]; total: number }> 
+{
     const filter = name ? { $text: { $search: name } } : {};
+    const sort   = name ? { score: { $meta: "textScore" } } : { popularity: -1 };   // sort by popularity
 
     const [movies, total] = await Promise.all([
-        this.find(filter).skip(skip).limit(limit).select(projection),
+        this.find(filter).sort(sort).skip(skip).limit(limit).select(projection),
         this.countDocuments(filter),
     ]);
 
     return { movies, total };
 };
 
+movieSchema.index({ title: "text" });
+movieSchema.index({ popularity: -1 });
+movieSchema.index({ vote_average: -1 });
 
 export default mongoose.model<IMovie, IMovieModel>("Movie", movieSchema);
 // collection called movies

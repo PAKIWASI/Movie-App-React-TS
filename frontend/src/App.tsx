@@ -1,30 +1,19 @@
 import { Route, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Favorites from "./pages/Favorites";
-import MovieDetail from "./pages/MovieDetail";
-import Watchlist from "./pages/Watchlist.tsx";
-import Navbar from "./Components/Navbar";
-import { MovieProvider } from "./contexts/MovieContext";
 
 
 function App() {
-
-
-   return(
-        <MovieProvider>
-
-            <Navbar/>
-            <main className="mainContent">
+    return (
+        <div>
+            <Navbar />
+            <main className="px-6 py-6 max-w-7xl mx-auto">
                 <Routes>
-                    <Route path="/" element={<Home isSearching= {false}/>} />
-                    <Route path="/favorites" element={<Favorites/>} />
-                    <Route path="/watchlist" element={<Watchlist/>} />
-                    <Route path="/search" element={<Home isSearching={true}/>} />
-                    <Route path="/movie/:id" element={<MovieDetail/>} />
-               </Routes>
+                    <Route path="/" element={<Home />} />
+                </Routes>
             </main>
-
-        </MovieProvider>
+        </div>
     );
-};
+}
+
 export default App;

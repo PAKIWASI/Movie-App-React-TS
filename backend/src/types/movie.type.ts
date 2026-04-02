@@ -19,13 +19,13 @@ export const TMDBmovieSchema = z.object({
 });
 
 
-// the response from /api/popular movies (no details)
-export const TMDBresponseSchema = z.object({
-    page:          z.number(),
-    results:       z.array(TMDBmovieSchema),
-    total_pages:   z.number(),
-    total_results: z.number(),
-});
+// // the response from /api/popular movies (no details)
+// export const TMDBresponseSchema = z.object({
+//     page:          z.number(),
+//     results:       z.array(TMDBmovieSchema),
+//     total_pages:   z.number(),
+//     total_results: z.number(),
+// });
 
 
 // to get only the fields in TMDBmovie from MovieDetail in /api/movies/:movieid
@@ -119,7 +119,6 @@ export const UpdateMovieSchema = MovieDetailsSchema
 
 
 export type TMDBmovie    = z.infer<typeof TMDBmovieSchema>;
-export type TMDBresponse = z.infer<typeof TMDBresponseSchema>;
 export type MovieDetail  = z.infer<typeof MovieDetailsSchema>;
 export type MovieCredit  = z.infer<typeof MovieCreditsSchema>;
 export type UpdateMovie  = z.infer<typeof UpdateMovieSchema>; 

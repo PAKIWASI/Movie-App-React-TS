@@ -70,8 +70,5 @@ app.listen(PORT, () => {
     console.log(`Express Server running at http://localhost:${PORT}`);
 })
 
-/*  TODO:  
-    1. We need a change password route
-*/
 
 export default app;

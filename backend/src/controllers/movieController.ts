@@ -12,12 +12,12 @@ export const getMovies = async (req: Request, res: Response): Promise<void> => {
 
         // Early return — id param means fetch a single movie
         if (req.query.id) {
-            return await getMovieById(req, res);    // TODO: is this right?
+            return await getMovieById(req, res);
         }
 
         const { page, limit, skip } = getPagination(req);
         const name = sanitizeString(req.query.name);
-
+                                                    // our static search function
         const { movies, total } = await MovieModel.search(name, skip, limit, TMDB_MOVIE_PROJECTION);
 
         res.status(200).json({

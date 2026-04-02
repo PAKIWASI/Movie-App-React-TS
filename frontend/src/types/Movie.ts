@@ -103,10 +103,21 @@ export interface CollectionFilters {
     limit?:       number;
 }
 
+// TODO: verify approach
+
+// we want the local update to be instant,
+// then we post to db
 export interface CollectionContextType {
     collection:       UserMovie[];
+    // get already loaded local collection
     getEntry: (tmdbId: number) => UserMovie | null;
+    // get all favs,watched etc
+    getFiltered: (filter: "fav" | "watchlist" | "watched") => UserMovie[];
+    // get entire collection from api
     refreshCollection: () => Promise<void>;
+    // set locally then post to db
+    setAttribute: (tmdbId: number, 
+         filter: "fav" | "watchlist" | "watched" | "rating" | "review") => Promise<void>;
 }
 
 

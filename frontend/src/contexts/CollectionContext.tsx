@@ -12,10 +12,11 @@ each firing their own GET /user/me/movie?... query, they all read from one in-me
 // TODO: 
 // One thing to note: if i mutate the collection, i have to MANUALLY call refreshCollection()
 // is this considered bad in react land ?
+// we are not using this anywhere yet
+
 
 
 const CollectionContext = createContext<CollectionContextType | null>(null);
-
 
 
 export function CollectionProvider({ children }: { children: React.ReactNode }) 

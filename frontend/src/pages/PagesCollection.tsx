@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { UserMovie } from "../types/Movie";
 import { getCollection } from "../services/userAPI";
 import type { CollectionPageProps } from "../types/PropTypes";
+import { useCollection } from "../contexts/CollectionContext";
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 
@@ -12,7 +12,8 @@ const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 function CollectionPage({ filter, title }: CollectionPageProps) 
 {
     const navigate = useNavigate();
-    const [movies, setMovies] = useState<UserMovie[]>([]);
+    // const [movies, setMovies] = useState<UserMovie[]>([]);
+    const { collection, getEntry, refreshCollection } = useCollection();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

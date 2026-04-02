@@ -1,14 +1,15 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate";
 import { adminMiddleware } from "../middleware/adminMiddleware";
-import { UpdateUserSchema } from "../types/user.type";
+import { ChangePasswordSchema, UpdateUserSchema } from "../types/user.type";
 import userMovieRoutes from "./userMovieRoutes";
 import {
     getUsers,
     updateUser,
     deleteUser,
     getUser,
-    deleteUserById
+    deleteUserById,
+    changePassword
 } from "../controllers/userController";
 
 
@@ -26,7 +27,10 @@ router.use("/me/movie", userMovieRoutes);  // specific — must come first
 
 // at root with no extra params, has query parameters
 // GET  /api/user
-router.get("/", adminMiddleware, getUsers); // only admins can see all users
+router.get("/", 
+    adminMiddleware, // only admins can see all users
+    getUsers
+); 
 
 // GET /api/user/me
 router.get("/me", getUser); // allow the user themselves to see their account
@@ -34,11 +38,18 @@ router.get("/me", getUser); // allow the user themselves to see their account
 // The middleware runs first. If validation fails, the controller never runs. 
 // If it passes, req.body is already the correct typed shape.
 
+
+router.put("/me/password", 
+    validate(ChangePasswordSchema),
+    changePassword
+);
+
 // UpdateUserSchema doesn't allow password updates
 router.put("/me",
     validate(UpdateUserSchema), // calls next() -> go to updateUser
     updateUser                  // if at any point call next(error), go to the next error middleware
 );
+
 
 router.delete("/me", deleteUser);
 

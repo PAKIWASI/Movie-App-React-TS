@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 
 
 // authenticates the access token that comes with every req
+// no db hit
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
     const accessToken = req.cookies?.access;   // we set the cookie name in generateAccessToken

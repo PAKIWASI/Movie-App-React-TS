@@ -18,19 +18,24 @@ export const LoginSchema = UserSchema.pick({
     password: true,
 });
 
-// email is changable but we garentee uniquness
 
+// email, password is not changalbe
 export const UpdateUserSchema = UserSchema
-    .omit({ password: true })   // don't let password update
+    .omit({ email: true, password: true })   // don't let password update
     .partial()                 // every other field optional
     .refine(    // dont let empty object through
         data => Object.values(data).some(v => v !== undefined),
         { message: "At least one field must be provided" }
     );
 
+export const ChangePasswordSchema = UserSchema
+    .pick({ password: true });
 
-export type User            = z.infer<typeof UserSchema>;
-export type PublicUser      = z.infer<typeof PublicUserSchema>;
-export type LoginInput      = z.infer<typeof LoginSchema>;
-export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
+
+export type User                 = z.infer<typeof UserSchema>;
+export type PublicUser           = z.infer<typeof PublicUserSchema>;
+export type LoginInput           = z.infer<typeof LoginSchema>;
+export type UpdateUserInput      = z.infer<typeof UpdateUserSchema>;
+export type ChangePasswordSchema = z.infer<typeof ChangePasswordSchema>;
+
 

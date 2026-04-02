@@ -5,6 +5,7 @@ import AdminModel, { Roles } from "../models/Admin";
 import RefreshTokenModel from "../models/RefreshToken";
 import { getPagination, buildPaginationMeta } from "../utils/paginate";
 import { sanitizeString } from "../utils/sanitize";
+import { success } from "zod";
 
 
 // GET /api/user?name=wasi&userid=387437&page=1&limit=10
@@ -71,6 +72,23 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 
+// POST /api /user/me/password
+export const changePassword = async (req: Request, res: Response) : Promise<void> => {
+    try {
+        const user = UserModel.findByIdAndUpdate(req.userid, req.body);
+        if (!user) {
+            res.status(404).json({ success: false, message: "User not found" });
+            return;
+        }
+        
+        res.status(200).json({ success: true, message: "Password Changed" });
+    } catch (error) {
+        console.error("changePassword Error: ", error);
+        res.status(500).json({ success: false, message: "Failed to change password" });
+    }
+};
+
+
 // PUT /api/user/me
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -95,6 +113,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ success: false, message: "Failed to update user" });
     }
 };
+
 
 
 // DELETE /api/user/me

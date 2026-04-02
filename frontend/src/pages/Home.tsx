@@ -1,68 +1,58 @@
 import { useEffect, useState } from "react";
+import Button from "../components/ui/Button";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import type { TMDBmovie } from "../types/Movie";
 import MovieDisplay from "../components/MovieDisplay";
-import { getPopularMovies, searchMovies } from "../services/movieAPI";
+import { getPopularMovies } from "../services/movieAPI";
 
 
+// TODO: add search suggestions based on query with poster and name
 
-// TODO: how to do search pages?
+
 
 function Home() 
 {
+    const navigate = useNavigate();
     const [searchQuery, setSearchQuery]   = useState("");
     const [movies, setMovies]             = useState<TMDBmovie[]>([]);
-    const [movieLoading, setMovieLoading] = useState(false);
+    const [loading, setLoading]           = useState(false);
     const [page, setPage]                 = useState(1);
-    const [isSearching, setIsSearching]   = useState(false);
+    const [hasMore, setHasMore]           = useState(true);
 
-    // Load popular movies on mount
-    useEffect(() => {
-        const fetchPopular = async () => {
-            try {
-                setMovieLoading(true);
-                const res = await getPopularMovies(page);
-                if (res.success) setMovies(res.data);
-            } catch (err) {
-                console.error("fetchPopular error:", err);
-                setMovies([]);
-            } finally {
-                setMovieLoading(false);
-            }
-        };
-        if (!isSearching) {
-            fetchPopular();
-        }
-    }, [page, isSearching]);
-
-    const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!searchQuery.trim()) {
-            // empty search — go back to popular
-            setIsSearching(false);
-            setPage(1);
-            return;
-        }
+    const fetchPopular = async (pageNum: number, append: boolean) => {
         try {
-            setMovieLoading(true);
-            setIsSearching(true);
-            const res = await searchMovies(searchQuery, 1);
+            setLoading(true);
+            const res = await getPopularMovies(pageNum);
             if (res.success) {
-                setMovies(res.data);
+                // append=true means "load more", append=false means fresh load
+                setMovies(prev => append ? [...prev, ...res.data] : res.data);
+                setHasMore(pageNum < res.pagination.pages);
             }
         } catch (err) {
-            console.error("handleSearch error:", err);
-            setMovies([]);
+            console.error("fetchPopular error:", err);
         } finally {
-            setMovieLoading(false);
+            setLoading(false);
         }
     };
 
-    // TODO: if user was at a particular page and searched then goes back,
-    // how to go back to the previous page ?
-    // should search be another route like /search
-    // we also have to implement a "view more" button to get next pages,
-    // for both search and home page
+    // Initial load
+    useEffect(() => {
+        fetchPopular(1, false);
+    }, []);
+
+    const handleLoadMore = () => {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        fetchPopular(nextPage, true);  // append to existing movies
+    };
+
+    // Redirect to /search route instead of handling search here
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!searchQuery.trim()) return;
+        navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    };
 
     return (
         <div className="flex flex-col gap-6">
@@ -72,10 +62,26 @@ function Home()
                 onSubmit={handleSearch}
             />
 
-            {movieLoading ? (
-                <p className="text-center text-(--c-muted-foreground) text-sm">Loading...</p>
+            <h2 className="text-lg font-semibold text-(--c-foreground)">Popular Movies</h2>
+
+            {loading && movies.length === 0 ? (
+                <p className="text-center text-(--c-muted-foreground) text-sm py-12">Loading...</p>
             ) : (
-                <MovieDisplay movies={movies} />
+                <>
+                    <MovieDisplay movies={movies} />
+
+                    {hasMore && (
+                        <div className="flex justify-center pt-4">
+                            <Button
+                                variant="outline"
+                                onClick={handleLoadMore}
+                                disabled={loading}
+                            >
+                                {loading ? "Loading..." : "Load More"}
+                            </Button>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

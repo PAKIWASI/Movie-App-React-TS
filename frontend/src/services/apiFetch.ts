@@ -5,6 +5,7 @@ export const BASE_URL = import.meta.env.VITE_API_URL;
 
 
 const apiFetch = async (endpoint: string, options: RequestInit = {}): Promise<Response> => {
+
     const res = await fetch(`${BASE_URL}/${endpoint}`, {
         ...options,
         credentials: "include",
@@ -21,7 +22,8 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}): Promise<Re
         });
         if (!refreshRes.ok) throw new Error("Session expired, please log in again");
 
-        return fetch(`${BASE_URL}${endpoint}`, {
+        // Retry original request with the new access cookie now set
+        return fetch(`${BASE_URL}/${endpoint}`, {
             ...options,
             credentials: "include",
             headers: {

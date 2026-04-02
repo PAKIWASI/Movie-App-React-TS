@@ -44,6 +44,28 @@ function App() {
 
 /* TODO: 
     1. admin portal ? admins can view a lot of stuff from backend
+    2. React 18 StrictMode behavior — in development it intentionally 
+        mounts → unmounts → remounts every component to catch side effects
+        how to disable?
+    3. Race condition in token refresh 
+        The 401 → refresh flow has a race condition. When the access token expires, two concurrent requests both get 401,
+        both independently trigger a refresh, and you end up with two parallel POST /auth/refresh calls
+    4. Every time you navigate to a movie detail page, even one you've already visited,
+        it fires fresh GET /api/movie/:id and GET /api/movie/:id/credits calls (no caching) -> in-memory cache or staleTime ??
+    5. Each MovieDetail page fetches the user's collection entry for that specific movie individually
+        A better pattern  would be to fetch the full collection once on login and do lookups locally (make a context ??)
+
+
+ Slow Responses — exceeding recommended thresholds
+GET /api/movie (list/search) — avg 523ms, peak 1121ms
+    This is your worst offender. 20 movies per page is doing a full collection scan every time. The fix is a MongoDB index on whatever field you're sorting by (likely popularity or _id) and making sure pagination uses that index efficiently. Also consider adding an HTTP cache header — these results barely change, so Cache-Control: public, max-age=60 would let the browser serve the 304s without waiting on Mongo at all.
+GET /api/user/me/movie (collection queries) — avg 513ms, peak 1029ms
+    42 calls total, all slow. This endpoint is hit constantly — per-movie-detail lookups, watchlist fetches, favorites fetches, watched fetches. The (userId, tmdbId) composite index you have in your schema should make these fast, but the numbers suggest it might not be getting used for the filter-based queries (inWatchlist=true, watched=true). Make sure those fields are in a compound index: { userId: 1, inWatchlist: 1 }, { userId: 1, watched: 1 }, { userId: 1, inFavs: 1 }.
+GET /api/movie/:id (single movie) — avg 285ms, peak 705ms
+    Fetching by tmdbId (the TMDB integer, not _id). If there's no index on the id field, Mongo is doing a full scan every time. Add { id: 1 } unique index on the Movie collection — this alone will likely drop this to under 50ms.
+POST /api/user/me/movie — avg 487ms, peak 622ms
+    Write operations are slower by nature but 622ms is too high. Likely waiting on the duplicate-check query before inserting. The unique index on (userId, tmdbId) helps here — let Mongo enforce uniqueness via the index rather than doing a findOne check first.
 */
+
 
 export default App;

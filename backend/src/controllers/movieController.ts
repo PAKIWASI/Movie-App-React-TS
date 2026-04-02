@@ -1,9 +1,9 @@
-import { Request, Response } from "express"
 import MovieModel from "../models/Movie"
+import { Request, Response } from "express"
 import movieCredit from "../models/MovieCredit";
-import { MovieDetail, TMDB_MOVIE_PROJECTION } from "../types/movie.type";
-import { getPagination, buildPaginationMeta } from "../utils/paginate";
 import { sanitizeString } from "../utils/sanitize";
+import { getPagination, buildPaginationMeta } from "../utils/paginate";
+import { MovieDetail, TMDB_MOVIE_PROJECTION } from "../types/movie.type";
 
 
 // GET /api/movie?name=movie&id=111&page=1&limit=10
@@ -122,6 +122,7 @@ export const updateMovie = async (req: Request, res: Response): Promise<void> =>
     }
 };
 
+
 // TODO: if we delete the movie but it is referenced in a userMovie entry? 
 // should we do a cascade delete or let it slide ?
 // we can show the user that the movie they referenced is no longer in database
@@ -143,3 +144,5 @@ export const deleteMovie = async (req: Request, res: Response): Promise<void> =>
         res.status(500).json({ success: false, message: "Failed to Delete Movie" });
     }
 };
+
+

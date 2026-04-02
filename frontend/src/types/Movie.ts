@@ -92,6 +92,8 @@ export interface backendResponse {
     };
 }
 
+// we have generic collection that contains all saved movies
+// favs, watchlist and watched
 
 export interface CollectionFilters {
     inFavs?:      boolean;
@@ -100,4 +102,11 @@ export interface CollectionFilters {
     page?:        number;
     limit?:       number;
 }
+
+export interface CollectionContextType {
+    collection:       UserMovie[];
+    getEntry: (tmdbId: number) => UserMovie | null;
+    refreshCollection: () => Promise<void>;
+}
+
 

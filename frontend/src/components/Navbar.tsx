@@ -4,6 +4,9 @@ import { useUser } from "../contexts/UserContext";
 import { useState, useRef, useEffect } from "react";
 
 
+// TODO: get started takes you to register
+// register can take you to login (already have an account?)
+
 
 function Navbar() 
 {

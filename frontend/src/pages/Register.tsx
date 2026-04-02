@@ -5,6 +5,9 @@ import { apiRegister } from "../services/userAPI";
 import { Link, useNavigate } from "react-router-dom";
 
 
+// TODO: add a link to login
+
+
 function Register() 
 {
     const { login } = useUser();

@@ -8,15 +8,15 @@ import Button from "../components/ui/Button";
 function Profile() 
 {
     const { user, logout } = useUser();
-    const navigate          = useNavigate();
+    const navigate = useNavigate();
 
-    const [name, setName]         = useState(user?.name  ?? "");
-    const [email, setEmail]       = useState(user?.email ?? "");
-    const [age, setAge]           = useState(String(user?.age ?? ""));
-    const [saving, setSaving]     = useState(false);
+    const [name, setName] = useState(user?.name ?? "");
+    const [email, setEmail] = useState(user?.email ?? "");
+    const [age, setAge] = useState(String(user?.age ?? ""));
+    const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
-    const [success, setSuccess]   = useState("");
-    const [error, setError]       = useState("");
+    const [success, setSuccess] = useState("");
+    const [error, setError] = useState("");
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -87,7 +87,7 @@ function Profile()
                     />
                 </div>
 
-                {error   && <p className="text-sm text-(--c-destructive)">{error}</p>}
+                {error && <p className="text-sm text-(--c-destructive)">{error}</p>}
                 {success && <p className="text-sm text-(--c-primary)">{success}</p>}
 
                 <Button type="submit" disabled={saving} className="w-full">

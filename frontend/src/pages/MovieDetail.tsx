@@ -14,12 +14,14 @@ import {
     setReview,
 } from "../services/userAPI";
 
+
 const POSTER_BASE    = "https://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE  = "https://image.tmdb.org/t/p/w1280";
 const PROFILE_BASE   = "https://image.tmdb.org/t/p/w185";
 
 
-function MovieDetailPage() {
+function MovieDetailPage() 
+{
     const { id }          = useParams<{ id: string }>();
     const { isLoggedIn }  = useUser();
     const tmdbId          = parseInt(id!);
@@ -65,7 +67,9 @@ function MovieDetailPage() {
         load();
     }, [tmdbId, isLoggedIn]);
 
+
     // Ensure movie is in collection, then run action
+    // action is a function like toggle fav/watched 
     const ensureAndRun = async (action: (e: UserMovie) => Promise<UserMovie>) => {
         if (busy) return;
         try {
@@ -110,6 +114,8 @@ function MovieDetailPage() {
     if (!movie) {
         return <p className="text-center text-(--c-muted-foreground) py-32">Movie not found.</p>;
     }
+
+    // TODO: just show top names from cast and crews array that fit on screen, then rest are to the right
 
     const director = credits?.crew.find(c => c.job === "Director");
     const topCast  = credits?.cast.slice(0, 8) ?? [];

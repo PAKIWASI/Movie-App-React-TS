@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCollection } from "../services/userAPI";
 import type { UserMovie } from "../types/Movie";
+import { getCollection } from "../services/userAPI";
+import type { CollectionPageProps } from "../types/PropTypes";
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 
 
-interface CollectionPageProps {
-    filter: "inFavs" | "inWatchlist";
-    title: string;
-}
 
-function CollectionPage({ filter, title }: CollectionPageProps) {
+// Generic collection that can display favorites or watchlist
+function CollectionPage({ filter, title }: CollectionPageProps) 
+{
     const navigate = useNavigate();
     const [movies, setMovies] = useState<UserMovie[]>([]);
     const [loading, setLoading] = useState(true);

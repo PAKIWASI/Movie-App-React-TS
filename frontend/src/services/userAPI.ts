@@ -1,9 +1,9 @@
 import apiFetch from "./apiFetch";
 import type { User } from "../types/User";
-import type { UserMovie } from "../types/Movie";
+import type { CollectionFilters, UserMovie } from "../types/Movie";
 
 
-// ── Auth ─────────────────────────────────────────────────────────────────────
+// Auth 
 
 export const apiRegister = async (
     name: string, age: number, email: string, password: string
@@ -28,7 +28,7 @@ export const apiLogout = async (): Promise<void> => {
 };
 
 
-// ── User profile ──────────────────────────────────────────────────────────────
+// User profile
 
 export const getMe = async (): Promise<{ success: boolean; data: User }> => {
     const res = await apiFetch("user/me");      // TODO: no methid specified. does it default to GET??
@@ -50,22 +50,14 @@ export const deleteMe = async (): Promise<void> => {
 };
 
 
-// ── User movie collection ─────────────────────────────────────────────────────
-
-export interface CollectionFilters {
-    inFavs?:      boolean;
-    inWatchlist?: boolean;
-    watched?:     boolean;
-    page?:        number;
-    limit?:       number;
-}
+// User movie collection
 
 export const getCollection = async (filters: CollectionFilters = {}): Promise<{
     success: boolean;
     data: UserMovie[];
     pagination: { page: number; limit: number; total: number; pages: number };
 }> => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams();           // dynamically make params
     Object.entries(filters).forEach(([k, v]) => {
         if (v !== undefined) params.set(k, String(v));
     });

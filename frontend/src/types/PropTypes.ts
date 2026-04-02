@@ -15,3 +15,9 @@ export interface SearchBarProps {
 export type MovieCardProp = { movie: TMDBmovie };
 
 export type MovieDisplayProp = { movies: TMDBmovie[] };
+
+
+export interface CollectionPageProps {
+    filter: "inFavs" | "inWatchlist";
+    title: string;
+}

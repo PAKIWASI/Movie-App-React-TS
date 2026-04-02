@@ -93,3 +93,11 @@ export interface backendResponse {
 }
 
 
+export interface CollectionFilters {
+    inFavs?:      boolean;
+    inWatchlist?: boolean;
+    watched?:     boolean;
+    page?:        number;
+    limit?:       number;
+}
+

@@ -97,8 +97,8 @@ export const refreshAccessToken = async (req: Request, res: Response) : Promise<
 export const logoutUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const refreshToken = req.cookies?.refresh;
-        if (refreshToken) {
-            await RefreshTokenModel.deleteOne({ token: refreshToken });
+        if (refreshToken) {                     // TODO: providing extra userid..is this right?
+            await RefreshTokenModel.deleteOne({ userId: req.userid, token: refreshToken });
         }
         res.clearCookie("access");
         res.clearCookie("refresh");

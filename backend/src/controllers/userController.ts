@@ -6,7 +6,6 @@ import RefreshTokenModel from "../models/RefreshToken";
 import { getPagination, buildPaginationMeta } from "../utils/paginate";
 import { sanitizeString } from "../utils/sanitize";
 import bcrypt from "bcryptjs";
-import { success } from "zod";
 
 
 // GET /api/user?name=wasi&userid=387437&page=1&limit=10

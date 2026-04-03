@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCollection } from "../services/userAPI";
-import type { CollectionPageProps } from "../types/PropTypes";
 import type { UserMovie } from "../types/Movie";
+import { getCollection } from "../services/userMovieAPI";
+import type { CollectionPageProps } from "../types/PropTypes";
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 

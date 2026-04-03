@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import type { MovieCardProp } from "../types/PropTypes";
-import { addToCollection, toggleFavorite, toggleWatchlist } from "../services/userAPI";
+import { addToCollection, toggleFavorite, toggleWatchlist } from "../services/userMovieAPI";
 
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { type UserMovie, type CollectionContextType } from "../types/Movie";
-import { getCollection, setRating, setReview, toggleFavorite, toggleWatched, toggleWatchlist } from "../services/userAPI";
 import { useUser } from "./UserContext";
+import { getCollection, setRating, setReview, toggleFavorite, toggleWatched, toggleWatchlist } from "../services/userMovieAPI";
 
 /*
 CollectionContext is a shared server-side cache for the user's movie collection. 

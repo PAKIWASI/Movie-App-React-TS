@@ -45,10 +45,11 @@ function App() {
 /* TODO: 
     1. admin portal ? admins can view a lot of stuff from backend
     2.*** if i delete refresh token, all requests fail but frontend still shows logged in
+    3. Each MovieDetail page fetches the user's collection entry for that specific movie individually
+        I have made a collectionContext but don't know how would i handle updates locally (if someone adds to favs,
+        how does it update locally + async in db)
     4. Every time you navigate to a movie detail page, even one you've already visited,
         it fires fresh GET /api/movie/:id and GET /api/movie/:id/credits calls (no caching) -> in-memory cache or staleTime ??
-    5. Each MovieDetail page fetches the user's collection entry for that specific movie individually
-        A better pattern  would be to fetch the full collection once on login and do lookups locally (make a context ??)
 
 
  Slow Responses — exceeding recommended thresholds

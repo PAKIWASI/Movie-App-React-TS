@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import Button from "../components/ui/Button";
 import { useParams } from "react-router-dom";
+import Button from "../components/ui/Button";
 import { useUser } from "../contexts/UserContext";
 import { getMovieDetail, getMovieCredits } from "../services/movieAPI";
 import type { MovieDetail, MovieCredits, UserMovie } from "../types/Movie";
-import {
-    getMovieEntry,
-    addToCollection,
-    toggleFavorite,
-    toggleWatchlist,
-    toggleWatched,
-    setRating,
-    setReview,
-} from "../services/userAPI";
+import { 
+    getMovieEntry, 
+    addToCollection, 
+    toggleFavorite, 
+    toggleWatchlist, 
+    toggleWatched, 
+    setRating, 
+    setReview 
+} from "../services/userMovieAPI";
 
 
 const POSTER_BASE   = "https://image.tmdb.org/t/p/w500";

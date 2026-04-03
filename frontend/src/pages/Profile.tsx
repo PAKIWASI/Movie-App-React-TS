@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
-import { updateMe, deleteMe, getCollection } from "../services/userAPI";
 import type { UserMovie } from "../types/Movie";
 import Button from "../components/ui/Button";
+import { updateMe, deleteMe } from "../services/userAPI";
+import { getCollection } from "../services/userMovieAPI";
 
 
 // TODO: img why not use movieDetail?

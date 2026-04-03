@@ -1,4 +1,3 @@
-import { useUser } from "../contexts/UserContext";
 
 export const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -18,7 +17,6 @@ const doRefresh = async (): Promise<void> => {
         credentials: "include",
     });
     if (!res.ok) {
-        useUser().logout();     // TODO: logout user if refresh token is expired
         throw new Error("Session expired, please log in again");
     }
 };
@@ -51,7 +49,6 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}): Promise<Re
     try {
         await refreshPromise;
     } catch {
-        useUser().logout();
         throw new Error("Session expired, please log in again");
     }
 

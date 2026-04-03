@@ -112,12 +112,12 @@ export interface CollectionContextType {
     // get already loaded local collection
     getEntry: (tmdbId: number) => UserMovie | null;
     // get all favs,watched etc
-    getFiltered: (filter: "fav" | "watchlist" | "watched") => UserMovie[];
+    getFiltered: (filter: "inFavs" | "inWatchlist" | "watched") => UserMovie[];
     // get entire collection from api
     refreshCollection: () => Promise<void>;
     // set locally then post to db
-    setAttribute: (tmdbId: number, 
-         filter: "fav" | "watchlist" | "watched" | "rating" | "review") => Promise<void>;
+    setAttribute: (tmdbId: number, filter: "inFavs" | "inWatchlist" | "watched" | "userRating" | "userReview",
+               rating?: number, review?: string) => Promise<void>;
 }
 
 

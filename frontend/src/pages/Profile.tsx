@@ -6,6 +6,7 @@ import type { UserMovie } from "../types/Movie";
 import Button from "../components/ui/Button";
 
 
+// TODO: img why not use movieDetail?
 // TODO: add the change password ? we have the route now (/api/user/me/password)
 
 

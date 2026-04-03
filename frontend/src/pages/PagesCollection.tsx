@@ -2,18 +2,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCollection } from "../services/userAPI";
 import type { CollectionPageProps } from "../types/PropTypes";
-import { useCollection } from "../contexts/CollectionContext";
+import type { UserMovie } from "../types/Movie";
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 
 
+// TODO: why dont we use movieDisplay?
+
+// this is a protected page, only logged in users come here
+// so we have a local collection ready
 
 // Generic collection that can display favorites or watchlist
 function CollectionPage({ filter, title }: CollectionPageProps) 
 {
     const navigate = useNavigate();
-    // const [movies, setMovies] = useState<UserMovie[]>([]);
-    const { collection, getEntry, refreshCollection } = useCollection();
+    const [movies, setMovies] = useState<UserMovie[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

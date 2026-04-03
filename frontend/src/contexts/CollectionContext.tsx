@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { type UserMovie, type CollectionContextType } from "../types/Movie";
-import { getCollection } from "../services/userAPI";
+import { getCollection, setRating, setReview, toggleFavorite, toggleWatched, toggleWatchlist } from "../services/userAPI";
 import { useUser } from "./UserContext";
 
 /*
@@ -19,8 +19,7 @@ each firing their own GET /user/me/movie?... query, they all read from one in-me
 const CollectionContext = createContext<CollectionContextType | null>(null);
 
 
-export function CollectionProvider({ children }: { children: React.ReactNode }) 
-{
+export function CollectionProvider({ children }: { children: React.ReactNode }) {
     const [collection, setCollection] = useState<UserMovie[]>([]);
     const { isLoggedIn } = useUser();
 
@@ -49,6 +48,32 @@ export function CollectionProvider({ children }: { children: React.ReactNode })
     }, [loadCollection]);
 
 
+    // TODO: how to do this?
+    const getFiltered = useCallback(
+        (filter: "inFavs" | "inWatchlist" | "watched"): UserMovie[] =>
+            collection.filter((um) => um[filter]),
+        [collection]
+    );
+
+    // TODO: is this right? local change happens instantly while we also send req to api
+    const setAttribute = useCallback(
+        async (tmdbId: number, filter: "inFavs" | "inWatchlist" | "watched" | "userRating" | "userReview",
+            rating?: number, review?: string): Promise<void> => {
+
+            const um = collection.find(e => e.tmdbId === tmdbId) ?? null;
+            if (!um || filter === "userRating" && !rating || filter === "userReview" && !review) return;
+            switch (filter) {
+                case "inFavs": um.inFavs = !um.inFavs; await toggleFavorite(tmdbId); break;
+                case "inWatchlist": um.inWatchlist = !um.inWatchlist; await toggleWatchlist(tmdbId); break;
+                case "watched": um.watched = !um.watched; await toggleWatched(tmdbId); break;
+                case "userRating": um.userRating = rating!; await setRating(tmdbId, rating!); break;
+                case "userReview": um.userReview = review!; await setReview(tmdbId, review!); break;
+            }
+        },
+        [collection]
+    );
+
+
     // Load collection whenever user logs in
     useEffect(() => {
         if (isLoggedIn) {
@@ -63,7 +88,9 @@ export function CollectionProvider({ children }: { children: React.ReactNode })
         <CollectionContext.Provider value={{
             collection,
             getEntry,
+            getFiltered,
             refreshCollection,
+            setAttribute,
         }}>
             {children}
         </CollectionContext.Provider>

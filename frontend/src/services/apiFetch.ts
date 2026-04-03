@@ -1,3 +1,5 @@
+import { useUser } from "../contexts/UserContext";
+
 export const BASE_URL = import.meta.env.VITE_API_URL;
 
 // remember Singleton patten fron SDA class?
@@ -15,7 +17,10 @@ const doRefresh = async (): Promise<void> => {
         method: "POST",
         credentials: "include",
     });
-    if (!res.ok) throw new Error("Session expired, please log in again");
+    if (!res.ok) {
+        useUser().logout();     // TODO: logout user if refresh token is expired
+        throw new Error("Session expired, please log in again");
+    }
 };
 
 const apiFetch = async (endpoint: string, options: RequestInit = {}): Promise<Response> => {
@@ -46,6 +51,7 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}): Promise<Re
     try {
         await refreshPromise;
     } catch {
+        useUser().logout();
         throw new Error("Session expired, please log in again");
     }
 

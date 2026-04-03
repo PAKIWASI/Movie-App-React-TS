@@ -106,6 +106,7 @@ movieSchema.statics.search = async function (
     return { movies, total };
 };
 
+// id has unique so indexed automatically
 movieSchema.index({ title: "text" });
 movieSchema.index({ popularity: -1 });
 movieSchema.index({ vote_average: -1 });

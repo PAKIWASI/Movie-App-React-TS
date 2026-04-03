@@ -6,6 +6,9 @@ import { getPagination, buildPaginationMeta } from "../utils/paginate";
 import { MovieDetail, TMDB_MOVIE_PROJECTION } from "../types/movie.type";
 
 
+// TODO: res.set('Cache-Control', 'public, max-age=60');  
+// 60 seconds browser cache - yay or nah ?
+
 // GET /api/movie?name=movie&id=111&page=1&limit=10
 export const getMovies = async (req: Request, res: Response): Promise<void> => {
     try {

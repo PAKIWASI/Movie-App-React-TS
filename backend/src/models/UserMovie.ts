@@ -52,8 +52,10 @@ userMovieSchema.statics.findByCompositeKey = async function (
 
 // composite unique key — one record per (user, movie) pair
 userMovieSchema.index({ userId: 1, tmdbId: 1 }, { unique: true });
+userMovieSchema.index({ userId: 1, inWatchlist: 1 });
+userMovieSchema.index({ userId: 1, inFavs: 1 });
+userMovieSchema.index({ userId: 1, watched: 1 });
 
-// TODO: GET /api/user/me/movie filters on inFavs, inWatchlist, watched - compound indexes for common filter combinations ?
 
 export default mongoose.model<IUserMovie, IUserMovieModel>("UserMovie", userMovieSchema);
 // collection called usermovies

@@ -46,6 +46,11 @@ export const getUserMovies = async (req: Request, res: Response): Promise<void> 
                 return;
             }
             filter.tmdbId = { $in: ids };
+
+            /* N+1 query pattern:
+                This loads ALL matching movies into memory, then filters
+                Could use aggregation with $lookup + $match on text search directly
+            */
         }
 
         const total = await UserMovieModel.countDocuments(filter);

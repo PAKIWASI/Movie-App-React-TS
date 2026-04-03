@@ -5,6 +5,7 @@ import AdminModel, { Roles } from "../models/Admin";
 import RefreshTokenModel from "../models/RefreshToken";
 import { getPagination, buildPaginationMeta } from "../utils/paginate";
 import { sanitizeString } from "../utils/sanitize";
+import bcrypt from "bcryptjs";
 import { success } from "zod";
 
 
@@ -73,14 +74,27 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 
 
 // POST /api /user/me/password
-export const changePassword = async (req: Request, res: Response) : Promise<void> => {
+export const changePassword = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = UserModel.findByIdAndUpdate(req.userid, req.body);
+        const { oldPassword, newPassword } = req.body;
+        const user = await UserModel.findById(req.userid);
         if (!user) {
-            res.status(404).json({ success: false, message: "User not found" });
+            res.status(404).json({ success: false, message: "User not found"});
             return;
         }
-        
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            res.status(401).json({ success: false, message: "Invalid current password" });
+            return;
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashedPassword;
+        await user.save();
+
         res.status(200).json({ success: true, message: "Password Changed" });
     } catch (error) {
         console.error("changePassword Error: ", error);
@@ -157,7 +171,7 @@ export const deleteUserById = async (req: Request, res: Response): Promise<void>
         const role = await AdminModel.getRole(id._id.toString());
         if (role == Roles.admin) {
             res.status(403).json({ success: false, message: "Can't delete an admin" });
-            return; 
+            return;
         }
 
         // safe to delete

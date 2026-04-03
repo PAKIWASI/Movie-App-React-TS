@@ -34,8 +34,8 @@ export enum Roles {
 
 adminSchema.statics.getRole = async function(userId: string): Promise<Roles> {
     const id = await this.exists({ userId });
-    return id ? Roles.admin : Roles.user;       // we have no way of knowing if this is an actual user 
-                                                // or a bogus id
+    return id ? Roles.admin : Roles.user;       // we have no way of knowing if this is an actual user or a bogus id
+                                                // Returns "user" even if userId doesn't exist in User collection!
 };
 
 // export default mongoose.model<IAdmin>("Admin", adminSchema);

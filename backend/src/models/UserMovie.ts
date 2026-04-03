@@ -22,7 +22,7 @@ interface IUserMovieModel extends mongoose.Model<IUserMovie> {
     ): ReturnType<mongoose.Model<IUserMovie>["findOne"]>;
 }
 
-// ── Schema ────────────────────────────────────────────────────────────────────
+// Schema
 
 const userMovieSchema: Schema = new Schema(
     {
@@ -37,8 +37,6 @@ const userMovieSchema: Schema = new Schema(
     { timestamps: true }
 );
 
-// composite unique key — one record per (user, movie) pair
-userMovieSchema.index({ userId: 1, tmdbId: 1 }, { unique: true });
 
 
 // Static methods 
@@ -50,6 +48,12 @@ userMovieSchema.statics.findByCompositeKey = async function (
     return await this.findOne({ userId, tmdbId });
 };
 
+
+
+// composite unique key — one record per (user, movie) pair
+userMovieSchema.index({ userId: 1, tmdbId: 1 }, { unique: true });
+
+// TODO: GET /api/user/me/movie filters on inFavs, inWatchlist, watched - compound indexes for common filter combinations ?
 
 export default mongoose.model<IUserMovie, IUserMovieModel>("UserMovie", userMovieSchema);
 // collection called usermovies

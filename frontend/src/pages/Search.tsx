@@ -7,10 +7,6 @@ import MovieDisplay from "../components/MovieDisplay";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 
-// TODO: add search suggestions based on query with poster and name
-
-
-
 function Search() 
 {
     const navigate       = useNavigate();
@@ -42,12 +38,14 @@ function Search()
         }
     };
 
-    // Re-run whenever the URL query param changes (e.g. user searched again from navbar)
+    // Re-run whenever the URL query param changes
     useEffect(() => {
         setSearchInput(query);
         setPage(1);
         setMovies([]);
-        fetchResults(query, 1, false);
+        if (query.trim()) {
+            fetchResults(query, 1, false);
+        }
     }, [query]);
 
     const handleLoadMore = () => {
@@ -56,11 +54,11 @@ function Search()
         fetchResults(query, nextPage, true);
     };
 
-    // New search — update the URL, which triggers the useEffect above
+    // New search — update the URL
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!searchInput.trim()) {
-            navigate("/");  // empty search goes home
+            navigate("/");
             return;
         }
         navigate(`/search?q=${encodeURIComponent(searchInput.trim())}`);

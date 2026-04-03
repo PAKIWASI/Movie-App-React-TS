@@ -1,14 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
-import type { UserMovie } from "../types/Movie";
+import { useCollection } from "../contexts/CollectionContext";
 import Button from "../components/ui/Button";
 import { updateMe, deleteMe } from "../services/userAPI";
-import { getCollection } from "../services/userMovieAPI";
-
-
-// TODO: img why not use movieDetail?
-// TODO: add the change password ? we have the route now (/api/user/me/password)
 
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w185";
@@ -17,8 +12,9 @@ const POSTER_BASE = "https://image.tmdb.org/t/p/w185";
 
 function Profile() 
 {
-    const { user, logout }  = useUser();
-    const navigate          = useNavigate();
+    const { user, logout }       = useUser();
+    const { getFiltered, loading: collectionLoading } = useCollection();
+    const navigate               = useNavigate();
 
     const [name, setName]         = useState(user?.name ?? "");
     const [age, setAge]           = useState(String(user?.age ?? ""));
@@ -27,22 +23,15 @@ function Profile()
     const [success, setSuccess]   = useState("");
     const [error, setError]       = useState("");
 
-    const [watched, setWatched]           = useState<UserMovie[]>([]);
-    const [watchedLoading, setWatchedLoading] = useState(true);
-
-    useEffect(() => {
-        getCollection({ watched: true, limit: 50 })
-            .then(res => { if (res.success) setWatched(res.data); })
-            .catch(() => {})
-            .finally(() => setWatchedLoading(false));
-    }, []);
+    // Read from context cache — no extra fetch needed
+    const watched = getFiltered("watched");
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(""); setSuccess("");
         try {
             setSaving(true);
-            await updateMe({ name, age: parseInt(age) });  // email not editable
+            await updateMe({ name, age: parseInt(age) });
             setSuccess("Profile updated.");
         } catch (err: any) {
             setError(err.message ?? "Update failed");
@@ -74,24 +63,23 @@ function Profile()
                 </div>
                 <div>
                     <h1 className="text-2xl font-semibold text-(--c-foreground)">{user?.name}</h1>
-                    {/* email shown as read-only info, not editable */}
                     <p className="text-sm text-(--c-muted-foreground)">{user?.email}</p>
                 </div>
             </div>
 
-            {/* Watched movies horizontal strip */}
+            {/* Watched strip — from cache, instant */}
             <div className="flex flex-col gap-3">
                 <h2 className="text-base font-semibold text-(--c-foreground)">
                     Watched
-                    {watched.length > 0 && (
+                    {!collectionLoading && watched.length > 0 && (
                         <span className="ml-2 text-sm font-normal text-(--c-muted-foreground)">
                             {watched.length} {watched.length === 1 ? "movie" : "movies"}
                         </span>
                     )}
                 </h2>
 
-                {watchedLoading ? (
-                    <p className="text-sm text-(--c-muted-foreground)">Loading...</p>
+                {collectionLoading ? (
+                    <p className="text-sm text-(--c-muted-foreground)">Loading your watched movies...</p>
                 ) : watched.length === 0 ? (
                     <p className="text-sm text-(--c-muted-foreground)">No watched movies yet.</p>
                 ) : (
@@ -125,40 +113,24 @@ function Profile()
                 )}
             </div>
 
-            {/* Edit name & age — at the bottom as requested */}
+            {/* Edit profile */}
             <form onSubmit={handleUpdate} className="bg-(--c-card) border border-(--c-border) rounded-xl p-6 flex flex-col gap-4">
                 <div>
                     <h2 className="text-sm font-semibold text-(--c-foreground)">Edit profile</h2>
                     <p className="text-xs text-(--c-muted-foreground) mt-0.5">Email cannot be changed.</p>
                 </div>
-
                 <div className="flex flex-col gap-1.5">
                     <label className="text-sm text-(--c-foreground)">Name</label>
-                    <input
-                        type="text"
-                        required
-                        value={name}
-                        onChange={e => setName(e.target.value)}
-                        className="h-10 px-3 rounded-lg bg-(--c-secondary) border border-(--c-border) text-(--c-foreground) text-sm focus:outline-none focus:border-(--c-primary) transition-colors"
-                    />
+                    <input type="text" required value={name} onChange={e => setName(e.target.value)}
+                        className="h-10 px-3 rounded-lg bg-(--c-secondary) border border-(--c-border) text-(--c-foreground) text-sm focus:outline-none focus:border-(--c-primary) focus:ring-2 focus:ring-(--c-primary)/50 transition-all" />
                 </div>
-
                 <div className="flex flex-col gap-1.5">
                     <label className="text-sm text-(--c-foreground)">Age</label>
-                    <input
-                        type="number"
-                        required
-                        min={1}
-                        max={120}
-                        value={age}
-                        onChange={e => setAge(e.target.value)}
-                        className="h-10 px-3 rounded-lg bg-(--c-secondary) border border-(--c-border) text-(--c-foreground) text-sm focus:outline-none focus:border-(--c-primary) transition-colors"
-                    />
+                    <input type="number" required min={1} max={120} value={age} onChange={e => setAge(e.target.value)}
+                        className="h-10 px-3 rounded-lg bg-(--c-secondary) border border-(--c-border) text-(--c-foreground) text-sm focus:outline-none focus:border-(--c-primary) focus:ring-2 focus:ring-(--c-primary)/50 transition-all" />
                 </div>
-
                 {error   && <p className="text-sm text-(--c-destructive)">{error}</p>}
                 {success && <p className="text-sm text-(--c-primary)">{success}</p>}
-
                 <Button type="submit" disabled={saving} className="w-full">
                     {saving ? "Saving..." : "Save changes"}
                 </Button>
@@ -167,21 +139,15 @@ function Profile()
             {/* Danger zone */}
             <div className="bg-(--c-card) border border-(--c-destructive)/40 rounded-xl p-6 flex flex-col gap-3">
                 <h2 className="text-sm font-semibold text-(--c-destructive)">Danger zone</h2>
-                <p className="text-sm text-(--c-muted-foreground)">
-                    Deleting your account removes all your data permanently.
-                </p>
-                <Button
-                    variant="outline"
-                    disabled={deleting}
-                    onClick={handleDelete}
-                    className="w-full border-(--c-destructive)/50 text-(--c-destructive) hover:bg-(--c-destructive)/10"
-                >
+                <p className="text-sm text-(--c-muted-foreground)">Deleting your account removes all your data permanently.</p>
+                <Button variant="outline" disabled={deleting} onClick={handleDelete}
+                    className="w-full border-(--c-destructive)/50 text-(--c-destructive) hover:bg-(--c-destructive)/10">
                     {deleting ? "Deleting..." : "Delete account"}
                 </Button>
             </div>
 
         </div>
     );
-}
+};
 
 export default Profile;

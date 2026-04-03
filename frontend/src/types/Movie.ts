@@ -1,5 +1,4 @@
 
-
 export interface TMDBmovie {
     adult:             boolean;
     backdrop_path:     string;
@@ -74,7 +73,7 @@ export interface UserMovie {
     watched:     boolean;
     userRating:  number;
     userReview:  string;
-    movie?: {
+    movie: {
         title:        string;
         poster_path:  string;
         release_date: string;
@@ -103,21 +102,24 @@ export interface CollectionFilters {
     limit?:       number;
 }
 
-// TODO: verify approach
-
 // we want the local update to be instant,
 // then we post to db
-export interface CollectionContextType {
+export interface CollectionContextType 
+{
     collection:       UserMovie[];
+    loading:          boolean;
+    error:            Error | null;
     // get already loaded local collection
     getEntry: (tmdbId: number) => UserMovie | null;
-    // get all favs,watched etc
+    // get all favs, watched etc
     getFiltered: (filter: "inFavs" | "inWatchlist" | "watched") => UserMovie[];
     // get entire collection from api
     refreshCollection: () => Promise<void>;
     // set locally then post to db
     setAttribute: (tmdbId: number, filter: "inFavs" | "inWatchlist" | "watched" | "userRating" | "userReview",
                rating?: number, review?: string) => Promise<void>;
+    // remove a movie from collection locally + db
+    removeEntry: (tmdbId: number) => Promise<void>;
 }
 
 

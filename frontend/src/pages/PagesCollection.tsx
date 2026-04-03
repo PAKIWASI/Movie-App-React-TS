@@ -1,41 +1,26 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { UserMovie } from "../types/Movie";
-import { getCollection } from "../services/userMovieAPI";
 import type { CollectionPageProps } from "../types/PropTypes";
+import { useCollection } from "../contexts/CollectionContext";
+
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 
 
-// TODO: why dont we use movieDisplay?
 
-// this is a protected page, only logged in users come here
-// so we have a local collection ready
-
-// Generic collection that can display favorites or watchlist
 function CollectionPage({ filter, title }: CollectionPageProps) 
 {
     const navigate = useNavigate();
-    const [movies, setMovies] = useState<UserMovie[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { getFiltered, loading, removeEntry } = useCollection();
 
-    useEffect(() => {
-        const load = async () => {
-            try {
-                setLoading(true);
-                const res = await getCollection({ [filter]: true, limit: 100 });
-                if (res.success) setMovies(res.data);
-            } catch (err) {
-                console.error(`${title} load error:`, err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        load();
-    }, [filter]);
+    const movies = getFiltered(filter);
 
     if (loading) {
-        return <p className="text-center text-(--c-muted-foreground) py-32">Loading...</p>;
+        return (
+            <div className="flex flex-col gap-6">
+                <h1 className="text-2xl font-semibold text-(--c-foreground)">{title}</h1>
+                <p className="text-sm text-(--c-muted-foreground)">Loading your {title.toLowerCase()}...</p>
+            </div>
+        );
     }
 
     return (
@@ -49,7 +34,7 @@ function CollectionPage({ filter, title }: CollectionPageProps)
                     {movies.map(entry => (
                         <div
                             key={entry.tmdbId}
-                            className="group flex flex-col rounded-xl overflow-hidden border border-(--c-border) bg-(--c-card) hover:border-(--c-primary) hover:shadow-(--card-hover-glow) transition-all duration-300 cursor-pointer"
+                            className="group relative flex flex-col rounded-xl overflow-hidden border border-(--c-border) bg-(--c-card) hover:border-(--c-primary) hover:shadow-(--card-hover-glow) transition-all duration-300 cursor-pointer"
                             onClick={() => navigate(`/movie/${entry.tmdbId}`)}
                         >
                             <div className="relative aspect-2/3 overflow-hidden">
@@ -65,6 +50,16 @@ function CollectionPage({ filter, title }: CollectionPageProps)
                                         ★ {entry.userRating}
                                     </div>
                                 )}
+                                {/* Remove button — appears on hover */}
+                                <button
+                                    className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/70 hover:bg-(--c-destructive)/80 text-white text-[11px] px-2 py-1 rounded-md"
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        removeEntry(entry.tmdbId);
+                                    }}
+                                >
+                                    Remove
+                                </button>
                             </div>
                             <div className="p-3 flex flex-col gap-1">
                                 <p className="text-sm font-medium text-(--c-foreground) line-clamp-1">
@@ -83,7 +78,7 @@ function CollectionPage({ filter, title }: CollectionPageProps)
             )}
         </div>
     );
-}
+};
 
 export function Favorites() {
     return <CollectionPage filter="inFavs" title="Favourites" />;
@@ -92,3 +87,4 @@ export function Favorites() {
 export function Watchlist() {
     return <CollectionPage filter="inWatchlist" title="Watchlist" />;
 }
+

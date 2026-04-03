@@ -2,17 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Button from "../components/ui/Button";
 import { useUser } from "../contexts/UserContext";
+import { useCollection } from "../contexts/CollectionContext";
 import { getMovieDetail, getMovieCredits } from "../services/movieAPI";
-import type { MovieDetail, MovieCredits, UserMovie } from "../types/Movie";
-import { 
-    getMovieEntry, 
-    addToCollection, 
-    toggleFavorite, 
-    toggleWatchlist, 
-    toggleWatched, 
-    setRating, 
-    setReview 
-} from "../services/userMovieAPI";
+import type { MovieDetail, MovieCredits } from "../types/Movie";
 
 
 const POSTER_BASE   = "https://image.tmdb.org/t/p/w500";
@@ -20,20 +12,37 @@ const BACKDROP_BASE = "https://image.tmdb.org/t/p/w1280";
 const PROFILE_BASE  = "https://image.tmdb.org/t/p/w185";
 
 
-function MovieDetailPage() {
+
+function MovieDetailPage() 
+{
     const { id }         = useParams<{ id: string }>();
     const { isLoggedIn } = useUser();
-    const tmdbId         = parseInt(id!);
+    // All collection mutations go through context — this keeps MovieCard buttons,
+    // Favourites/Watchlist pages, and this page in sync with no extra fetches.
+    const { getEntry, setAttribute } = useCollection();
+    const tmdbId = parseInt(id!);
 
     const [movie, setMovie]     = useState<MovieDetail | null>(null);
     const [credits, setCredits] = useState<MovieCredits | null>(null);
-    const [entry, setEntry]     = useState<UserMovie | null>(null);
     const [loading, setLoading] = useState(true);
     const [busy, setBusy]       = useState(false);
 
-    const [reviewText, setReviewText]   = useState("");
-    const [ratingInput, setRatingInput] = useState("");
+    // Local review/rating inputs — initialised from the collection entry
+    const entry = getEntry(tmdbId);
+    const [reviewText, setReviewText]   = useState(entry?.userReview ?? "");
+    const [ratingInput, setRatingInput] = useState(entry?.userRating ? String(entry.userRating) : "");
     const [reviewSaved, setReviewSaved] = useState(false);
+
+    // Sync input fields when the entry first loads from the collection
+    useEffect(() => {
+        if (entry) {
+            setReviewText(entry.userReview ?? "");
+            setRatingInput(entry.userRating > 0 ? String(entry.userRating) : "");
+        }
+    // Only sync on mount / when tmdbId changes — not on every collection update,
+    // otherwise typing in the textarea would be reset by re-renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tmdbId]);
 
     useEffect(() => {
         const load = async () => {
@@ -45,16 +54,6 @@ function MovieDetailPage() {
                 ]);
                 if (detailRes.success)  setMovie(detailRes.data);
                 if (creditsRes.success) setCredits(creditsRes.data);
-
-                if (isLoggedIn) {
-                    const entryRes = await getMovieEntry(tmdbId);
-                    if (entryRes.success && entryRes.data.length > 0) {
-                        const e = entryRes.data[0];
-                        setEntry(e);
-                        setReviewText(e.userReview);
-                        setRatingInput(e.userRating > 0 ? String(e.userRating) : "");
-                    }
-                }
             } catch (err) {
                 console.error("MovieDetail load error:", err);
             } finally {
@@ -62,19 +61,13 @@ function MovieDetailPage() {
             }
         };
         load();
-    }, [tmdbId, isLoggedIn]);
+    }, [tmdbId]);
 
-    const ensureAndRun = async (action: (e: UserMovie) => Promise<UserMovie>) => {
+    const run = async (fn: () => Promise<void>) => {
         if (busy) return;
         try {
             setBusy(true);
-            let current = entry;
-            if (!current) {
-                const res = await addToCollection(tmdbId);
-                current = res.data;
-            }
-            const updated = await action(current);
-            setEntry(updated);
+            await fn();
         } catch (err) {
             console.error("collection action error:", err);
         } finally {
@@ -82,22 +75,21 @@ function MovieDetailPage() {
         }
     };
 
-    const handleToggleFav       = () => ensureAndRun(async () => (await toggleFavorite(tmdbId)).data);
-    const handleToggleWatchlist = () => ensureAndRun(async () => (await toggleWatchlist(tmdbId)).data);
-    const handleToggleWatched   = () => ensureAndRun(async () => (await toggleWatched(tmdbId)).data);
+    const handleToggleFav       = () => run(() => setAttribute(tmdbId, "inFavs"));
+    const handleToggleWatchlist = () => run(() => setAttribute(tmdbId, "inWatchlist"));
+    const handleToggleWatched   = () => run(() => setAttribute(tmdbId, "watched"));
 
     const handleSetRating = () => {
         const val = parseFloat(ratingInput);
         if (isNaN(val) || val < 0 || val > 10) return;
-        ensureAndRun(async () => (await setRating(tmdbId, val)).data);
+        run(() => setAttribute(tmdbId, "userRating", val));
     };
 
     const handleSetReview = () => {
-        ensureAndRun(async () => {
-            const res = await setReview(tmdbId, reviewText);
+        run(async () => {
+            await setAttribute(tmdbId, "userReview", undefined, reviewText);
             setReviewSaved(true);
             setTimeout(() => setReviewSaved(false), 2000);
-            return res.data;
         });
     };
 
@@ -109,10 +101,8 @@ function MovieDetailPage() {
         ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
         : null;
 
-    // Cast already in order from the API — show all, scroll for the rest
     const cast = credits?.cast ?? [];
 
-    // Crew: deduplicate by name, keep the most notable job per person
     const crewMap = new Map<number, { name: string; job: string; profile_path: string | null }>();
     credits?.crew.forEach(c => {
         if (!crewMap.has(c.id)) crewMap.set(c.id, c);
@@ -170,7 +160,7 @@ function MovieDetailPage() {
                 <p className="text-sm text-(--c-foreground) leading-relaxed max-w-2xl">{movie.overview}</p>
             </div>
 
-            {/* User actions */}
+            {/* User actions — reads from context, always in sync with MovieCard */}
             {isLoggedIn && (
                 <div className="flex flex-col gap-6 bg-(--c-card) border border-(--c-border) rounded-xl p-6">
                     <h2 className="text-sm font-semibold text-(--c-foreground)">Your collection</h2>
@@ -224,7 +214,7 @@ function MovieDetailPage() {
                 </div>
             )}
 
-            {/* Cast — horizontal scroll, all members, already in order */}
+            {/* Cast */}
             {cast.length > 0 && (
                 <div className="flex flex-col gap-3">
                     <h2 className="text-base font-semibold text-(--c-foreground)">Cast</h2>
@@ -252,7 +242,7 @@ function MovieDetailPage() {
                 </div>
             )}
 
-            {/* Crew — horizontal scroll, deduplicated */}
+            {/* Crew */}
             {crew.length > 0 && (
                 <div className="flex flex-col gap-3">
                     <h2 className="text-base font-semibold text-(--c-foreground)">Crew</h2>

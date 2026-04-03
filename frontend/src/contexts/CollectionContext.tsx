@@ -1,106 +1,180 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { type UserMovie, type CollectionContextType } from "../types/Movie";
+import type { UserMovie, CollectionContextType } from "../types/Movie";
 import { useUser } from "./UserContext";
-import { getCollection, setRating, setReview, toggleFavorite, toggleWatched, toggleWatchlist } from "../services/userMovieAPI";
-
-/*
-CollectionContext is a shared server-side cache for the user's movie collection. 
-Instead of every page (Profile, Favorites, Watchlist, MovieDetail) 
-each firing their own GET /user/me/movie?... query, they all read from one in-memory array that was fetched once.
-*/
-
-// TODO: 
-// One thing to note: if i mutate the collection, i have to MANUALLY call refreshCollection()
-// is this considered bad in react land ?
-// we are not using this anywhere yet
+import {
+    getCollection,
+    setRating,
+    setReview,
+    toggleFavorite,
+    toggleWatched,
+    toggleWatchlist,
+    addToCollection,
+    removeFromCollection,
+} from "../services/userMovieAPI";
 
 
 
 const CollectionContext = createContext<CollectionContextType | null>(null);
 
 
-export function CollectionProvider({ children }: { children: React.ReactNode }) {
-    const [collection, setCollection] = useState<UserMovie[]>([]);
-    const { isLoggedIn } = useUser();
+export function CollectionProvider({ children }: { children: React.ReactNode }) 
+{
+    const [collection, setCollection]   = useState<UserMovie[]>([]);
+    const [loading, setLoading]         = useState(true);
+    const [error, setError]             = useState<Error | null>(null);
+    const { isLoggedIn }                = useUser();
+
 
     const loadCollection = useCallback(async () => {
-        try {
-            const res = await getCollection({ limit: 500 });
-            if (res.success) {
-                setCollection(res.data);
-            }
-        } catch {
-            // not critical — silently fail, detail page will fall back
+        if (!isLoggedIn) {
+            setCollection([]);
+            setLoading(false);
+            return;
         }
-    }, []);
+        
+        try {
+            setLoading(true);
+            setError(null);
+            const res = await getCollection({ limit: 500 });
+            if (res.success) setCollection(res.data);
+        } catch (err) {
+            console.error("loadCollection error:", err);
+            setError(err instanceof Error ? err : new Error("Failed to load collection"));
+        } finally {
+            setLoading(false);
+        }
+    }, [isLoggedIn]);
 
-    // Look up a single entry from the local cache
+
     const getEntry = useCallback(
         (tmdbId: number): UserMovie | null =>
             collection.find(e => e.tmdbId === tmdbId) ?? null,
         [collection]
     );
 
-    // this reloads all collection for a single change - might be BAD
-    // Call after any mutation (toggle, rating, review) to keep cache fresh
+
+    const getFiltered = useCallback(
+        (filter: "inFavs" | "inWatchlist" | "watched"): UserMovie[] =>
+            collection.filter(um => um[filter]),
+        [collection]
+    );
+
+
     const refreshCollection = useCallback(async () => {
         await loadCollection();
     }, [loadCollection]);
 
 
-    // TODO: how to do this?
-    const getFiltered = useCallback(
-        (filter: "inFavs" | "inWatchlist" | "watched"): UserMovie[] =>
-            collection.filter((um) => um[filter]),
-        [collection]
-    );
-
-    // TODO: is this right? local change happens instantly while we also send req to api
+    // setAttribute: optimistic update with rollback.
+    // we capture previousState via a functional updater so we always
+    // get the real current state at rollback time.
     const setAttribute = useCallback(
-        async (tmdbId: number, filter: "inFavs" | "inWatchlist" | "watched" | "userRating" | "userReview",
-            rating?: number, review?: string): Promise<void> => {
+        async (
+            tmdbId: number,
+            filter: "inFavs" | "inWatchlist" | "watched" | "userRating" | "userReview",
+            rating?: number,
+            review?: string
+        ): Promise<void> => {
+            if (filter === "userRating" && rating === undefined) return;
+            if (filter === "userReview" && review === undefined) return;
 
-            const um = collection.find(e => e.tmdbId === tmdbId) ?? null;
-            if (!um || filter === "userRating" && !rating || filter === "userReview" && !review) return;
-            switch (filter) {
-                case "inFavs": um.inFavs = !um.inFavs; await toggleFavorite(tmdbId); break;
-                case "inWatchlist": um.inWatchlist = !um.inWatchlist; await toggleWatchlist(tmdbId); break;
-                case "watched": um.watched = !um.watched; await toggleWatched(tmdbId); break;
-                case "userRating": um.userRating = rating!; await setRating(tmdbId, rating!); break;
-                case "userReview": um.userReview = review!; await setReview(tmdbId, review!); break;
+            // Ensure an entry exists before mutating
+            let entry = collection.find(e => e.tmdbId === tmdbId) ?? null;
+            if (!entry) {
+                try {
+                    const res = await addToCollection(tmdbId);
+                    if (!res.success) return;
+                    entry = res.data;
+                    setCollection(prev => [...prev, entry!]);
+                } catch {
+                    return;
+                }
+            }
+
+            // Capture snapshot for rollback using functional form so we get the
+            // real current state (avoids stale closure from above setCollection call)
+            let snapshot: UserMovie[] = [];
+            setCollection(prev => { snapshot = prev; return prev; });
+
+            // Optimistic update
+            setCollection(prev =>
+                prev.map(um => {
+                    if (um.tmdbId !== tmdbId) return um;
+                    switch (filter) {
+                        case "inFavs":      return { ...um, inFavs: !um.inFavs };
+                        case "inWatchlist": return { ...um, inWatchlist: !um.inWatchlist };
+                        case "watched":     return { ...um, watched: !um.watched };
+                        case "userRating":  return { ...um, userRating: rating! };
+                        case "userReview":  return { ...um, userReview: review! };
+                        default:            return um;
+                    }
+                })
+            );
+
+            // Sync to DB
+            try {
+                switch (filter) {
+                    case "inFavs":      await toggleFavorite(tmdbId); break;
+                    case "inWatchlist": await toggleWatchlist(tmdbId); break;
+                    case "watched":     await toggleWatched(tmdbId); break;
+                    case "userRating":  await setRating(tmdbId, rating!); break;
+                    case "userReview":  await setReview(tmdbId, review!); break;
+                }
+            } catch (err) {
+                console.error("setAttribute failed, rolling back:", err);
+                setCollection(snapshot);
+                throw err;
             }
         },
         [collection]
     );
 
 
-    // Load collection whenever user logs in
-    useEffect(() => {
-        if (isLoggedIn) {
-            loadCollection();
-        } else {
-            setCollection([]);
-        }               // this function here is kinda required?
-    }, [isLoggedIn, loadCollection]);
+    // removeEntry: optimistic remove with rollback
+    const removeEntry = useCallback(
+        async (tmdbId: number): Promise<void> => {
+            let snapshot: UserMovie[] = [];
+            setCollection(prev => { snapshot = prev; return prev; });
 
+            // Optimistic remove
+            setCollection(prev => prev.filter(um => um.tmdbId !== tmdbId));
+
+            try {
+                await removeFromCollection(tmdbId);
+            } catch (err) {
+                console.error("removeEntry failed, rolling back:", err);
+                setCollection(snapshot);
+                throw err;
+            }
+        },
+        []
+    );
+
+
+    useEffect(() => {
+        loadCollection();
+    }, [loadCollection]);   // on mount
 
     return (
         <CollectionContext.Provider value={{
             collection,
+            loading,
+            error,
             getEntry,
             getFiltered,
             refreshCollection,
             setAttribute,
+            removeEntry,
         }}>
             {children}
         </CollectionContext.Provider>
     );
 };
 
-export function useCollection() {
+export function useCollection() 
+{
     const ctx = useContext(CollectionContext);
     if (!ctx) throw new Error("useCollection must be used inside <CollectionProvider>");
     return ctx;
 };
-
 

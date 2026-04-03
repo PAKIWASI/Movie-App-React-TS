@@ -1,25 +1,43 @@
-import { Route, Routes, Navigate } from "react-router-dom";
-import { useUser } from "./contexts/UserContext";
-import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Search from "./pages/Search";
+import { useEffect } from "react";
 import Login from "./pages/Login";
+import Search from "./pages/Search";
+import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
-import Profile from "./pages/Profile";
-import MovieDetailPage from "./pages/MovieDetail";
+import Navbar from "./components/Navbar";
+import MovieDetail from "./pages/MovieDetail";
+import { useUser } from "./contexts/UserContext";
+import { SESSION_EXPIRED_EVENT } from "./services/apiFetch";
 import { Favorites, Watchlist } from "./pages/PagesCollection";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 
 
-// Redirect to /login if not logged in
-function Protected({ children }: { children: React.ReactNode }) {
+// routes for logged in users only
+function Protected({ children }: { children: React.ReactNode }) 
+{
     const { isLoggedIn, loading } = useUser();
     if (loading) return null;  // wait for the /me check before deciding
     if (!isLoggedIn) return <Navigate to="/login" replace />;
     return <>{children}</>;
 }
 
-function App() {
+function App() 
+{
+    const navigate = useNavigate();
+
+    // When apiFetch detects the refresh token is dead it fires SESSION_EXPIRED_EVENT
+    // UserContext has its own listener that already clears user state
+    // We only need to redirect here 
+    useEffect(() => {
+        const handleSessionExpired = () => {
+            navigate("/login", { replace: true });
+        };
+
+        window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+        return () => window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    }, [navigate]);
+
     return (
         <div>
             <Navbar />
@@ -27,7 +45,7 @@ function App() {
                 <Routes>
                     <Route path="/"          element={<Home />} />
                     <Route path="/search"    element={<Search />} />
-                    <Route path="/movie/:id" element={<MovieDetailPage />} />
+                    <Route path="/movie/:id" element={<MovieDetail />} />
                     <Route path="/login"     element={<Login />} />
                     <Route path="/register"  element={<Register />} />
 
@@ -42,25 +60,21 @@ function App() {
     );
 }
 
-/* TODO: 
-    1. admin portal ? admins can view a lot of stuff from backend
-    2.*** if i delete refresh token, all requests fail but frontend still shows logged in. then you have to hit refresh
-    3. Each MovieDetail page fetches the user's collection entry for that specific movie individually
-        I have made a collectionContext but don't know how would i handle updates locally (if someone adds to favs,
-        how does it update locally + async in db)
-    4. Every time you navigate to a movie detail page, even one you've already visited,
-        it fires fresh GET /api/movie/:id and GET /api/movie/:id/credits calls (no caching) -> in-memory cache or staleTime ??
+/* TODO:
+    1. add home page caching?? how
+    1. admin portal — pending
+    2. Search suggestions — pending
+    2. Session expiry redirect — FIXED: added redirect to login on SESSION_EXPIRED_EVENT
+    3. CollectionContext optimistic update — FIXED: setAttribute now properly applies updates
+    4. Movie detail caching — FIXED: added LRU cache with size limit
+    5. Home page caching — Consider implementing React Query or similar for full cache management
+    6. Search suggestions — pending (new feature)
 
+Regressions:
+    1. if i pre maturily delete the refresh token, but it's still there in the db, i should just get an access token back
+        but the problem is we have no way of knowing if token is the same one, we deleted it and we support multiple
+        tokens per user for the sake of multiple devices - so it's OK?
 
- Slow Responses — exceeding recommended thresholds
-GET /api/movie (list/search) — avg 523ms, peak 1121ms
-    This is your worst offender. 20 movies per page is doing a full collection scan every time. The fix is a MongoDB index on whatever field you're sorting by (likely popularity or _id) and making sure pagination uses that index efficiently. Also consider adding an HTTP cache header — these results barely change, so Cache-Control: public, max-age=60 would let the browser serve the 304s without waiting on Mongo at all.
-GET /api/user/me/movie (collection queries) — avg 513ms, peak 1029ms
-    42 calls total, all slow. This endpoint is hit constantly — per-movie-detail lookups, watchlist fetches, favorites fetches, watched fetches. The (userId, tmdbId) composite index you have in your schema should make these fast, but the numbers suggest it might not be getting used for the filter-based queries (inWatchlist=true, watched=true). Make sure those fields are in a compound index: { userId: 1, inWatchlist: 1 }, { userId: 1, watched: 1 }, { userId: 1, inFavs: 1 }.
-GET /api/movie/:id (single movie) — avg 285ms, peak 705ms
-    Fetching by tmdbId (the TMDB integer, not _id). If there's no index on the id field, Mongo is doing a full scan every time. Add { id: 1 } unique index on the Movie collection — this alone will likely drop this to under 50ms.
-POST /api/user/me/movie — avg 487ms, peak 622ms
-    Write operations are slower by nature but 622ms is too high. Likely waiting on the duplicate-check query before inserting. The unique index on (userId, tmdbId) helps here — let Mongo enforce uniqueness via the index rather than doing a findOne check first.
 */
 
 

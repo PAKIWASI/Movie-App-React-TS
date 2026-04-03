@@ -2,43 +2,55 @@ import Button from "./ui/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
+import { useCollection } from "../contexts/CollectionContext";
 import type { MovieCardProp } from "../types/PropTypes";
-import { addToCollection, toggleFavorite, toggleWatchlist } from "../services/userMovieAPI";
+
 
 
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 
 
-
 function MovieCard({ movie }: MovieCardProp) 
 {
-    const { isLoggedIn } = useUser();
+    const { isLoggedIn }  = useUser();
+    const { setAttribute, getEntry } = useCollection();
+    const [busyFav, setBusyFav] = useState(false);
+    const [busyWatchlist, setBusyWatchlist] = useState(false);
     const navigate = useNavigate();
-
-    const [busy, setBusy] = useState(false);
 
     const year      = movie.release_date?.slice(0, 4) ?? "—";
     const posterUrl = movie.poster_path
         ? `${POSTER_BASE}${movie.poster_path}`
         : "/placeholder-poster.png";
 
-    // Ensure the movie is in the collection then toggle the field.
-    // The backend returns 409 if it already exists, which is fine — we just swallow it.
-    const handleCollectionAction = async (
-        e: React.MouseEvent,
-        action: "fav" | "watchlist"
-    ) => {
-        e.stopPropagation();   // don't navigate to detail page
-        if (busy) return;
+    // Read current state from the collection cache
+    const entry     = getEntry(movie.id);
+    const isFav     = entry?.inFavs ?? false;
+    const isInList  = entry?.inWatchlist ?? false;
+
+    const handleFavAction = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (busyFav) return;
         try {
-            setBusy(true);
-            await addToCollection(movie.id).catch(() => {}); // 409 = already exists, fine
-            if (action === "fav")       await toggleFavorite(movie.id);
-            if (action === "watchlist") await toggleWatchlist(movie.id);
+            setBusyFav(true);
+            await setAttribute(movie.id, "inFavs");
         } catch (err) {
-            console.error("collection action error:", err);
+            console.error("fav action error:", err);
         } finally {
-            setBusy(false);
+            setBusyFav(false);
+        }
+    };
+
+    const handleWatchlistAction = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (busyWatchlist) return;
+        try {
+            setBusyWatchlist(true);
+            await setAttribute(movie.id, "inWatchlist");
+        } catch (err) {
+            console.error("watchlist action error:", err);
+        } finally {
+            setBusyWatchlist(false);
         }
     };
 
@@ -68,19 +80,27 @@ function MovieCard({ movie }: MovieCardProp)
                     <div className="absolute bottom-2 left-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-200">
                         <Button
                             variant="ghost" size="sm"
-                            className="flex-1 bg-black/60 backdrop-blur-sm text-white hover:text-(--c-primary) border border-white/10"
-                            disabled={busy}
-                            onClick={(e) => handleCollectionAction(e, "fav")}
+                            className={`flex-1 backdrop-blur-sm border transition-colors
+                                ${isFav
+                                    ? "bg-black/80 text-(--c-primary) border-(--c-primary)/40"
+                                    : "bg-black/60 text-white hover:text-(--c-primary) border-white/10"
+                                }`}
+                            disabled={busyFav}
+                            onClick={handleFavAction}
                         >
-                            ♥ Favourite
+                            {isFav ? "♥ Favourited" : "♥ Favourite"}
                         </Button>
                         <Button
                             variant="ghost" size="sm"
-                            className="flex-1 bg-black/60 backdrop-blur-sm text-white hover:text-(--c-primary) border border-white/10"
-                            disabled={busy}
-                            onClick={(e) => handleCollectionAction(e, "watchlist")}
+                            className={`flex-1 backdrop-blur-sm border transition-colors
+                                ${isInList
+                                    ? "bg-black/80 text-(--c-primary) border-(--c-primary)/40"
+                                    : "bg-black/60 text-white hover:text-(--c-primary) border-white/10"
+                                }`}
+                            disabled={busyWatchlist}
+                            onClick={handleWatchlistAction}
                         >
-                            + Watchlist
+                            {isInList ? "✓ Watchlist" : "+ Watchlist"}
                         </Button>
                     </div>
                 )}
@@ -94,13 +114,9 @@ function MovieCard({ movie }: MovieCardProp)
                     </h3>
                     <span className="text-xs text-(--c-muted-foreground) shrink-0">{year}</span>
                 </div>
-
                 <div className="flex flex-wrap gap-1">
-                    {movie.genres.map((g) => (
-                        <span
-                            key={g.id}
-                            className="text-[11px] px-2 py-0.5 rounded-full bg-(--c-secondary) text-(--c-muted-foreground) border border-(--c-border)"
-                        >
+                    {movie.genres.slice(0, 2).map(g => (
+                        <span key={g.id} className="text-[11px] px-2 py-0.5 rounded-full bg-(--c-secondary) text-(--c-muted-foreground) border border-(--c-border)">
                             {g.name}
                         </span>
                     ))}
@@ -108,6 +124,6 @@ function MovieCard({ movie }: MovieCardProp)
             </div>
         </div>
     );
-}
+};
 
 export default MovieCard;

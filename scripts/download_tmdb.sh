@@ -5,9 +5,9 @@ source ../frontend/.env
 API_KEY=$VITE_TMDB_API_KEY
 BASE_URL="https://api.themoviedb.org/3"
 
-OUTPUT_FILE="data.json"
-CREDIT_FILE="credit_data.json"
-TOTAL_PAGES=10
+OUTPUT_FILE="./data/data.json"
+CREDIT_FILE="./data/credit_data.json"
+TOTAL_PAGES=100
 
 echo "[" > $OUTPUT_FILE
 echo "[" > $CREDIT_FILE

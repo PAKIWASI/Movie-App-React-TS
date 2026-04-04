@@ -11,6 +11,6 @@ dist-ssr
 .env
 
 
-data.json
-credit_data.json
+DATA.json
+CREDIT.json
 session.json

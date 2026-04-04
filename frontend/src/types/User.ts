@@ -14,4 +14,5 @@ export interface UserContextType {
     login:      (email: string, password: string) => Promise<void>;
     logout:     () => Promise<void>;
     loading:    boolean;   // for showing spinners on initial load
+    isLoggingOut: boolean;
 }

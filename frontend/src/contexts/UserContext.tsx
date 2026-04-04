@@ -13,6 +13,7 @@ export function UserProvider({ children }: { children: React.ReactNode })
 {
     const [user, setUser]       = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isLoggingOut, setLoggingOut] = useState(false);
     const navigate              = useNavigate();
 
     // On mount — check if a session already exists.
@@ -57,11 +58,12 @@ export function UserProvider({ children }: { children: React.ReactNode })
     };
 
 
-
     const logout = async () => {
-        navigate("/", { replace: true });   // leave protected route first
-        setUser(null);                      // then clear state — Protected is no longer mounted
-        apiLogout();                        // fire-and-forget: clears httpOnly cookie
+        setLoggingOut(true);
+        await apiLogout();  // wait for logout to finish server side
+        setUser(null);
+        navigate("/", { replace: true });   // this doesnot work for protected pages (fix in Protected comp)
+        setLoggingOut(false);
     };
 
     return (
@@ -70,7 +72,8 @@ export function UserProvider({ children }: { children: React.ReactNode })
             login, 
             logout, 
             isLoggedIn: !!user, 
-            loading 
+            loading,
+            isLoggingOut
         }}>
             {children}
         </UserContext.Provider>

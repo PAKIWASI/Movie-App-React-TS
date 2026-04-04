@@ -42,15 +42,17 @@ export default App;
 
 // Redirect to /login if not authenticated.
 // Returns null while the session check is in-flight so we don't flash /login
-// to a user who is actually logged in (cookie present but /me not resolved yet).
+//  to a user who is actually logged in (cookie present but /me not resolved yet).
+//  Redirects to / if user just logged out (and was present in  protected pages)
 function Protected({ children }: { children: React.ReactNode }) 
 {
-    const { isLoggedIn, loading } = useUser();
+    const { isLoggedIn, loading, isLoggingOut } = useUser();
 
-    if (loading)     return null;
-    if (!isLoggedIn) return <Navigate to="/login" replace />;
+    if (loading)      return null;
+    if (isLoggingOut) return <Navigate to="/" replace />;
+    if (!isLoggedIn)  return <Navigate to="/login" replace />;
+
     return <>{children}</>;
-    // BUG: logging out from a Protected page goes to /login instead of home
 };
 
 
@@ -72,6 +74,7 @@ function PublicOnly({ children }: { children: React.ReactNode })
     1. admin portal — pending
     2. home page caching — cache TMDBmovie[] per page number in a Map; invalidate on full reload
     3. form submission errors only show status code — pass the parsed error body from apiFetch
+    4. remove arrow keys from age/rating form
 */
 
 

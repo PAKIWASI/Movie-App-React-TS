@@ -15,7 +15,7 @@ function SearchBar({ search, onSearchChange, onSubmit }: SearchBarProps) {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const [isLoading, setIsLoading] = useState(false);
-    const debounceRef = useRef<NodeJS.Timeout>();
+    const debounceRef = useRef<number | null>(null);
     const suggestionRefs = useRef<(HTMLDivElement | null)[]>([]);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -163,7 +163,7 @@ function SearchBar({ search, onSearchChange, onSubmit }: SearchBarProps) {
                         {suggestions.map((movie, index) => (
                             <div
                                 key={movie.id}
-                                ref={el => suggestionRefs.current[index] = el}
+                                ref={el => { suggestionRefs.current[index] = el}}
                                 className={`flex items-center gap-3 p-3 cursor-pointer transition-colors ${
                                     index === selectedIndex
                                         ? "bg-(--c-secondary) border-l-2 border-(--c-primary)"
@@ -173,7 +173,7 @@ function SearchBar({ search, onSearchChange, onSubmit }: SearchBarProps) {
                                 onMouseEnter={() => setSelectedIndex(index)}
                             >
                                 {/* Poster */}
-                                <div className="w-10 h-14 rounded-md overflow-hidden bg-(--c-secondary) flex-shrink-0">
+                                <div className="w-10 h-14 rounded-md overflow-hidden bg-(--c-secondary) shrink-0">
                                     {movie.poster_path ? (
                                         <img
                                             src={`${POSTER_BASE}${movie.poster_path}`}

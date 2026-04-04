@@ -207,7 +207,3 @@ Full documentation in each sub-project's README.
 - PWA / offline support
 
 ---
-
-## License
-
-ISC

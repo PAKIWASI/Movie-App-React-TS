@@ -7,9 +7,6 @@ import MovieDisplay from "../components/MovieDisplay";
 import { getPopularMovies } from "../services/movieAPI";
 
 
-// TODO: add search suggestions based on query with poster and name
-
-
 
 function Home() 
 {
@@ -19,6 +16,7 @@ function Home()
     const [loading, setLoading]           = useState(false);
     const [page, setPage]                 = useState(1);
     const [hasMore, setHasMore]           = useState(true);
+
 
     const fetchPopular = async (pageNum: number, append: boolean) => {
         try {

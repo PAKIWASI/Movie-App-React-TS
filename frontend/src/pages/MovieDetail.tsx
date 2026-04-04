@@ -7,15 +7,15 @@ import { getMovieDetail, getMovieCredits } from "../services/movieAPI";
 import type { MovieDetail, MovieCredits } from "../types/Movie";
 
 
+
 const POSTER_BASE   = "https://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE = "https://image.tmdb.org/t/p/w1280";
 const PROFILE_BASE  = "https://image.tmdb.org/t/p/w185";
 
 
-
 function MovieDetailPage() 
 {
-    const { id }         = useParams<{ id: string }>();
+    const { id }         = useParams<{ id: string }>();     // route: /movie/:id
     const { isLoggedIn } = useUser();
     // All collection mutations go through context — this keeps MovieCard buttons,
     // Favourites/Watchlist pages, and this page in sync with no extra fetches.
@@ -30,8 +30,9 @@ function MovieDetailPage()
     // Local review/rating inputs — initialised from the collection entry
     const entry = getEntry(tmdbId);
     const [reviewText, setReviewText]   = useState(entry?.userReview ?? "");
-    const [ratingInput, setRatingInput] = useState(entry?.userRating ? String(entry.userRating) : "");
     const [reviewSaved, setReviewSaved] = useState(false);
+    const [ratingInput, setRatingInput] = useState(entry?.userRating ? String(entry.userRating) : "");
+
 
     // Sync input fields when the entry first loads from the collection
     useEffect(() => {
@@ -40,9 +41,10 @@ function MovieDetailPage()
             setRatingInput(entry.userRating > 0 ? String(entry.userRating) : "");
         }
     // Only sync on mount / when tmdbId changes — not on every collection update,
-    // otherwise typing in the textarea would be reset by re-renders.
+    // otherwise typing in the text area would be reset by re-renders.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tmdbId]);
+
 
     useEffect(() => {
         const load = async () => {
@@ -63,6 +65,7 @@ function MovieDetailPage()
         load();
     }, [tmdbId]);
 
+    // kinda like a singleton: only run desired func if not running anything already
     const run = async (fn: () => Promise<void>) => {
         if (busy) return;
         try {
@@ -81,7 +84,7 @@ function MovieDetailPage()
 
     const handleSetRating = () => {
         const val = parseFloat(ratingInput);
-        if (isNaN(val) || val < 0 || val > 10) return;
+        if (isNaN(val) || val < 0 || val > 10) return;  // validation
         run(() => setAttribute(tmdbId, "userRating", val));
     };
 
@@ -102,12 +105,15 @@ function MovieDetailPage()
         : null;
 
     const cast = credits?.cast ?? [];
+    
+    // TODO: removied this to test raw crew array
+    // const crewMap = new Map<number, { name: string; job: string; profile_path: string | null }>();
+    // credits?.crew.forEach(c => {
+    //     if (!crewMap.has(c.id)) crewMap.set(c.id, c);
+    // });
+    // const crew = Array.from(crewMap.values()).slice(0, 30);
+    const crew = credits?.crew ?? [];
 
-    const crewMap = new Map<number, { name: string; job: string; profile_path: string | null }>();
-    credits?.crew.forEach(c => {
-        if (!crewMap.has(c.id)) crewMap.set(c.id, c);
-    });
-    const crew = Array.from(crewMap.values()).slice(0, 30);
 
     return (
         <div className="flex flex-col gap-8 pb-16">

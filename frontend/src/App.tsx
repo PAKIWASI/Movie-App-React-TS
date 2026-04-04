@@ -1,5 +1,4 @@
 import Home from "./pages/Home";
-import { useEffect } from "react";
 import Login from "./pages/Login";
 import Search from "./pages/Search";
 import Profile from "./pages/Profile";
@@ -8,36 +7,13 @@ import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 import MovieDetail from "./pages/MovieDetail";
 import { useUser } from "./contexts/UserContext";
-import { SESSION_EXPIRED_EVENT } from "./services/apiFetch";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { Favorites, Watchlist } from "./pages/PagesCollection";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 
 
-// routes for logged in users only
-function Protected({ children }: { children: React.ReactNode }) 
-{
-    const { isLoggedIn, loading } = useUser();
-    if (loading) return null;  // wait for the /me check before deciding
-    if (!isLoggedIn) return <Navigate to="/login" replace />;
-    return <>{children}</>;
-}
 
 function App() 
 {
-    const navigate = useNavigate();
-
-    // When apiFetch detects the refresh token is dead it fires SESSION_EXPIRED_EVENT
-    // UserContext has its own listener that already clears user state
-    // We only need to redirect here 
-    useEffect(() => {
-        const handleSessionExpired = () => {
-            navigate("/login", { replace: true });
-        };
-
-        window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
-        return () => window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
-    }, [navigate]);
-
     return (
         <div>
             <Navbar />
@@ -46,8 +22,9 @@ function App()
                     <Route path="/"          element={<Home />} />
                     <Route path="/search"    element={<Search />} />
                     <Route path="/movie/:id" element={<MovieDetail />} />
-                    <Route path="/login"     element={<Login />} />
-                    <Route path="/register"  element={<Register />} />
+
+                    <Route path="/login"     element={<PublicOnly><Login /></PublicOnly>} />
+                    <Route path="/register"  element={<PublicOnly><Register /></PublicOnly>} />
 
                     <Route path="/profile"   element={<Protected><Profile /></Protected>} />
                     <Route path="/favorites" element={<Protected><Favorites /></Protected>} />
@@ -58,24 +35,44 @@ function App()
             </main>
         </div>
     );
+};
+
+export default App;
+
+
+// Redirect to /login if not authenticated.
+// Returns null while the session check is in-flight so we don't flash /login
+// to a user who is actually logged in (cookie present but /me not resolved yet).
+function Protected({ children }: { children: React.ReactNode }) 
+{
+    const { isLoggedIn, loading } = useUser();
+
+    if (loading)     return null;
+    if (!isLoggedIn) return <Navigate to="/login" replace />;
+    return <>{children}</>;
+    // BUG: logging out from a Protected page goes to /login instead of home
+};
+
+
+// Redirect logged-in users away from login/register back to home.
+// Also waits for loading so a logged-in user with a slow /me check doesn't
+// briefly see the login page before being redirected.
+function PublicOnly({ children }: { children: React.ReactNode }) 
+{
+    const { isLoggedIn, loading } = useUser();
+
+    if (loading)    return null;
+    if (isLoggedIn) return <Navigate to="/" replace />;
+    return <>{children}</>;
 }
 
+
+
 /* TODO:
-    1. add home page caching?? how
     1. admin portal — pending
-    2. Search suggestions — pending
-    2. Session expiry redirect — FIXED: added redirect to login on SESSION_EXPIRED_EVENT
-    3. CollectionContext optimistic update — FIXED: setAttribute now properly applies updates
-    4. Movie detail caching — FIXED: added LRU cache with size limit
-    5. Home page caching — Consider implementing React Query or similar for full cache management
-    6. Search suggestions — pending (new feature)
-
-Regressions:
-    1. if i pre maturily delete the refresh token, but it's still there in the db, i should just get an access token back
-        but the problem is we have no way of knowing if token is the same one, we deleted it and we support multiple
-        tokens per user for the sake of multiple devices - so it's OK?
-
+    2. home page caching — cache TMDBmovie[] per page number in a Map; invalidate on full reload
+    3. form submission errors only show status code — pass the parsed error body from apiFetch
+    4. refresh endpoint is slow 
 */
 
 
-export default App;

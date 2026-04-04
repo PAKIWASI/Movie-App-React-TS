@@ -40,7 +40,7 @@ export const refreshMiddleware = async (req: Request, res: Response, next: NextF
         // TODO: we can narrow the search by providing the userid
 
         // check in db                                      // we give it the encoded token
-        const id = await RefreshTokenModel.exists({ userId: req.userid, token: refreshToken });
+        const id = await RefreshTokenModel.exists({ /*userId: req.userid,*/ token: refreshToken });
         if (!id) {
             res.status(401).json({ message: "Invalid Refresh token" });
             return;

@@ -14,6 +14,7 @@ function CollectionPage({ filter, title }: CollectionPageProps)
 
     const movies = getFiltered(filter);
 
+
     if (loading) {
         return (
             <div className="flex flex-col gap-6">
@@ -22,6 +23,7 @@ function CollectionPage({ filter, title }: CollectionPageProps)
             </div>
         );
     }
+
 
     return (
         <div className="flex flex-col gap-6">

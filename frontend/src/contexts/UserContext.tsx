@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import type { User, UserContextType } from "../types/User";
 import { apiLogin, apiLogout, getMe } from "../services/userAPI";
 import { SESSION_EXPIRED_EVENT } from "../services/apiFetch";
+import type { User, UserContextType } from "../types/User";
 import { useNavigate } from "react-router-dom";
 
 
@@ -11,46 +11,57 @@ const UserContext = createContext<UserContextType | null>(null);
 
 export function UserProvider({ children }: { children: React.ReactNode }) 
 {
-    const [user, setUser]     = useState<User | null>(null);
+    const [user, setUser]       = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+    const navigate              = useNavigate();
 
-    // On mount — restore session from cookie
+    // On mount — check if a session already exists.
+    // We pass skipRefresh=true so that if there's no cookie, apiFetch returns
+    // the raw 401 instead of attempting a refresh. This prevents the regression
+    // where a fresh page load with no cookies would:
+    //   1. GET /user/me → 401
+    //   2. POST /auth/refresh → 401 (no refresh cookie either)
+    //   3. Dispatch SESSION_EXPIRED_EVENT
+    //   4. Redirect to /login even though the user was never logged in
     useEffect(() => {
-        const fetchUser = async () => {
+        const restore = async () => {
             try {
-                const res = await getMe();
-                setUser(res.data);
+                const res = await getMe(true); // skipRefresh=true
+                setUser(res?.data ?? null);
             } catch {
                 setUser(null);
             } finally {
                 setLoading(false);
             }
         };
-        fetchUser();
+        restore();
     }, []);
 
-    // if the refresh token is deleted server-side while the user is
-    // still browsing, the next API call gets a 401, the refresh attempt fails,
-    // and apiFetch dispatches SESSION_EXPIRED_EVENT. We listen here and clear
-    // the user so the UI immediately reflects the logged-out state instead of
-    // staying "logged in" with every request silently failing.
+    // SESSION_EXPIRED_EVENT is only dispatched when a refresh fails during normal
+    // in-session usage (not on mount). When it fires, the user's session has
+    // genuinely died mid-use — clear state and redirect to /login.
     useEffect(() => {
-        const handleExpired = () => setUser(null);
+        const handleExpired = () => {
+            setUser(null);
+            navigate("/login");
+        };
         window.addEventListener(SESSION_EXPIRED_EVENT, handleExpired);
         return () => window.removeEventListener(SESSION_EXPIRED_EVENT, handleExpired);
-    }, []);
+    }, [navigate]);
+
 
     const login = async (email: string, password: string) => {
         await apiLogin(email, password);
-        const res = await getMe();
-        setUser(res.data);
+        const res = await getMe(); // no skipRefresh — we just logged in, cookie is fresh
+        setUser(res?.data ?? null);
     };
 
+
+
     const logout = async () => {
-        await apiLogout();
-        setUser(null);
-        navigate("/");  // TODO: is this right here?
+        navigate("/", { replace: true });   // leave protected route first
+        setUser(null);                      // then clear state — Protected is no longer mounted
+        apiLogout();                        // fire-and-forget: clears httpOnly cookie
     };
 
     return (
@@ -66,8 +77,7 @@ export function UserProvider({ children }: { children: React.ReactNode })
     );
 }
 
-export function useUser() 
-{
+export function useUser() {
     const ctx = useContext(UserContext);
     if (!ctx) throw new Error("useUser must be used inside <UserProvider>");
     return ctx;

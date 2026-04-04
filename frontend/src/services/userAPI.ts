@@ -2,7 +2,8 @@ import apiFetch from "./apiFetch";
 import type { User } from "../types/User";
 
 
-// Auth 
+
+// Auth
 
 export const apiRegister = async (
     name: string, age: number, email: string, password: string
@@ -29,8 +30,13 @@ export const apiLogout = async (): Promise<void> => {
 
 // User profile
 
-export const getMe = async (): Promise<{ success: boolean; data: User }> => {
-    const res = await apiFetch("user/me");  // no method so GET
+// skipRefresh: true — on mount we call this to check if a session exists.
+// If there's no cookie, we get a 401 and treat it as "not logged in".
+// We must NOT attempt a refresh here and must NOT dispatch SESSION_EXPIRED_EVENT,
+// because that would redirect a freshly-loaded logged-out user to /login.
+export const getMe = async (skipRefresh = false): Promise<{ success: boolean; data: User } | null> => {
+    const res = await apiFetch("user/me", { skipRefresh });
+    if (res.status === 401) return null;   // not logged in — caller handles this
     return res.json();
 };
 

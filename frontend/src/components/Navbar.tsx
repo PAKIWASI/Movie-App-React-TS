@@ -4,6 +4,8 @@ import { useUser } from "../contexts/UserContext";
 import { useState, useRef, useEffect } from "react";
 
 
+// TODO: hitting logo or home at homepage should refresh ?
+
 
 function Navbar() 
 {

@@ -11,7 +11,7 @@ function Search()
 {
     const navigate       = useNavigate();
     const [searchParams] = useSearchParams();
-    const query          = searchParams.get("q") ?? "";
+    const query          = searchParams.get("q") ?? "";     //route: /seach?q="movie-query"
 
     const [searchInput, setSearchInput] = useState(query);
     const [movies, setMovies]           = useState<TMDBmovie[]>([]);

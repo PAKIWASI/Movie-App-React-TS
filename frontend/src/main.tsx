@@ -17,4 +17,4 @@ createRoot(document.getElementById('root')!).render(
             </UserProvider>
         </BrowserRouter>
     // </StrictMode>,
-)
+);

@@ -45,6 +45,11 @@ const getFromCache = <T>(cache: Map<number, T>, accessOrder: number[], key: numb
     return value;
 };
 
+// TODO: 
+// Popular movies cache for TMDBmovie
+
+
+
 export const getPopularMovies = async (page = 1, limit = 20): Promise<backendResponse> => {
     const res = await apiFetch(`movie?page=${page}&limit=${limit}`);
     return res.json();

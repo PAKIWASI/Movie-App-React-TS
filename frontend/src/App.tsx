@@ -72,9 +72,11 @@ function PublicOnly({ children }: { children: React.ReactNode })
 
 /* TODO:
     1. admin portal — pending
-    2. home page caching — cache TMDBmovie[] per page number in a Map; invalidate on full reload
-    3. form submission errors only show status code — pass the parsed error body from apiFetch
-    4. remove arrow keys from age/rating form
+    2. infinite scroll (auto load more)
+    3. change password
+   *2. home page caching — cache TMDBmovie[] per page number in a Map; invalidate on full reload
+   *3. form submission errors only show status code — pass the parsed error body from apiFetch
+   *4. remove arrow keys from age/rating form
 */
 
 

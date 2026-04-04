@@ -145,7 +145,7 @@ const generateAccessToken = async (userid: string, res: Response) => {
     res.cookie("access", access, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",       // TODO: for prod
         maxAge: accessTokenAge * 1000, // to milliseconds
     });
 };
@@ -170,7 +170,7 @@ const generateRefreshToken = async (userid: string, res: Response) => {
     res.cookie("refresh", refresh, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: refreshTokenAge * 1000, // to milliseconds
     });
 

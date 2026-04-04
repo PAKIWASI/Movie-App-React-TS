@@ -43,6 +43,5 @@ const movieCreditSchema: Schema = new Schema(
     }
 );
 
-
 export default mongoose.model<IMovieCredit>("MovieCredit", movieCreditSchema);
 // collection: "moviecredits"

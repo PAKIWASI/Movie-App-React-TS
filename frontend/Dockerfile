@@ -1,3 +1,4 @@
+
 # Build stage
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -8,6 +9,7 @@ COPY . .
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build          # outputs to /app/dist
+
 
 # Production stage — nginx serves the static files
 FROM nginx:alpine

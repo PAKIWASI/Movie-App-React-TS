@@ -2,25 +2,29 @@ services:
 
   backend:
     build:
+      # in what directory to look for dockerfile (backend dir)
       context: ./backend       # folder containing backend.Dockerfile
-      dockerfile: backend.Dockerfile
-    restart: unless-stopped
+      #dockerfile: Dockerfile
+    restart: unless-stopped   # If the container crashes, Docker restarts it automatically.
+    # requires a .env at same level as this file
     environment:
-      PORT:        5000
-      NODE_ENV:    production
+      PORT:        ${PORT}
+      NODE_ENV:    ${NODE_ENV}
       MONGO_URI:   ${MONGO_URI}
-      JWT_SECRET:  ${JWT_SECRET}                   # comes from .env file at compose root
-      CLIENT_URL:  http://localhost                # nginx serves frontend on port 80
+      JWT_SECRET:  ${JWT_SECRET}
+      CLIENT_URL:  http://localhost   # nginx serves the frontend on port 80 of the same host, 
+                                      # so from the backend's perspective the frontend origin is http://localhost
+
+    # exposes the backend to the outside world (and to nginx for proxying).
     ports:
-      - "5000:5000"            # expose backend so nginx can proxy to it (or for direct API access)
+      - "5000:5000"   # container's 5000 is mapped to device's 5000
     networks:
-      - internal
-      - external
+      - external      # for talking to the frontend/nginx. 
 
   frontend:
     build:
       context: ./frontend      # folder containing frontend.Dockerfile + nginx.conf
-      dockerfile: frontend.Dockerfile
+      # dockerfile: frontend.Dockerfile
       args:
         # Baked into the JS bundle at build time.
         # Points to the backend — in production replace localhost with your domain.
@@ -28,11 +32,10 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
-    ports:
+    ports:        # nginx inside the frontend container listens on 80 and serves the static files.
       - "80:80"
     networks:
       - external
 
 networks:
-  internal:   # mongo ↔ backend (not exposed)
   external:   # backend ↔ frontend ↔ outside world

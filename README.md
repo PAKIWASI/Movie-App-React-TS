@@ -1,3 +1,5 @@
+https://github.com/user-attachments/assets/9076a870-0665-4d20-a827-5cff9e6889a1
+
 # Movie Tracker
 
 A full-stack movie tracking application. Browse popular movies, search by title, and maintain a personal collection — favorites, watchlist, watched — with optional ratings and reviews.

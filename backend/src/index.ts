@@ -26,11 +26,10 @@ const PORT = process.env.PORT || 5000;  // set port from .env
 
 // This backend allows requests from http://localhost:5173
 // Only requests from this website are allowed to read my responses
-// app.use(cors({ 
-//     origin: process.env.CLIENT_URL || "http://localhost:5173", // this can be any url (~origin)
-//     credentials: true
-// }));   
-app.use(cors());
+app.use(cors({ 
+    origin: process.env.CLIENT_URL || "http://localhost:5173", // this can be any url (~origin)
+    credentials: true
+}));   
 
 // HTTP security headers (X-Content-Type-Options, CSP, HSTS, etc)
 // Web browsers respect certain HTTP headers that improve security. Helmet sets these headers to help protect against attacks

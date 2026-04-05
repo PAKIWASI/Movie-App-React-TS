@@ -55,6 +55,7 @@ REST API for a movie tracking application. Users can browse movies and maintain 
 ├── utils/
 │   ├── paginate.ts              # page / limit / skip helpers
 │   └── sanitize.ts              # Search query sanitization
+├── Dockerfile                   # Multi-stage production build
 └── index.ts                     # Entry point
 ```
 
@@ -91,6 +92,65 @@ npm start       # run compiled output
 ```
 
 Server runs at `http://localhost:5000`.
+
+---
+
+## Docker
+
+### Build the image
+
+```bash
+docker build -t movie-backend .
+```
+
+### Run the container
+
+```bash
+docker run -p 5000:5000 \
+  -e PORT=5000 \
+  -e MONGO_URI=mongodb+srv://... \
+  -e JWT_SECRET=your-secret \
+  -e CLIENT_URL=https://your-frontend.com \
+  -e NODE_ENV=production \
+  movie-backend
+```
+
+Or use an env file:
+
+```bash
+docker run -p 5000:5000 --env-file .env movie-backend
+```
+
+### How the Dockerfile works
+
+The backend uses a **multi-stage build** to keep the final image small:
+
+```
+Stage 1 — builder (node:20-alpine)
+  ├── Install all dependencies (npm ci)
+  ├── Copy source files
+  └── Compile TypeScript → dist/
+
+Stage 2 — production (node:20-alpine)
+  ├── Install production dependencies only (npm ci --omit=dev)
+  ├── Copy dist/ from builder stage
+  └── Run: node dist/index.js
+```
+
+This means the final image contains no TypeScript compiler, no source files, and no dev dependencies — only what's needed to run the compiled app. The result is roughly 180MB vs 400–500MB+ for a naive single-stage build.
+
+### Image size breakdown
+
+| Layer | Size |
+|-------|------|
+| node:20-alpine base | ~120MB |
+| Production node_modules | ~30MB |
+| Compiled dist/ | ~1MB |
+| **Total** | **~180MB** |
+
+### Running as part of the full stack
+
+See the root `docker-compose.yml` to run the backend alongside the frontend with a single command.
 
 ---
 

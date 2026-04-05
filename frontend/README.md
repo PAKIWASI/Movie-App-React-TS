@@ -52,6 +52,8 @@ src/
 ├── App.tsx                     # Route definitions + Protected / PublicOnly wrappers
 ├── main.tsx                    # Entry point + provider tree
 └── index.css                   # Tailwind theme + custom animations
+├── Dockerfile                  # Multi-stage build: Vite → nginx
+└── nginx.conf                  # React Router fallback config
 ```
 
 ---
@@ -80,6 +82,69 @@ npm run dev       # dev server at http://localhost:5173
 npm run build     # production build → dist/
 npm run preview   # preview production build
 ```
+
+---
+
+## Docker
+
+### Build the image
+
+`VITE_API_URL` must be passed at build time because Vite bakes it directly into the compiled JS bundle. It cannot be injected at runtime.
+
+```bash
+docker build \
+  --build-arg VITE_API_URL=https://your-backend-url/api \
+  -t movie-frontend .
+```
+
+### Run the container
+
+```bash
+docker run -p 80:80 movie-frontend
+```
+
+The app is served by nginx on port 80. Open http://localhost.
+
+### How the Dockerfile works
+
+The frontend uses a **multi-stage build**:
+
+```
+Stage 1 — builder (node:20-alpine)
+  ├── Install dependencies (npm ci)
+  ├── Receive VITE_API_URL as a build argument
+  ├── Bake it into the JS bundle as an env var
+  └── Run: npm run build → outputs to /app/dist
+
+Stage 2 — production (nginx:alpine)
+  ├── Copy dist/ from builder stage
+  ├── Copy nginx.conf for React Router support
+  └── Serve static files on port 80
+```
+
+The final image is tiny — just nginx and the compiled static files. No Node.js, no source code, no build tools.
+
+### Why `VITE_API_URL` is a build arg, not a runtime env var
+
+Vite replaces `import.meta.env.VITE_*` references at **compile time**. By the time the image runs, the value is already hard-coded in the minified JS. This means:
+
+- You need to rebuild the image if the backend URL changes
+- You cannot override it with `-e VITE_API_URL=...` at runtime
+- For different environments (staging, production), build separate images with different `--build-arg` values
+
+### nginx configuration
+
+`nginx.conf` configures a single rule that makes React Router work correctly:
+
+```nginx
+try_files $uri $uri/ /index.html;
+```
+
+Without this, navigating directly to `/movie/123` or refreshing on any route other than `/` would return a 404 from nginx. This rule tells nginx to serve the file if it exists, and fall back to `index.html` otherwise — letting React Router handle the path client-side.
+
+### Running as part of the full stack
+
+See the root `docker-compose.yml` to run the frontend alongside the backend with a single command.
 
 ---
 

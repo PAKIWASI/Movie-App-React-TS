@@ -52,14 +52,20 @@ Built with the MERN stack (MongoDB, Express, React, Node.js) using TypeScript on
 
 ```
 movie-tracker/
-├── frontend/     # React app
-├── backend/      # Express API
-└── scripts/      # bash scripts (TMDB data seed / API testing (httpie))
+├── frontend/               # React app + nginx Dockerfile
+│   ├── src/
+│   ├── Dockerfile
+│   └── nginx.conf
+├── backend/                # Express API Dockerfile
+│   ├── src/
+│   └── Dockerfile
+├── docker-compose.yml      # Runs the full stack locally
+└── scripts/                # TMDB data seed + API testing (httpie)
 ```
 
 ---
 
-## Local Development
+## Local Development (without Docker)
 
 ### Prerequisites
 - Node.js 18+
@@ -109,41 +115,107 @@ App runs at `http://localhost:5173`.
 
 ---
 
+## Running with Docker Compose
+
+Docker Compose runs the full stack — backend API + frontend served by nginx — with a single command.
+
+### Prerequisites
+- Docker and Docker Compose installed
+
+### 1. Create a `.env` file in the project root
+
+```env
+PORT=5000
+NODE_ENV=production
+MONGO_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/<dbname>
+JWT_SECRET=your-secret-key-min-32-chars
+```
+
+> The `CLIENT_URL` and `VITE_API_URL` are hardcoded in `docker-compose.yml` because they refer to `localhost` — the host machine's loopback address where both containers are exposed.
+
+### 2. Start everything
+
+```bash
+docker compose up --build
+```
+
+| Service | URL |
+|---------|-----|
+| Frontend (nginx) | http://localhost |
+| Backend API | http://localhost:5000/api |
+
+### 3. Stop
+
+```bash
+docker compose down
+```
+
+### How it works
+
+```
+Browser
+  │
+  ├── http://localhost        → frontend container (nginx:alpine, port 80)
+  │                              serves static React build
+  │
+  └── http://localhost:5000   → backend container (node:20-alpine, port 5000)
+                                 Express API → MongoDB Atlas
+```
+
+The frontend is a **static build** — Vite compiles the React app at Docker build time with `VITE_API_URL` baked into the JS bundle. nginx then serves those static files and handles React Router by forwarding all paths to `index.html`.
+
+The backend uses a **multi-stage build**: TypeScript is compiled in a builder stage, then only the compiled `dist/` and production `node_modules` are copied to the final image, keeping it lean.
+
+### Rebuilding after code changes
+
+```bash
+# Rebuild and restart a specific service
+docker compose up --build backend
+docker compose up --build frontend
+
+# Rebuild all
+docker compose up --build
+```
+
+### Useful commands
+
+```bash
+docker compose logs -f backend      # stream backend logs
+docker compose logs -f frontend     # stream nginx logs
+docker compose ps                   # list running containers
+docker compose down --volumes       # stop and remove volumes
+```
+
+---
+
 ## Deployment
 
-### Backend → Render
+### Backend → AlwaysData (or any Docker host)
 
-1. Push the `backend/` folder to a GitHub repository
-2. On [Render](https://render.com): **New → Web Service** → connect the repo
-3. Set build and start commands:
+1. Build and push the backend image:
+   ```bash
+   docker build -t your-username/movie-backend ./backend
+   docker push your-username/movie-backend
    ```
-   Build:  npm install && npm run build
-   Start:  npm start
-   ```
-4. Add environment variables (all from `.env` above, plus a production `MONGO_URI`)
-5. Deploy — note the service URL (e.g. `https://your-app.onrender.com`)
+2. Set environment variables on the host (`PORT`, `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL`, `NODE_ENV=production`)
+3. Pull and run the image, or point the host at your GitHub repo if it supports Docker builds directly (Back4App, Railway, Render, etc.)
 
 ### Frontend → Netlify
 
-1. Push the `frontend/` folder to a GitHub repository
-2. On [Netlify](https://netlify.com): **Add new site → Import from Git**
-3. Set build settings:
-   ```
-   Build command:   npm run build
-   Publish directory: dist
-   ```
-4. Add environment variable:
-   ```
-   VITE_API_URL = https://your-app.onrender.com/api
-   ```
-5. Deploy
+```bash
+cd frontend
+VITE_API_URL=https://your-backend-url/api npm run build
+# deploy the dist/ folder to Netlify
+```
+
+Or connect the `frontend/` directory to Netlify via GitHub and set `VITE_API_URL` in Netlify's environment variables — Netlify runs `npm run build` automatically on each push.
 
 ### Database → MongoDB Atlas
 
 1. Create a free M0 cluster at [cloud.mongodb.com](https://cloud.mongodb.com)
 2. Create a database user with read/write access
-3. Add `0.0.0.0/0` to the network access list (or Render's outbound IP)
-4. Copy the connection string and set it as `MONGO_URI` in both local `.env` and Render
+3. Add `0.0.0.0/0` to the network access list
+4. Copy the connection string and set it as `MONGO_URI`
 
 ---
 
@@ -205,5 +277,3 @@ Full documentation in each sub-project's README.
 - Admin dashboard
 - Infinite scroll
 - PWA / offline support
-
----

@@ -6,8 +6,10 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 # VITE_API_URL is injected at build time so the JS bundle knows the backend address
+# this is in the .env at the same level as this file
 ARG VITE_API_URL
-ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
 RUN npm run build          # outputs to /app/dist
 
 
